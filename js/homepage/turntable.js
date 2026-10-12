@@ -246,8 +246,9 @@
         document.addEventListener('keydown', onGesture)
 
         // 按 CSS 尺寸 * DPR 维护 canvas 内部分辨率
+        var _homeScale = 1 // 首页渲染分辨率倍数: wiki 卡片拉远后由 HomeGate.setScale 调低(1 = 全质量)
         function resizeCanvas() {
-          var dpr = Math.min(window.devicePixelRatio || 1, 2)
+          var dpr = Math.min(window.devicePixelRatio || 1, 2) * _homeScale
           var w = Math.max(1, Math.round(waveCanvas.clientWidth * dpr))
           var h = Math.max(1, Math.round(waveCanvas.clientHeight * dpr))
           if (waveCanvas.width !== w || waveCanvas.height !== h) {
@@ -255,6 +256,11 @@
             waveCanvas.height = h
             if (fadeCanvas) { fadeCanvas.width = w; fadeCanvas.height = h; fadeGradW = 0 }
           }
+        }
+        function homeScaleSet(s) { // 供 HomeGate.setScale: 改倍数并立即重建波形画布
+          if (s === _homeScale) return
+          _homeScale = s
+          resizeCanvas()
         }
         if (WAVE_ENABLED) {
           window.addEventListener('resize', resizeCanvas)
@@ -318,6 +324,7 @@
         var ENV_DECAY = 0.99 // 每帧残留比例, 越小回落越快(60fps 下 ~0.4s 衰减到 10%)
 
         function renderLoop() {
+          if (window.HomeGate && window.HomeGate.isPaused()) return // wiki 收尾后停机: 不再调度下一帧
           requestAnimationFrame(renderLoop)
           resizeCanvas()
           var ctx2 = waveCanvas.getContext('2d')
@@ -369,7 +376,10 @@
           ctx2.fillRect(0, 0, w, h)
           ctx2.globalCompositeOperation = 'source-over'
         }
-        if (WAVE_ENABLED) renderLoop()
+        if (WAVE_ENABLED) {
+          if (window.HomeGate) window.HomeGate.add(function () { renderLoop() }, homeScaleSet) // 供 resume() 起跑 / setScale() 降分辨率
+          renderLoop()
+        }
       }
 
       // 读曲目清单 JSON; 失败时用内置兜底, 保证离线/路径异常时仍有歌

@@ -208,13 +208,20 @@
       // 像素数按平方减少, 0.6 约省 2/3 的片元开销; 太小远处雪点会发糊.
       var SNOW_SCALE = 0.6
 
+      var _homeScale = 1 // 首页渲染分辨率倍数: wiki 卡片拉远后由 HomeGate.setScale 调低(1 = 全质量)
+
       function resize() {
-        var dpr = Math.min(window.devicePixelRatio || 1, 2)
+        var dpr = Math.min(window.devicePixelRatio || 1, 2) * _homeScale
         var w = Math.max(1, Math.floor(canvas.clientWidth * dpr * SNOW_SCALE))
         var h = Math.max(1, Math.floor(canvas.clientHeight * dpr * SNOW_SCALE))
         canvas.width = w
         canvas.height = h
         gl.viewport(0, 0, w, h)
+      }
+      function homeScaleSet(s) { // 供 HomeGate.setScale: 改倍数并立即重建画布
+        if (s === _homeScale) return
+        _homeScale = s
+        resize()
       }
 
       // =========================
@@ -225,7 +232,7 @@
       //   draw提交  主线程执行 WebGL 提交命令的耗时(不含 GPU 实际执行)
       //   雪景GPU   雪景着色器的真实 GPU 耗时(需 EXT_disjoint_timer_query)
       //   其余      帧间隔 - 雪景GPU ≈ 合成 / CSS 动画 / 浏览器自身
-      var PROFILE = true
+      var PROFILE = false // 首页雪景性能检测: 已关闭(改 true 可重新开启)
       var PROFILE_EVERY = 2000
 
       var extTimer = gl.getExtension('EXT_disjoint_timer_query')
@@ -329,6 +336,7 @@
       var t0 = performance.now()
 
       function loop(now) {
+        if (window.HomeGate && window.HomeGate.isPaused()) return // wiki 收尾后停机: 不再调度下一帧
         if (PROFILE) {
           if (profLast) profFrames.push(now - profLast)
           profLast = now
@@ -345,12 +353,15 @@
       function onVis() {
         cancelAnimationFrame(raf)
         profLast = 0 // 切回前台后别把后台停留的时间算成一帧
-        if (!document.hidden && !reduce) raf = requestAnimationFrame(loop)
+        if (!document.hidden && !reduce && !(window.HomeGate && window.HomeGate.isPaused())) raf = requestAnimationFrame(loop)
       }
 
       resize()
       new ResizeObserver(resize).observe(canvas)
       document.addEventListener('visibilitychange', onVis)
       if (reduce) draw(t0)
-      else raf = requestAnimationFrame(loop)
+      else {
+        if (window.HomeGate) window.HomeGate.add(function () { profLast = 0; raf = requestAnimationFrame(loop) }, homeScaleSet) // 供 resume() 起跑 / setScale() 降分辨率
+        raf = requestAnimationFrame(loop)
+      }
     })()

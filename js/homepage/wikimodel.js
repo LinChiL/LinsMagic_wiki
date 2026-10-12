@@ -992,6 +992,17 @@ const GROUND_TEX_MAX = 2048    // 烘焙贴图最大宽(px); 高按视口比例
 // 重播、拖进度条、调起始帧会自动把整个世界恢复。
 const FOCUS_GROUND_FADE = 1.2  // 地面渐隐时长(墙钟秒): 播完起算, 淡到全透明后地面网格整个关掉
 
+// ===== wiki 期间首页(卡片)的开销削减: 按"卡片在屏幕上的占比"分级 =====
+// 卡片就是首页本身(活页面, 跑在另一个 WebGL 上下文), 实测它在运镜中每帧约 4~5ms, 是 wiki 期间
+// 的主要负载(本模块探针看不到它)。镜头拉远后卡片像素变小、细节看不清, 于是分两级削:
+//   占比 < HOME_LOD_LOW    → 首页按 HOME_LOD_SCALE 降分辨率(仍实时渲染, 只是糊一点)
+//   占比 < HOME_LOD_FREEZE → 首页整套循环冻结(远处卡面的雪花/体积光不再"呼吸")
+// 全部在"镜头确实拉远"之后才触发(近景/特写全程保持全质量 + 实时)。占比见性能日志的「卡」一项。
+const HOME_LOD_LOW = 0.5      // 卡片屏宽占视口宽低于此值 → 降分辨率档
+const HOME_LOD_FREEZE = 0.22  // 再低于此值 → 冻结档
+const HOME_LOD_SCALE = 0.6    // 降分辨率倍数(0.6 ⇒ 片元开销降到约 36%)
+const HOME_LOD_HYST = 0.06    // 迟滞: 避免阈值附近来回抖
+
 // ---- 调度机制(一般不用动) ----
 // 段表: run(匀速) | in(渐停) | hold(平台) | out(渐起), 各段记录内容区间 ↔ 墙钟区间的对应
 let playSegs = []
@@ -1182,6 +1193,7 @@ const _cp = new THREE.Vector3()
 const _cardDir = new THREE.Vector3(CARD_MOVE_DIR[0], 0, CARD_MOVE_DIR[1]).normalize()
 const _cardCNow = new THREE.Vector3()
 const _cq = [[0, 0], [0, 0], [0, 0], [0, 0]] // 角点屏幕坐标(TL,TR,BR,BL)
+let _cardScreenFrac = 1 // 卡片屏宽 / 视口宽: 镜头越远越小, 用来分级削减首页开销(见 HOME_LOD_*)
 function updateCardTransform() {
   if (worldCleared) return // 聚焦收尾后: 世界已撤, 卡投影/地面吸附全部停(每帧零开销)
   const W = window.innerWidth, H = window.innerHeight
@@ -1200,11 +1212,31 @@ function updateCardTransform() {
     _cq[i][1] = (1 - _cv.y) * 0.5 * H
   }
   // 卡滑进相机身后时投影无意义: 临镜前 CARD_FADE_D 内渐隐, 越过镜面直接隐藏; 滑回来自动恢复
-  if (minDepth < 0.05) { wrap.style.visibility = 'hidden'; return }
+  if (minDepth < 0.05) { wrap.style.visibility = 'hidden'; _cardScreenFrac = 0; return }
   wrap.style.visibility = ''
   wrap.style.opacity = minDepth < CARD_FADE_D ? String(minDepth / CARD_FADE_D) : ''
   const css = homographyCSS(W, H, _cq)
   if (css) wrap.style.transform = css
+  _cardScreenFrac = Math.abs(_cq[1][0] - _cq[0][0]) / W // 卡片上边在屏幕上的宽度占比
+}
+
+// ===== 首页质量分级(近景全质量/实时 → 拉远降分辨率 → 更远冻结) =====
+let homeLod = 1          // 当前档: 1(全质量) / HOME_LOD_SCALE(降分辨率) / 0(冻结)
+let homeReleased = false // 聚焦收尾已永久停机(不可被 LOD 逻辑解冻)
+function setHomeLod(v) {
+  homeLod = v
+  if (!window.HomeGate) return
+  if (v === 0) window.HomeGate.pause()
+  else { window.HomeGate.setScale(v); window.HomeGate.resume() }
+}
+function applyHomeLod() {
+  if (homeReleased) return
+  const f = _cardScreenFrac
+  let next = homeLod
+  if (homeLod === 0) next = f > HOME_LOD_FREEZE + HOME_LOD_HYST ? (f > HOME_LOD_LOW + HOME_LOD_HYST ? 1 : HOME_LOD_SCALE) : 0
+  else if (homeLod === HOME_LOD_SCALE) next = f < HOME_LOD_FREEZE ? 0 : (f > HOME_LOD_LOW + HOME_LOD_HYST ? 1 : HOME_LOD_SCALE)
+  else next = f < HOME_LOD_FREEZE ? 0 : (f < HOME_LOD_LOW ? HOME_LOD_SCALE : 1)
+  if (next !== homeLod) setHomeLod(next)
 }
 
 // ===== 世界地面: 整页平铺(烘焙一张贴图, GL 无限重复) =====
@@ -1552,6 +1584,232 @@ function updateSea(nowS) {
   seaUniforms.uTime.value = nowS // 走墙钟: 暂停/聚焦收尾里水面照常起伏
 }
 
+// ===== 踩卡水波: 脚踩到卡片那一下, 以脚印接触面(footprint.jpg, 白=接触面)为波源, 在地面(卡面)扩散 =====
+// 做法: 在卡片处铺一块与该处地面同向的正方形区域(RIPPLE_REGION), 用一张同尺度的场做波动方程模拟
+// (与首页 cursorfilter.js 同款 5 点 Laplacian); 触发那一帧把"卡面空间"的脚印贴图(整页截图,
+// 白区=脚踩的位置)按卡片矩形 1:1 注入场里, 之后波自然向外扩散; 结果贴回同一块地面(半透明水面
+// 高光/暗折), 于是在卡片上看到脚下一圈圈大水波(波源位置由贴图白区决定, 不靠脚骨定位)。
+// 只在"踩卡那一下"触发一次(控制台可用 __wikiRipple() 手动触发预览)。
+const RIPPLE_ENABLE = true
+const RIPPLE_TEX_URL = '../asset/image/footprint/footprint.jpg'
+const RIPPLE_REGION = 18          // 模拟区域边长(米): 波最大扩散半径 ≈ 一半
+const RIPPLE_SIM = 512            // 场分辨率(纹理边长): 脚掌(≈0.3m)约 8~9 texel, 足以表达接触面形状
+const RIPPLE_MASK_YAW = 0         // 脚印朝向补偿(弧度): 贴图相对卡面有旋转时调这个
+const RIPPLE_MASK_FLIP = 0        // 1 = 上下翻转贴图(出现镜像时改 1)
+const RIPPLE_DAMPING = 0.986      // 每帧衰减(越小波消得越快)
+const RIPPLE_STRENGTH = 0.6       // 注入强度(足迹白区初速; 越大波越猛)—— 调大
+const RIPPLE_DISPERSION = 0.9     // 色散强度(彩虹边; 鼠标水波是 0.3)—— 调大
+const RIPPLE_WATER_DEPTH = 0.04   // 折射位移深度(米): 波峰波谷处背景被推开的距离
+const RIPPLE_LIFE = 5.0           // 水波存活时长(墙钟秒): 之后整块关掉(零开销)
+const RIPPLE_LEAD = 0.04          // 提前量(内容秒): 相机渐停到暂停点速度归零, 提前这么点触发
+// 触发时刻(内容秒) = 镜头停止前一刻: 取第一个暂停点(PAUSE_KEYS[0].t)往前 RIPPLE_LEAD 秒。
+// 这样"踩卡那一下"与运镜的凝滞(暂停段)同步, 而不是靠脚骨检测乱猜相位。
+const RIPPLE_TRIGGER_T = (PAUSE_KEYS.length ? PAUSE_KEYS[0].t : 1.3) - RIPPLE_LEAD
+const RIPPLE_Y = 0.02             // 波面离地高(米): 高于脚底接触影(0.012), 防同面闪烁
+
+const footprintTex = new THREE.TextureLoader().load(RIPPLE_TEX_URL, function (t) {
+  t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping
+  t.minFilter = THREE.LinearFilter
+  t.magFilter = THREE.LinearFilter
+  t.colorSpace = THREE.NoColorSpace // 当参数图读原始黑白值, 不做 sRGB 解码
+})
+
+const _rippleQuadScene = new THREE.Scene()
+const _rippleQuadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+
+const rippleSimMat = new THREE.ShaderMaterial({
+  uniforms: {
+    u_current: { value: null },
+    u_texel: { value: new THREE.Vector2(1 / RIPPLE_SIM, 1 / RIPPLE_SIM) },
+    u_damping: { value: RIPPLE_DAMPING },
+    u_inject: { value: 0 }, // 1 = 本帧把脚印注入场(只在触发那一帧)
+    u_mask: { value: footprintTex },
+    u_maskSize: { value: new THREE.Vector2(1, 1) }, // 脚印贴图在区域内占的 uv 边长(含贴图比例)
+    u_maskRot: { value: 0 },                        // 脚印在区域内的朝向(弧度)
+    u_flip: { value: RIPPLE_MASK_FLIP },
+    u_strength: { value: RIPPLE_STRENGTH }
+  },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position, 1.0); }',
+  fragmentShader: [
+    'precision highp float;',
+    'varying vec2 vUv;',
+    'uniform sampler2D u_current, u_mask;',
+    'uniform vec2 u_texel, u_maskSize;',
+    'uniform float u_damping, u_inject, u_maskRot, u_flip, u_strength;',
+    'void main() {',
+    '  float l = texture2D(u_current, vUv - vec2(u_texel.x, 0.0)).r;',
+    '  float r = texture2D(u_current, vUv + vec2(u_texel.x, 0.0)).r;',
+    '  float u = texture2D(u_current, vUv + vec2(0.0, u_texel.y)).r;',
+    '  float d = texture2D(u_current, vUv - vec2(0.0, u_texel.y)).r;',
+    '  float cur = texture2D(u_current, vUv).r;',
+    '  float prev = texture2D(u_current, vUv).g;',
+    '  float next = (l + r + u + d) * 0.5 - prev;',
+    '  next *= u_damping;',
+    '  if (u_inject > 0.5) {',
+    '    vec2 p = vUv - 0.5;',
+    '    float c = cos(u_maskRot), s = sin(u_maskRot);',
+    '    vec2 rp = vec2(c * p.x - s * p.y, s * p.x + c * p.y);',
+    '    vec2 muv = rp / u_maskSize + 0.5;',
+    '    if (u_flip > 0.5) muv.y = 1.0 - muv.y;',
+    '    if (muv.x > 0.0 && muv.x < 1.0 && muv.y > 0.0 && muv.y < 1.0) {',
+    '      next += texture2D(u_mask, muv).r * u_strength;', // 白 = 接触面 → 初速注入
+    '    }',
+    '  }',
+    '  gl_FragColor = vec4(next, cur, 0.0, 1.0);',
+    '}'
+  ].join('\n')
+})
+_rippleQuadScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), rippleSimMat))
+
+// 波面外观: 直接复用首页鼠标水波(cursorfilter.js)那套 —— 由波场求法线 → 斯涅尔折射 → 8 频段
+// 光谱色散(彩虹边)。区别只有"背景"不是整帧画面, 而是脚下那片地面/卡面贴图(groundTex):
+// 折射采样它并在波平处把 alpha 压到 0, 于是只有波峰波谷处浮出被折射的卡面, 看起来就是卡片本身在泛水波。
+const rippleOutMat = new THREE.ShaderMaterial({
+  uniforms: {
+    u_sim: { value: null },
+    u_bg: { value: null },
+    u_texel: { value: new THREE.Vector2(1 / RIPPLE_SIM, 1 / RIPPLE_SIM) },
+    u_bgOff: { value: new THREE.Vector2(0, 0) },   // 区域中心对应的地面贴图 uv
+    u_bgScale: { value: new THREE.Vector2(1, 1) }, // 区域局部米 → 贴图 uv 的换算(1/卡宽, 1/卡高)
+    u_region: { value: RIPPLE_REGION },
+    u_dispersion: { value: RIPPLE_DISPERSION }, // 物理色散强度(比鼠标水波的 0.3 大)
+    u_waterDepth: { value: RIPPLE_WATER_DEPTH }, // 折射位移深度(米)
+    u_fade: { value: 1 }
+  },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: [
+    'precision highp float;',
+    'varying vec2 vUv;',
+    'uniform sampler2D u_sim, u_bg;',
+    'uniform vec2 u_texel, u_bgOff, u_bgScale;',
+    'uniform float u_dispersion, u_waterDepth, u_region, u_fade;',
+    'vec3 spectralWeight(float t) {',
+    '  return vec3(',
+    '    smoothstep(0.45, 0.15, t) + smoothstep(0.75, 1.0, t) * 0.35,',
+    '    smoothstep(0.05, 0.5, t) * smoothstep(0.95, 0.5, t) * 1.35,',
+    '    smoothstep(0.35, 0.75, t)',
+    '  );',
+    '}',
+    'void main() {',
+    '  float l = texture2D(u_sim, vUv - vec2(u_texel.x, 0.0)).r;',
+    '  float r = texture2D(u_sim, vUv + vec2(u_texel.x, 0.0)).r;',
+    '  float up = texture2D(u_sim, vUv + vec2(0.0, u_texel.y)).r;',
+    '  float dn = texture2D(u_sim, vUv - vec2(0.0, u_texel.y)).r;',
+    '  vec3 normal = normalize(vec3((l - r) * 2.8, (dn - up) * 2.8, 1.0));',
+    '  vec3 eyeRay = vec3(0.0, 0.0, -1.0);',
+    '  vec2 vLocal = (vUv - 0.5) * u_region;      // 区域局部米坐标(相对区域中心)',
+    '  vec3 accCol = vec3(0.0); vec3 totalW = vec3(0.0);',
+    '  float maxDisp = 0.0;',
+    '  const int SAMPLES = 8;',
+    '  for (int i = 0; i < SAMPLES; i++) {',
+    '    float t = float(i) / float(SAMPLES - 1);',
+    '    float ior = 1.333 + (t - 0.5) * u_dispersion;',
+    '    vec3 refr = refract(eyeRay, normal, 1.0 / ior);',
+    '    vec2 off = (refr.xy / max(-refr.z, 0.001)) * u_waterDepth;', // 折射位移(米)
+    '    maxDisp = max(maxDisp, length(off));',
+    '    vec2 buv = u_bgOff + (vLocal + off) * u_bgScale;',
+    '    accCol += texture2D(u_bg, buv).rgb * spectralWeight(t);',
+    '    totalW += spectralWeight(t);',
+    '  }',
+    '  float a = smoothstep(0.004, 0.035, maxDisp) * u_fade;', // 波平处 = 透明, 露出活卡
+    '  if (a < 0.004) discard;',
+    '  gl_FragColor = vec4(accCol / totalW, a);',
+    '  #include <colorspace_fragment>', // 贴图是 sRGB(GPU 采样时已解码成线性), 输出前编码回去, 与地面观感一致
+    '}'
+  ].join('\n'),
+  transparent: true,
+  depthWrite: false,
+  toneMapped: false
+})
+const rippleMesh = new THREE.Mesh(new THREE.PlaneGeometry(RIPPLE_REGION, RIPPLE_REGION, 1, 1), rippleOutMat)
+rippleMesh.visible = false
+rippleMesh.renderOrder = 0.8 // 地面(0)/接影板(0.5)/脚底影(0.6)之后, 云(1)/眩光(2)之前
+scene.add(rippleMesh)
+
+let rippleFboA = null, rippleFboB = null
+let rippleT = -1        // <0 = 未激活; >=0 = 已存活墙钟秒
+let rippleArmed = true  // 本次播放内是否还能触发(只在"踩卡那一下"触发一次)
+const _rippleN = new THREE.Vector3()
+const _rippleM4 = new THREE.Matrix4()
+
+function ensureRippleFBOs() {
+  if (rippleFboA) return
+  const opt = {
+    minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+    format: THREE.RGBAFormat, type: THREE.HalfFloatType,
+    depthBuffer: false, stencilBuffer: false
+  }
+  rippleFboA = new THREE.WebGLRenderTarget(RIPPLE_SIM, RIPPLE_SIM, opt)
+  rippleFboB = new THREE.WebGLRenderTarget(RIPPLE_SIM, RIPPLE_SIM, opt)
+}
+
+// 把波场铺在卡片上: 贴图是"卡面空间"的整页截图(2560×1331), 白区在整张图里的位置 = 脚踩的位置,
+// 所以整张图按卡片矩形 1:1 铺上去就直接对齐(不缩小、不以脚骨为中心)。波源就是图里的白区。
+function triggerRipple() {
+  if (!RIPPLE_ENABLE || !groundR || !groundU || !cardW || !cardH || !groundTex || !groundMesh) return false
+  ensureRippleFBOs()
+  // 区域中心 = 当前卡片中心(含"走路后移"偏移); 波场与卡片同向
+  _cardCNow.copy(cardC).addScaledVector(_cardDir, CARD_MOVE_SPEED * Math.max(0, playTime - CARD_MOVE_FROM))
+  rippleMesh.position.set(_cardCNow.x, RIPPLE_Y, _cardCNow.z)
+  _rippleN.crossVectors(groundR, groundU)
+  rippleMesh.quaternion.setFromRotationMatrix(_rippleM4.makeBasis(groundR, groundU, _rippleN))
+  rippleMesh.visible = true
+  // 波源: 卡面空间的脚印贴图(白区=脚踩位置)按卡片矩形 1:1 铺进区域中央
+  rippleSimMat.uniforms.u_maskSize.value.set(cardW / RIPPLE_REGION, cardH / RIPPLE_REGION)
+  rippleSimMat.uniforms.u_maskRot.value = RIPPLE_MASK_YAW
+  rippleSimMat.uniforms.u_inject.value = 1
+  // 折射背景 = 地面/卡面贴图; 把"区域局部米"映射到该贴图的 uv(与 groundMesh 的平铺映射一致:
+  // 贴图 uv = 世界局部/(卡宽,卡高) + 常数; 0.5 抵消平铺数取奇带来的半格偏移)
+  const p = groundMesh.position
+  const qR = (_cardCNow.x - p.x) * groundR.x + (_cardCNow.z - p.z) * groundR.z
+  const qU = (_cardCNow.x - p.x) * groundU.x + (_cardCNow.z - p.z) * groundU.z
+  rippleOutMat.uniforms.u_bg.value = groundTex
+  rippleOutMat.uniforms.u_bgScale.value.set(1 / cardW, 1 / cardH)
+  rippleOutMat.uniforms.u_bgOff.value.set(
+    qR / cardW + 0.5 + groundTex.offset.x,
+    qU / cardH + 0.5 + groundTex.offset.y
+  )
+  rippleT = 0
+  return true
+}
+// 手动预览(不影响自动触发逻辑): 控制台执行 __wikiRipple() 立即在卡上打一个波
+window.__wikiRipple = function () { triggerRipple() }
+
+function updateRipple(delta) {
+  if (!RIPPLE_ENABLE) return
+  // 触发判定: 内容时间刚到"镜头停止前一刻" → 触发一次(波源位置由贴图白区决定)
+  // 地面贴图还没烘好时不消耗这次机会, 下一帧继续试
+  if (rippleArmed && model && model.visible && playTime >= RIPPLE_TRIGGER_T) {
+    if (triggerRipple()) rippleArmed = false
+  }
+  if (rippleT < 0) return
+  rippleT += delta
+  if (rippleT >= RIPPLE_LIFE) { // 寿命到: 整块关掉(不再跑模拟)
+    rippleT = -1
+    rippleMesh.visible = false
+    rippleSimMat.uniforms.u_inject.value = 0
+    return
+  }
+  // 波动方程推进: 读 A 写 B, 交换
+  rippleSimMat.uniforms.u_current.value = rippleFboA.texture
+  renderer.setRenderTarget(rippleFboB)
+  renderer.render(_rippleQuadScene, _rippleQuadCam)
+  renderer.setRenderTarget(null)
+  const t = rippleFboA; rippleFboA = rippleFboB; rippleFboB = t
+  rippleSimMat.uniforms.u_inject.value = 0 // 只在触发那一帧注入
+  // 输出到波面(随时间整体淡出)
+  rippleOutMat.uniforms.u_sim.value = rippleFboA.texture
+  rippleOutMat.uniforms.u_fade.value = 1 - rippleT / RIPPLE_LIFE
+}
+
+// 重播/恢复: 收起现有波并重新武装(下次"踩卡"再触发一次)
+function resetRipplePlayback() {
+  rippleArmed = true
+  rippleT = -1
+  rippleMesh.visible = false
+  rippleSimMat.uniforms.u_inject.value = 0
+}
+
 // ===== 主循环: 隐藏时只取走 delta 不干活; 登场后骨骼动画+运镜一起跑 =====
 let visible = false
 let pendingEnter = false // 点击时模型尚未加载完: 等落地后补起跑
@@ -1648,6 +1906,7 @@ function beginFocusClear() {
   if (model) model.visible = false // 骨骼每帧计算随隐藏一起停
   shadowPlane.visible = false // 影源没了, 接影板一起收
   hideFootShadows() // 脚底接触影一起收(重播恢复后由 updateFootShadows 每帧接管可见性)
+  rippleT = -1; rippleMesh.visible = false // 踩卡水波也一起收(世界都没了)
 }
 function resetFocusClear() {
   if (focusT < 0) return
@@ -1658,6 +1917,10 @@ function resetFocusClear() {
   if (groundMesh) { groundMesh.visible = true; groundMesh.material.opacity = 1 }
   shadowPlane.visible = true
   wrap.style.visibility = '' // 恢复后交给 updateCardTransform 每帧接管
+  homeReleased = false // 世界恢复: 允许 LOD 重新分级
+  homeLod = 1
+  if (window.HomeGate) { window.HomeGate.setScale(1); window.HomeGate.resume() } // 首页循环以全质量重新起跑(重播/拖进度条/调起始帧)
+  resetRipplePlayback() // 踩卡水波重新武装(下次踩卡再触发一次)
 }
 
 // ===== 控制台性能检测(定位 wiki 卡顿来源, 自点击「Wiki」那一刻起算) =====
@@ -1702,23 +1965,27 @@ function wikiProfFlush() {
              ' | 球 ' + profAvg(profSegs.orb || []).toFixed(3) +
              ' | 眩光 ' + profAvg(profSegs.glare || []).toFixed(3) +
              ' | 海 ' + profAvg(profSegs.sea || []).toFixed(3) +
+             ' | 水波 ' + profAvg(profSegs.ripple || []).toFixed(3) +
              ' | 特效 ' + profAvg(profSegs.fx || []).toFixed(3) +
              ' | 场景 ' + profAvg(profSegs.scene || []).toFixed(3) +
              ' | 后处理 ' + profAvg(profSegs.post || []).toFixed(3) +
              ' | 卡 ' + profAvg(profSegs.card || []).toFixed(3) +
              ' | 面板 ' + profAvg(profSegs.hud || []).toFixed(3) + ' ms',
     '\n  GPU      ' + (gpu >= 0 ? '场景+后处理 ' + gpu.toFixed(2) + ' ms' : '采样中…'),
-    '\n  负载     ' + w + '×' + h + ' = ' + (w * h / 1e6).toFixed(2) + 'M 片元  dpr=' + (window.devicePixelRatio || 1).toFixed(2)
+    '\n  负载     ' + w + '×' + h + ' = ' + (w * h / 1e6).toFixed(2) + 'M 片元  dpr=' + (window.devicePixelRatio || 1).toFixed(2) +
+             '  卡占比 ' + _cardScreenFrac.toFixed(2) + ' 首页档 ' + (homeLod === 0 ? '冻结' : (homeLod === 1 ? '全' : homeLod + '×'))
   )
   // 暴露给浏览器控制台/自动化读取, 避免仅靠 console 文本
   const _hist = window.__WIKI_PERF__ = window.__WIKI_PERF__ || []
   _hist.push({
     t: Math.round(performance.now()),
     frame: +frame.toFixed(2), p95: +f95.toFixed(2), max: +fmax.toFixed(2),
+    cardFrac: +_cardScreenFrac.toFixed(3), homeLod: homeLod,
     ms: {
       pose: +profAvg(profSegs.pose || []).toFixed(3), feet: +profAvg(profSegs.feet || []).toFixed(3),
       orb: +profAvg(profSegs.orb || []).toFixed(3), glare: +profAvg(profSegs.glare || []).toFixed(3),
       sea: +profAvg(profSegs.sea || []).toFixed(3), fx: +profAvg(profSegs.fx || []).toFixed(3),
+      ripple: +profAvg(profSegs.ripple || []).toFixed(3),
       scene: +profAvg(profSegs.scene || []).toFixed(3), post: +profAvg(profSegs.post || []).toFixed(3),
       card: +profAvg(profSegs.card || []).toFixed(3), hud: +profAvg(profSegs.hud || []).toFixed(3)
     },
@@ -1778,6 +2045,9 @@ function frame() {
       worldCleared = true
       if (groundMesh) groundMesh.visible = false
       wrap.style.visibility = 'hidden'
+      homeReleased = true // 世界已撤: 首页永久停机(LOD 逻辑不再解冻)
+      // 卡片与地面都撤了: 首页(体积光/雪/唱片波形等)整套每帧循环彻底停机, 不再空转抢 GPU
+      if (window.HomeGate) window.HomeGate.pause()
     }
   }
   if (profOn) { profAdd('pose', performance.now() - _pt); _pt = performance.now() }
@@ -1791,6 +2061,8 @@ function frame() {
   if (profOn) { profAdd('glare', performance.now() - _pt); _pt = performance.now() }
   updateSea(nowS) // 海面: 推波的时间
   if (profOn) { profAdd('sea', performance.now() - _pt); _pt = performance.now() }
+  updateRipple(delta) // 踩卡水波: 触发/推进波场(只在存活期内跑, 平时零开销)
+  if (profOn) { profAdd('ripple', performance.now() - _pt); _pt = performance.now() }
   // 光斑滤镜: 两条数值轨(散焦半径/曝光)按内容时刻采样后逐帧下发(wiki 画面本身; 半径 0 = 整条链摘除)
   if (wikiGlow) wikiGlow.setKeyed(sampleTrack(GLOW_RADIUS_KEYS, playTime), sampleTrack(GLOW_EXPOSURE_KEYS, playTime))
   // RGB 色散: 有键 = 按内容时间插值(可在面板 K); 无键 = dispfilter 自带的墙钟渐进(DISP_RAMP_SEC 秒升满并保持)
@@ -1807,6 +2079,7 @@ function frame() {
 
   if (profOn) _pt = performance.now()
   updateCardTransform() // 卡 = 实时页面: 每帧把页面投影到卡面(与 GL 同相机)
+  applyHomeLod() // 按卡片屏幕占比分级削减首页开销(镜头远 → 降分辨率 → 冻结)
   if (profOn) { profAdd('card', performance.now() - _pt); _pt = performance.now() }
   updateKPanelHud()
   if (profOn) profAdd('hud', performance.now() - _pt)
@@ -1818,6 +2091,7 @@ function startPlayback() {
   pendingEnter = false
   if (startEdit) exitStartEdit()
   resetFocusClear() // 重播: 世界(地面/人物/页面卡)全部恢复
+  resetRipplePlayback() // 踩卡水波重新武装(重播后再踩一次)
   wallTime = 0
   _shakeAmpPrevWall = -1 // 手抖幅度平滑重新对齐(避免与上次播放的墙钟差出大 dt 造成突跳)
   playTime = PLAY_FROM

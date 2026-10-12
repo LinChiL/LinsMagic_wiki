@@ -18,6 +18,7 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
   var gl = renderer.getContext();
+  var _homeScale = 1; // 首页渲染分辨率倍数: wiki 卡片拉远后由 HomeGate.setScale 调低(1 = 全质量)
 
   // ===== 2. 场景与相机设定（严格对齐原生体积空间） =====
   var FOV_DEG = 55.0; // 与之前 FOV_TAN = 0.52 对应的视场角
@@ -797,15 +798,24 @@
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
 
+    var _baseDpr = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(_baseDpr * _homeScale); // 降分辨率: 顶层后处理(色散/光斑)开销随之平方下降
     renderer.setSize(w, h);
-    modelColorDepthTarget.setSize(w, h);
-    sceneTarget.setSize(w, h);
+    var _tw = Math.max(1, Math.round(w * _homeScale));
+    var _th = Math.max(1, Math.round(h * _homeScale));
+    modelColorDepthTarget.setSize(_tw, _th); // 体积光主体渲染目标按倍数缩小(片元数 ≈ s²)
+    sceneTarget.setSize(_tw, _th);
     if (window.CursorFilter) window.CursorFilter.resize(w, h);
     if (window.GlowFilter) window.GlowFilter.resize(w, h); // 光斑滤镜后备纹理随视口
-    tyndallMat.uniforms.u_res.value.set(w, h);
+    tyndallMat.uniforms.u_res.value.set(w, h); // 着色器只用 u_res 的比例(aspect), 视口同比即可
     layoutIntroBars(); // 遮幅高度按新视口重算(不在开场期也无害: display:none 上写高度)
     _projReady = false; // 尺寸变化后碎块屏幕坐标失效, 下次装配完成时重算
     _rpgMenuPlaced = false; // 菜单屏幕锚点同步失效, 下一帧重定位
+  }
+  function homeScaleSet(s) { // 供 HomeGate.setScale: 改倍数并立即重建所有渲染目标
+    if (s === _homeScale) return;
+    _homeScale = s;
+    resize();
   }
   window.addEventListener('resize', resize);
   resize();
@@ -1168,7 +1178,39 @@
   document.addEventListener('mouseleave', function () { _hasPointer = false; });
   window.addEventListener('blur', function () { _hasPointer = false; });
 
+  // ===== 首页循环统一闸门 =====
+  // wiki 运镜跑完、卡片与地面都已撤退后, 由 wikimodel.js 调 pause() 把首页这套每帧循环
+  // (tyndall 体积光/雪、snow、turntable)整体停机 —— 不再调度下一帧, 不占 CPU/GPU。
+  // 卡片拉远(屏幕占比变小)时还可以先调 setScale() 降各画布的渲染分辨率, 进一步省开销;
+  // 重播/拖进度条/调起始帧把世界恢复时, resetFocusClear 调 setScale(1)+resume() 重新起跑。
+  window.HomeGate = (function () {
+    var paused = false
+    var scale = 1    // 渲染分辨率倍数(1 = 全质量)
+    var starters = [] // 各循环"重新挂上 rAF"的启动函数
+    var scalers = []  // 各模块"按倍数重建画布/渲染目标"的函数
+    return {
+      isPaused: function () { return paused },
+      getScale: function () { return scale },
+      add: function (start, applyScale) {
+        if (start) starters.push(start)
+        if (applyScale) { scalers.push(applyScale); if (scale !== 1) applyScale(scale) } // 注册即对齐当前倍数
+      },
+      pause: function () { paused = true },
+      resume: function () {
+        if (!paused) return
+        paused = false
+        for (var i = 0; i < starters.length; i++) starters[i]()
+      },
+      setScale: function (s) {
+        if (s === scale) return
+        scale = s
+        for (var i = 0; i < scalers.length; i++) scalers[i](scale)
+      }
+    }
+  })()
+
   function render() {
+    if (window.HomeGate.isPaused()) return // 已停机: 直接返回, 不再调度下一帧
     var time = clock.getElapsedTime();
 
     var _now = PROFILE ? performance.now() : 0
@@ -1628,5 +1670,6 @@
 
     requestAnimationFrame(render);
   }
+  window.HomeGate.add(function () { requestAnimationFrame(render) }, homeScaleSet) // 供 resume() 起跑 / setScale() 降分辨率
   requestAnimationFrame(render);
 })();
