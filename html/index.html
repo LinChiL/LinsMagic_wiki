@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinsMagic</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+    .page {
+      position: relative; width: 100vw; height: 100vh; overflow: hidden;
+      perspective: 1200px; /* 关键：给整个视口建立摄影机透视深度 */
+      perspective-origin: center center;
+    }
+
+    #tyndall3d {
+      position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 1;
+      pointer-events: auto; /* 覆盖 #cinematic-stage 继承的 pointer-events:none, 否则路径把手无法拖拽 */
+    }
+    #snow {
+      position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; mix-blend-mode: screen;
+    }
+
+    /* 电影运镜舞台容器：开启 GPU 硬件加速 + 3D 透视 */
+    #cinematic-stage {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      overflow: hidden; pointer-events: none;
+      will-change: transform, filter;
+      transform-style: preserve-3d; /* 允许微倾斜透视 */
+    }
+
+    /* 调试面板 */
+    .debug-panel {
+      position: fixed; top: 16px; left: 16px; z-index: 100;
+      background: rgba(12, 16, 22, 0.92); border: 1px solid rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      padding: 16px 20px; color: #e5edf5; font-family: Consolas, Monaco, monospace;
+      font-size: 11px; letter-spacing: 0.05em; border-radius: 8px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.7); width: 330px; user-select: none;
+    }
+    .debug-title {
+      font-weight: 700; color: #8acaff; margin-bottom: 12px;
+      display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding-bottom: 6px;
+    }
+    .debug-row {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+    }
+    .debug-row span { width: 135px; }
+    .debug-row input[type="range"], .debug-row select {
+      flex: 1; accent-color: #8acaff; cursor: pointer;
+    }
+    .debug-row select {
+      background: #1a222d; color: #8acaff; border: 1px solid #3e5066; border-radius: 4px; padding: 2px 4px; font-size: 11px;
+    }
+    .debug-row .val { width: 38px; text-align: right; color: #9ab; }
+
+    /* 照片模式：整个视口后退倾斜，露出相纸质感与桌面的深邃阴影 */
+    .page.is-photo-mode #cinematic-stage {
+      transform: translateZ(-620px) rotateX(15deg) rotateY(-18deg) rotateZ(-3deg) !important;
+      background: #fdfdfd !important; /* 哑光相纸白 */
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95), 0 12px 30px rgba(0, 0, 0, 0.6) !important;
+      border-radius: 4px !important;
+      transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  background 1.5s ease,
+                  box-shadow 1.5s ease !important;
+    }
+
+    /* 画布内缩留出相框白边（底部留 56px 签名区） */
+    .page.is-photo-mode #cinematic-stage canvas {
+      top: 12px !important;
+      left: 12px !important;
+      width: calc(100% - 24px) !important;
+      height: calc(100% - 68px) !important;
+      border-radius: 2px !important;
+    }
+
+    /* 相片底部签名区小字 */
+    .page.is-photo-mode #cinematic-stage::after {
+      content: "LINSMAGIC // UPDATE LOG";
+      position: absolute;
+      bottom: 16px;
+      left: 20px;
+      font-family: 'Times New Roman', Georgia, serif;
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      color: #71717a;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <!-- 包裹层开始 -->
+    <div id="cinematic-stage">
+      <canvas id="tyndall3d"></canvas>
+      <canvas id="snow"></canvas>
+    </div>
+    <!-- 包裹层结束 -->
+
+    <div class="debug-panel">
+      <div class="debug-title">
+        <span>VOLUMETRIC VISUAL DEBUG</span>
+        <span style="opacity: 0.5;">v5.2</span>
+      </div>
+
+      <div class="debug-row">
+        <span style="color:#ffb86c; font-weight:bold;">视觉诊断模式:</span>
+        <select id="p_mode">
+          <option value="0">0. 最终合成 (Normal)</option>
+          <option value="1">1. 像素世界深度 (Depth Map)</option>
+          <option value="2">2. 纯体积光 (Raw Light)</option>
+          <option value="3">3. 遮罩 1 (d1 近石)</option>
+          <option value="4">4. 遮罩 4 (d4 远石)</option>
+          <option value="5">5. 纯模型外观 (Model)</option>
+          <option value="6">6. 光场全亮 (Force Full)</option>
+          <option value="7">7. 光线可达遮罩 (Reach)</option>
+        </select>
+      </div>
+
+      <div class="debug-row">
+        <span>光源 X (左右):</span>
+        <input id="p_lx" type="range" min="-25" max="25" step="0.2" value="1">
+        <span id="v_lx" class="val">1</span>
+      </div>
+      <div class="debug-row">
+        <span>光源 Y (上下):</span>
+        <input id="p_ly" type="range" min="-5" max="35" step="0.2" value="31">
+        <span id="v_ly" class="val">31</span>
+      </div>
+      <div class="debug-row">
+        <span style="color:#7ee787;">光源 Z (深处必须>45):</span>
+        <input id="p_lz" type="range" min="30" max="80" step="0.5" value="51">
+        <span id="v_lz" class="val">51</span>
+      </div>
+      <div class="debug-row">
+        <span>丁达尔光强:</span>
+        <input id="p_int" type="range" min="0.1" max="4.0" step="0.05" value="0.4">
+        <span id="v_int" class="val">0.4</span>
+      </div>
+      <div class="debug-row">
+        <span>长程穿透 (Falloff):</span>
+        <input id="p_range" type="range" min="0.001" max="0.08" step="0.002" value="0.001">
+        <span id="v_range" class="val">0.001</span>
+      </div>
+      <div class="debug-row">
+        <span>光束切碎 (Noise):</span>
+        <input id="p_noise" type="range" min="0.0" max="2.0" step="0.05" value="2">
+        <span id="v_noise" class="val">2</span>
+      </div>
+      <div class="debug-row">
+        <span>光束粗细 (Scale):</span>
+        <input id="p_scale" type="range" min="1.0" max="15.0" step="0.5" value="10">
+        <span id="v_scale" class="val">10</span>
+      </div>
+      <div class="debug-row">
+        <span style="color:#ff79c6; font-weight:bold;">模型位置 Z:</span>
+        <input id="p_mz" type="range" min="8" max="35" step="0.5" value="20">
+        <span id="v_mz" class="val">20</span>
+      </div>
+      <div class="debug-row">
+        <span style="color:#50fa7b; font-weight:bold;">破碎散开度:</span>
+        <input id="p_shatter" type="range" min="0" max="3.0" step="0.05" value="0.2">
+        <span id="v_shatter" class="val">0.2</span>
+      </div>
+      <div class="debug-row">
+        <span style="color:#f1fa8c;">路径装配进度:</span>
+        <input id="p_progress" type="range" min="0" max="1" step="0.005" value="0">
+        <span id="v_progress" class="val">0</span>
+      </div>
+      <div class="debug-row">
+        <span>自动播放:</span>
+        <input id="p_autoplay" type="checkbox" checked style="flex:0 0 auto;">
+      </div>
+      <div class="debug-row">
+        <span style="color:#ff79c6;">电影运镜开关:</span>
+        <input id="p_cine_cam" type="checkbox" checked style="flex:0 0 auto;">
+      </div>
+      <div class="debug-row">
+        <button id="btn_export_path" style="flex:1; background:#282a36; color:#50fa7b; border:1px solid #6272a4; padding:4px; cursor:pointer;">导出当前路径坐标</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/lib/three.min.js"></script>
+  <script src="../js/lib/GLTFLoader.js"></script>
+  <!-- TransformControls: 可视化拖拽路径锚点（本地引入，离线可用） -->
+  <script src="../js/lib/TransformControls.js"></script>
+  <script src="../js/homepage/tyndall.js"></script>
+  <script src="../js/homepage/snow.js"></script>
+  <script src="../js/homepage/turntable.js"></script>
+  <!-- 2D RPG 菜单: 自包含模块, 由 tyndall.js 通过 window.RpgMenu 锚定到 3D 标题下方 -->
+  <script src="../js/homepage/rpgmenu.js"></script>
+  <!-- 左下角署名小字 + 右侧渐隐细线(纯装饰自包含模块) -->
+  <script src="../js/homepage/rpgfooter.js"></script>
+  <!-- 鼠标速度水波色散滤镜(整页顶层, screen 混合) -->
+  <script src="../js/homepage/cursorfilter.js"></script>
+
+  <script>
+    window.onChangelogTrigger = function () {
+      // 1. [0.0s] 2D UI (菜单、署名、唱片) 全部淡出隐退
+      if (window.RpgMenu) window.RpgMenu.hide();
+      if (window.RpgFooter) window.RpgFooter.hide();
+      if (window.TurntableUI) window.TurntableUI.hide();
+
+      // 2. [0.0s] 3D 标题碎块破屏朝镜头飞扑
+      if (window.triggerTitleFlyOut) {
+        window.triggerTitleFlyOut();
+      }
+
+      // 3. [0.4s] 碎块飞出视口后，摄影机后拉，视口收缩为相片
+      setTimeout(function () {
+        var page = document.querySelector('.page');
+        if (page) page.classList.add('is-photo-mode');
+      }, 400);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "void-stride",
+    "title": "Void Stride（深渊跬步）",
+    "src": "../asset/music/lmgc.mp3",
+    "volume": 0.5,
+    "loop": true
+  }
+]

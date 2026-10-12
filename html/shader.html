@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Voronoi Camera Depth - 60FPS Clean</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl', { powerPreference: "high-performance" }) 
+                || canvas.getContext('experimental-webgl');
+
+        if (!gl) {
+            alert('WebGL not supported');
+        }
+
+        gl.getExtension('OES_standard_derivatives');
+
+        const vsSource = `
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+            }
+        `;
+
+        const fsSource = `
+            #extension GL_OES_standard_derivatives : enable
+            precision highp float;
+
+            uniform vec2 u_resolution;
+            uniform float u_time;
+            uniform vec2 u_mouse;
+
+            // 轻量步数：36 步即可保证流畅 60FPS
+            #define MAX_STEPS 36
+            #define MAX_DIST 22.0
+            #define SURF_DIST 0.003
+
+            mat2 rot(float a) {
+                float s = sin(a), c = cos(a);
+                return mat2(c, -s, s, c);
+            }
+
+            // 高效 Hash
+            vec3 hash3(vec3 p) {
+                p = fract(p * vec3(0.1031, 0.1030, 0.0973));
+                p += dot(p, p.yxz + 33.33);
+                return fract((p.xxy + p.yxx) * p.zyx);
+            }
+
+            // 3D 沃洛诺伊晶胞场
+            vec3 voronoi3D(vec3 p) {
+                vec3 i = floor(p);
+                vec3 f = fract(p);
+
+                float d1 = 8.0, d2 = 8.0, d3 = 8.0;
+
+                for (int z = -1; z <= 1; z++) {
+                    for (int y = -1; y <= 1; y++) {
+                        for (int x = -1; x <= 1; x++) {
+                            vec3 g = vec3(float(x), float(y), float(z));
+                            vec3 o = 0.5 + (hash3(i + g) - 0.5) * 0.65;
+                            vec3 r = g + o - f;
+                            float d = dot(r, r);
+
+                            if (d < d1) {
+                                d3 = d2;
+                                d2 = d1;
+                                d1 = d;
+                            } else if (d < d2) {
+                                d3 = d2;
+                                d2 = d;
+                            } else if (d < d3) {
+                                d3 = d;
+                            }
+                        }
+                    }
+                }
+                return vec3(sqrt(d1), sqrt(d2), sqrt(d3));
+            }
+
+            // 摄像机轨迹
+            vec2 getCamPath(float z) {
+                return vec2(
+                    sin(z * 0.18) * 0.85,
+                    cos(z * 0.14) * 0.65
+                );
+            }
+
+            // 距离场
+            float map(vec3 p) {
+                float scale = 0.36;
+                vec3 v = voronoi3D(p * scale);
+
+                float wall = (v.y - v.x) - 0.065;
+                float portal = (v.z - v.y) - 0.13;
+                float structSDF = max(wall, portal) / scale;
+
+                // 安全通道
+                vec2 center = getCamPath(p.z);
+                float camDist = length(p.xy - center);
+                float safeHole = 0.95 - camDist;
+
+                return max(structSDF, safeHole);
+            }
+
+            void main() {
+                vec2 fragCoord = gl_FragCoord.xy;
+                vec2 uv = (fragCoord - 0.5 * u_resolution) / min(u_resolution.x, u_resolution.y);
+
+                float t = u_time * 1.2;
+                vec3 ro = vec3(getCamPath(t), t);
+                vec3 target = vec3(getCamPath(t + 2.0), t + 2.0);
+
+                vec3 forward = normalize(target - ro);
+                vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), forward));
+                vec3 up = cross(forward, right);
+
+                vec2 mouse = (u_mouse / u_resolution - 0.5) * 2.0;
+                vec3 rd = normalize(forward + uv.x * right + uv.y * up);
+                rd.yz *= rot(-mouse.y * 0.4);
+                rd.xz *= rot(mouse.x * 0.5);
+
+                float dO = 0.0;
+                float d = 0.0;
+                float prev_d = 0.0;
+                float dt = 0.0;
+                bool hit = false;
+
+                // 核心：36 步高速步进
+                for(int i = 0; i < MAX_STEPS; i++) {
+                    vec3 p = ro + rd * dO;
+                    d = map(p);
+
+                    if(d < SURF_DIST) {
+                        // 【0 额外性能开销的亚像素插值精修】
+                        // 不再执行循环二分查找，通过上一步与当步直接线性逼近表面
+                        if(dt > 0.0) {
+                            dO = (dO - dt) + dt * (prev_d / (prev_d - d + 0.0001));
+                        }
+                        hit = true;
+                        break;
+                    }
+
+                    if(dO > MAX_DIST) break;
+
+                    prev_d = d;
+                    // 0.68 平衡步长：杜绝穿透黑条，同时大幅节省步数
+                    dt = max(d * 0.68, 0.004);
+                    dO += dt;
+                }
+
+                vec3 col = vec3(0.0);
+
+                if(hit && dO < MAX_DIST) {
+                    vec3 p = ro + rd * dO;
+
+                    // 1. 相机深度图
+                    float cameraZ = dot(p - ro, forward);
+                    float normDepth = clamp((cameraZ - 0.6) / 19.4, 0.0, 1.0);
+                    float depthMap = pow(1.0 - normDepth, 1.35);
+
+                    // 2. 亚像素抗锯齿晶胞棱线（无高频 Jitter 噪点）
+                    vec3 v = voronoi3D(p * 0.36);
+                    float edgeDist = v.z - v.y; 
+
+                    float fw = clamp(fwidth(edgeDist), 0.001, 0.04);
+                    float lineWidth = 0.022;
+                    float edge = 1.0 - smoothstep(lineWidth - fw, lineWidth + fw, edgeDist);
+
+                    // 3. 颜色合成
+                    col = vec3(depthMap * 0.85);
+                    col = mix(col, vec3(1.0), edge * 0.9);
+                    col *= smoothstep(1.0, 0.1, normDepth);
+                }
+
+                // 微暗角
+                vec2 q = fragCoord / u_resolution;
+                col *= 0.85 + 0.15 * pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.25);
+
+                gl_FragColor = vec4(col, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,
+             1, -1,
+            -1,  1,
+            -1,  1,
+             1, -1,
+             1,  1,
+        ]), gl.STATIC_DRAW);
+
+        const aPosition = gl.getAttribLocation(program, 'a_position');
+        const uResolution = gl.getUniformLocation(program, 'u_resolution');
+        const uTime = gl.getUniformLocation(program, 'u_time');
+        const uMouse = gl.getUniformLocation(program, 'u_mouse');
+
+        let mouseX = window.innerWidth * 0.5;
+        let mouseY = window.innerHeight * 0.5;
+        let targetMouseX = mouseX;
+        let targetMouseY = mouseY;
+
+        window.addEventListener('mousemove', (e) => {
+            targetMouseX = e.clientX;
+            targetMouseY = window.innerHeight - e.clientY;
+        });
+
+        // 核心性能：锁定 DPR 为 1.0，防止 2K/4K/Retina 屏幕渲染像素爆炸
+        function resize() {
+            const dpr = 1.0;
+            canvas.width = Math.floor(window.innerWidth * dpr);
+            canvas.height = Math.floor(window.innerHeight * dpr);
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function render(time) {
+            time *= 0.001;
+
+            mouseX += (targetMouseX - mouseX) * 0.05;
+            mouseY += (targetMouseY - mouseY) * 0.05;
+
+            gl.useProgram(program);
+            gl.enableVertexAttribArray(aPosition);
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+
+            gl.uniform2f(uResolution, canvas.width, canvas.height);
+            gl.uniform1f(uTime, time);
+            gl.uniform2f(uMouse, mouseX, mouseY);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
+    </script>
+</body>
+</html>
