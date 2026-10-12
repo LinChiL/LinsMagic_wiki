@@ -59,7 +59,7 @@
        相片姿态(translateZ/rotateX/Y/Z)由 photocard.js 逐帧接管(叠加悬停微倾与常驻微颤),
        这里只声明相纸/投影 —— 过渡里也不能带 transform, 否则逐帧写值会被拖成"慢跟随" */
     .page.is-photo-mode #cinematic-stage {
-      background: #fdfdfd !important; /* 哑光相纸白 */
+      background: #8f9094 !important; /* 哑光相纸: 带灰度(原纯白 #fdfdfd) */
       box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95), 0 12px 30px rgba(0, 0, 0, 0.6) !important;
       border-radius: 4px !important;
       transition: background 1.5s ease,
@@ -77,14 +77,14 @@
 
     /* 相片底部签名区小字 */
     .page.is-photo-mode #cinematic-stage::after {
-      content: "LINSMAGIC // UPDATE LOG";
+      content: "LINSMAGIC // UPDATE LOG : 1.10";
       position: absolute;
       bottom: 16px;
       left: 20px;
       font-family: 'Times New Roman', Georgia, serif;
       font-size: 13px;
       letter-spacing: 0.22em;
-      color: #71717a;
+      color: #222224;
       pointer-events: none;
     }
 
