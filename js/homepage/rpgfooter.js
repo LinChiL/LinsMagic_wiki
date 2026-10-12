@@ -54,7 +54,7 @@
 
   var text = document.createElement('span')
   text.className = 'caption-text'
-  text.textContent = 'LINSMAGIC | MINECRAFT PLUGIN'
+  text.textContent = 'LINSMAGIC | MINECRAFT PLUGIN | 2026/10/12 Ver 1.10.5.7'
 
   var line = document.createElement('div')
   line.className = 'caption-line'

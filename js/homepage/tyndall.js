@@ -491,20 +491,20 @@
   curve.curveType = 'catmullrom';
   curve.tension = 0.5;
 
-  // 飞出路径：沿字排列方向(横向 X)飞走，不朝镜头 -Z 砸
-  // 左顺势(+X) / 右飞出(-X)，起点均为 _textFinal
+  // 飞出路径：左顺势(+X) / 右飞出(-X)，起点均为 _textFinal
   var flyOutLeftPoints = [
     new THREE.Vector3(4.17, 1.50, 8.63),
     new THREE.Vector3(12.0, 1.8, 8.0),
     new THREE.Vector3(22.0, 2.2, 7.0),
     new THREE.Vector3(32.0, 2.5, 6.0)
   ];
+  // 飞出路径：从字模起点出发，单调向相机近处(Z减小)与视口左外侧(X大幅偏左)呼啸掠过
   var flyOutRightPoints = [
-  new THREE.Vector3(4.17, 1.50, 8.63),
-  new THREE.Vector3(0.16, -0.10, 0.29),
-  new THREE.Vector3(-14.00, 0.80, 7.00),
-  new THREE.Vector3(-24.00, 0.50, 6.00)
-]
+    new THREE.Vector3(4.17, 1.50, 8.63),   // 起点：字模世界坐标
+    new THREE.Vector3(-1.80, 2.00, 5.50),  // 冲出卡片相框边缘
+    new THREE.Vector3(-8.50, 1.40, 2.80),  // 贴近视口前方
+    new THREE.Vector3(-22.00, 0.20, 0.60)  // 彻底飞出屏幕左侧
+  ]
   var flyOutCurveLeft = new THREE.CatmullRomCurve3(flyOutLeftPoints);
   flyOutCurveLeft.curveType = 'catmullrom';
   flyOutCurveLeft.tension = 0.5;
@@ -673,6 +673,10 @@
   var _uiShownTarget = 0.0, _uiShownCur = 0.0, _uiShownPrevT = 0.0;
   // 【3D 文字压扁】UI 显示后文字沿 textGroup 局部 Y 轴的缩放比例: 1/12 = 压扁 12 倍
   var TITLE_SQUASH_RATIO = 1.0 / 24.0;
+  // 飞出时"压扁还原"的渐入进度(0=保持压扁, 1=完全还原到 1.0)。
+  // 压扁态 scale.y≈0.042, 若起飞瞬间直接还原会 24 倍竖直突跳, 故此处做同款平滑渐入。
+  var FLY_UNSQUASH_DURATION = 0.8; // 压扁还原渐入时长(秒), 调大还原更慢更柔和
+  var _flyUnSquash = 0.0, _flyUnSquashPrevT = -1.0;
   // 有碎块投影数据时按包围盒居中、贴标题下沿; 模型未加载时回退到路径终点投影
   function updateRpgMenuPos() {
     if (!window.RpgMenu) return;
@@ -979,6 +983,84 @@
   var _tmpPr = new THREE.Vector3();
   var _tmpSc = new THREE.Vector3();
 
+  // ===== 独立全屏破框渲染层 (Overlay Canvas) =====
+  // 卡片内主画布被 CSS 内缩进相框, 且 #cinematic-stage 有 overflow:hidden, 碎块飞出相框
+  // 边界会被主画布视口直接裁剪。这里用一块覆盖全屏且置于最顶层的透明画布渲染飞出碎块,
+  // 拥有整个视口的可视范围, 彻底打破相框尺寸与 overflow 的物理封锁。
+  // 注意: 必须声明在 render() 外层(模块作用域), 否则每帧被重置为 null 会丢失已建画布。
+  var flyCanvas = null;
+  var flyRenderer = null;
+  var flyScene = null;
+
+  // 飞出专属实体石材材质 (alpha=1.0 实心遮挡, 具备立体光影)
+  var flyMat = new THREE.ShaderMaterial({
+    extensions: { derivatives: true },
+    vertexShader: [
+      'varying vec3 vWorldPos;',
+      'void main() {',
+      '  vec4 wp = modelMatrix * vec4(position, 1.0);',
+      '  vWorldPos = wp.xyz;',
+      '  gl_Position = projectionMatrix * viewMatrix * wp;',
+      '}'
+    ].join('\n'),
+    fragmentShader: [
+      'varying vec3 vWorldPos;',
+      'void main() {',
+      '  vec3 fNormal = normalize(cross(dFdx(vWorldPos), dFdy(vWorldPos)));',
+      '  vec3 lightDir = normalize(vec3(0.3, 1.0, -0.6));',
+      '  float diff = max(dot(fNormal, lightDir), 0.0);',
+      '  float front = max(dot(fNormal, vec3(0.0, 0.0, -1.0)), 0.0) * 0.45;',
+      '  vec3 stoneColor = vec3(0.85, 0.88, 0.94) * (diff * 0.7 + front + 0.3);',
+      '  gl_FragColor = vec4(stoneColor, 1.0);', // 纯实体输出
+      '}'
+    ].join('\n')
+  });
+
+  window.triggerTitleFlyOut = function () {
+    if (window._isFlyingOut) return;
+    window._isFlyingOut = true;
+    window._isFlyingBack = false;
+    window._isPhotoMode = true;
+    window._flyProgress = 0.0;
+    _flyUnSquash = 0.0; _flyUnSquashPrevT = -1.0;
+
+    // 1. 全屏透明顶层画布: 脱离 #cinematic-stage, 置于屏幕最顶层(可反复进出, 只构建一次)
+    if (!flyCanvas) {
+      flyCanvas = document.createElement('canvas');
+      flyCanvas.id = 'flyout-overlay';
+      flyCanvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999;';
+      document.body.appendChild(flyCanvas);
+
+      flyRenderer = new THREE.WebGLRenderer({ canvas: flyCanvas, alpha: true, antialias: true });
+      flyRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      flyRenderer.setSize(window.innerWidth, window.innerHeight);
+
+      // 窗口尺寸自适应(只挂一次)
+      window.addEventListener('resize', function () {
+        if (flyRenderer) flyRenderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    } else {
+      flyCanvas.style.display = 'block';
+      flyRenderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // 2. 把 textGroup 移入全屏破框场景
+    flyScene = flyScene || new THREE.Scene();
+    flyScene.add(textGroup);
+    textGroup.visible = true;
+  };
+
+  // 倒放: 碎块沿同一飞出路径反向归位。支持中途点击反向(与正放互为严格倒放),
+  // 归零后由 render 内的收尾块归还主场景并淡回 2D UI。
+  // 注: window._isPhotoMode(冻结运镜)不在此解冻 —— 卡片的反向展开由 photocard.js 逐帧驱动,
+  // 展开走完时它才把舞台交还运镜循环, 避免运镜恢复后抢占舞台 transform
+  window.triggerTitleFlyBack = function () {
+    if (!window._isFlyingOut || window._isFlyingBack) return;
+    window._isFlyingBack = true;
+    if (flyCanvas) flyCanvas.style.display = 'block';
+    textGroup.visible = true;
+  };
+
   function _onPointerMove(e) {
     _pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
     _pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -1037,30 +1119,38 @@
     // 同时所有碎块带极轻微的移动/转动(每碎块独立相位), 让静止的文字有呼吸感。
     var settled = globalT >= 1.0;
     var scatterActive = settled && _projReady && _hasPointer;
-    // 【新增】飞向镜头状态
-    var _isFlyingOut = window._isFlyingOut || false;
-    var _flyProgress = window._flyProgress || 0.0;
-    window.triggerTitleFlyOut = function () {
-      window._isFlyingOut = true;
-      window._isPhotoMode = true;
-    };
+    // 【飞向镜头状态】阶段: 碎块沿飞出路径从左到右依次开飞, 破框飞出相纸
     if (window._isFlyingOut) {
-      // 阶段：碎块沿飞出路径从左到右依次开飞
       var _dt = Math.min(Math.max(time - _dtPrev, 0.0), 0.033);
       _dtPrev = time;
-      // 飞出总时长控制 (约 1.2 秒飞完，可根据节奏调节速度倍率)
-      window._flyProgress = Math.min((window._flyProgress || 0.0) + _dt * 0.85, 1.0);
+      // 飞出总进程: 正放 0→1, 倒放 1→0(同一速率推进, 与正放严格互为倒放)
+      var _flyDir = window._isFlyingBack ? -1.0 : 1.0;
+      window._flyProgress = THREE.MathUtils.clamp((window._flyProgress || 0.0) + _dt * 0.75 * _flyDir, 0.0, 1.0);
       var p = window._flyProgress;
 
+      // 压扁还原: 正放用计时器渐入(避免起飞瞬间 24 倍竖直硬弹); 倒放直接由 p 镜像回压扁,
+      // 两条曲线在任意 p 处取值相同 → 途中反向也不跳变
+      var _sqEase;
+      if (window._isFlyingBack) {
+        _sqEase = THREE.MathUtils.smoothstep(p, 0.0, 0.6);
+      } else {
+        if (_flyUnSquashPrevT < 0.0) _flyUnSquashPrevT = time;
+        var _sqDt = Math.min(Math.max(time - _flyUnSquashPrevT, 0.0), 0.05);
+        _flyUnSquashPrevT = time;
+        _flyUnSquash = Math.min(1.0, _flyUnSquash + _sqDt / FLY_UNSQUASH_DURATION);
+        // smoothstep 两端斜率为 0: 渐入(静止起步) + 渐出(平滑收尾), 无突跳
+        _sqEase = THREE.MathUtils.smoothstep(_flyUnSquash, 0.0, 1.0);
+      }
+
       textGroup.position.copy(_textFinal);
-      textGroup.scale.y = 1.0;
+      // 起点保留 _uiShownCur(与起飞前的压扁比例无缝衔接), 再按渐入进度还原到 1.0
+      textGroup.scale.set(1.0, 1.0 + (TITLE_SQUASH_RATIO - 1.0) * _uiShownCur * (1.0 - _sqEase), 1.0);
       textGroup.updateMatrixWorld();
 
-      // 1. 懒计算屏幕视觉投影 X 范围 (严格保证视觉从屏幕最左到最右)
+      // 预计算视觉从左到右投影范围
       if (isNaN(_flyMinX) && chunks.length) {
         var mn = Infinity, mx = -Infinity;
         for (var k = 0; k < chunks.length; k++) {
-          // 优先使用屏幕像素投影 _sx，如未就绪则回退到世界包围盒投影
           var cx = (chunks[k]._sx !== undefined) ? chunks[k]._sx : chunks[k].originPos.x;
           if (cx < mn) mn = cx;
           if (cx > mx) mx = cx;
@@ -1069,50 +1159,86 @@
       }
       var rangeX = (_flyMaxX - _flyMinX) || 1.0;
 
-      // 预先获取飞出路径起点的世界坐标 (对应 lp = 0)
       flyOutCurveRight.getPointAt(0.0, _tmpCamPoint);
 
       for (var i = 0; i < chunks.length; i++) {
         var item = chunks[i];
 
-        // 2. 严格按视觉屏幕 X 映射延迟：最左侧率先起飞，最右侧随后
+        // 严格从视觉最左到最右依次起飞
         var curX = (item._sx !== undefined) ? item._sx : item.originPos.x;
         var normX = THREE.MathUtils.clamp((curX - _flyMinX) / rangeX, 0.0, 1.0);
 
-        // 起飞波次跨度：前 35% 时间分配给从左到右波浪式启动
-        var delay = normX * 0.35;
-        var lp = Math.max(0.0, Math.min((p - delay) / (1.0 - 0.35), 1.0));
+        // 前 38% 的时间分配为多米诺波浪起飞
+        var delay = normX * 0.38;
+        var lp = Math.max(0.0, Math.min((p - delay) / (1.0 - 0.38), 1.0));
 
         if (lp <= 0.0) {
-          // ★ 关键修复 1：尚未轮到起飞的碎块，严格锚定在字模原位，绝不坍塌到原点
+          // 未起飞时：固定在初始槽位不动
           item.mesh.position.copy(item.originPos);
           item.mesh.rotation.set(0, 0, 0);
         } else {
-          // 平滑缓动 (先慢后呼啸飞出)
-          var easeLp = lp * lp;
+          // 缓动加速飞行
+          var easeLp = Math.pow(lp, 1.6);
 
-          // ★ 关键修复 2：计算路径的世界相对偏移量 (Delta)，叠加到原始槽位
+          // 计算曲线位移增量
           flyOutCurveRight.getPointAt(easeLp, _tmpCurve);
-          _tmpCurve.sub(_tmpCamPoint); // 得到当前帧世界位移增量
+          _tmpCurve.sub(_tmpCamPoint);
 
-          // 添加扩散散开感
-          _tmpCurve.addScaledVector(item.dir, easeLp * 1.8);
+          // 各碎块随速度向自身法向散开
+          _tmpCurve.addScaledVector(item.dir, easeLp * 2.8);
 
-          // 将世界位移变换为 textGroup 局部向量 (复用 _invQuat，避免受父级旋转干扰)
+          // 世界位移转局部坐标 (复用 _invQuat, 不受父级旋转干扰)
           _tmpCurve.applyQuaternion(_invQuat);
-
-          // 最终位置 = 初始字模槽位 + 相对飞行位移
           item.mesh.position.copy(item.originPos).add(_tmpCurve);
 
-          // 随飞行逐渐产生立体翻滚
-          item.mesh.rotation.x = easeLp * 1.2;
-          item.mesh.rotation.y = easeLp * 1.5;
-          item.mesh.rotation.z = easeLp * 0.8;
+          // ★ 核心：剧烈多轴翻滚自旋动力学 ★
+          // 随速度提升角速度剧增, 每片碎石按独立相位与随机 spinSpeed 极速旋转翻飞
+          var spinPower = easeLp * 7.0 + lp * lp * 10.0;
+          item.mesh.rotation.x = item.spinSpeed.x * spinPower;
+          item.mesh.rotation.y = item.spinSpeed.y * spinPower;
+          item.mesh.rotation.z = item.spinSpeed.z * spinPower;
         }
       }
 
-      // 全部飞出后彻底隐藏模型网格
-      if (p >= 1.0) textGroup.visible = false;
+      // 独立全屏 Overlay 画布执行渲染
+      if (flyRenderer && flyScene) {
+        flyScene.overrideMaterial = flyMat;
+        flyRenderer.render(flyScene, camera);
+        flyScene.overrideMaterial = null;
+      }
+
+      if (window._isFlyingBack) {
+        if (p <= 0.0) {
+          // 倒放完毕: 碎块已精确归位 → 把 textGroup 归还主场景(否则着色/阴影 Pass 看不到标题),
+          // overlay 只隐藏不销毁(下次进入可复用), 并淡回 2D UI
+          flyScene.remove(textGroup);
+          modelScene.add(textGroup);
+          textGroup.visible = true;
+          textGroup.scale.set(1.0, 1.0 + (TITLE_SQUASH_RATIO - 1.0) * _uiShownCur, 1.0);
+          if (flyCanvas) flyCanvas.style.display = 'none';
+
+          window._isFlyingOut = false;
+          window._isFlyingBack = false;
+          window._flyProgress = 0.0;
+          _flyUnSquash = 0.0; _flyUnSquashPrevT = -1.0;
+          _settleStartTime = -1; // 微颤淡入重新起效: 落地从静止平滑过渡, 而非从半幅微动跳入
+
+          for (var ri = 0; ri < chunks.length; ri++) {
+            var rc = chunks[ri];
+            rc._ox = rc._oy = rc._oz = 0;
+            rc._vx = rc._vy = rc._vz = 0;
+            rc.mesh.rotation.set(0, 0, 0);
+          }
+
+          if (window.RpgMenu) window.RpgMenu.show();
+          if (window.RpgFooter) window.RpgFooter.show();
+          if (window.TurntableUI) window.TurntableUI.show();
+        }
+      } else if (p >= 1.0 && flyCanvas) {
+        // 飞出完成后彻底隐藏
+        flyCanvas.style.display = 'none';
+        textGroup.visible = false;
+      }
     } else if (settled) {
       var _W = window.innerWidth, _H = window.innerHeight;
       var _pPx = (_pointer.x * 0.5 + 0.5) * _W;

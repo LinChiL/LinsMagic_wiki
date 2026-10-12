@@ -119,7 +119,7 @@
   ].join('\n')
 
   // 菜单项配置: 首项默认选中
-  var ITEMS = ['关于LinsMagic', 'Wiki', '版本与更新日志', '特别鸣谢与开发者名单']
+  var ITEMS = ['首页-LinsMagic', 'Wiki', '版本与更新日志', '特别鸣谢与开发者名单']
 
   var style = document.createElement('style')
   style.textContent = CSS

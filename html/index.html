@@ -55,14 +55,14 @@
     }
     .debug-row .val { width: 38px; text-align: right; color: #9ab; }
 
-    /* 照片模式：整个视口后退倾斜，露出相纸质感与桌面的深邃阴影 */
+    /* 照片模式：整个视口后退倾斜，露出相纸质感与桌面的深邃阴影。
+       相片姿态(translateZ/rotateX/Y/Z)由 photocard.js 逐帧接管(叠加悬停微倾与常驻微颤),
+       这里只声明相纸/投影 —— 过渡里也不能带 transform, 否则逐帧写值会被拖成"慢跟随" */
     .page.is-photo-mode #cinematic-stage {
-      transform: translateZ(-620px) rotateX(15deg) rotateY(-18deg) rotateZ(-3deg) !important;
       background: #fdfdfd !important; /* 哑光相纸白 */
       box-shadow: 0 40px 100px rgba(0, 0, 0, 0.95), 0 12px 30px rgba(0, 0, 0, 0.6) !important;
       border-radius: 4px !important;
-      transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
-                  background 1.5s ease,
+      transition: background 1.5s ease,
                   box-shadow 1.5s ease !important;
     }
 
@@ -86,6 +86,20 @@
       letter-spacing: 0.22em;
       color: #71717a;
       pointer-events: none;
+    }
+
+    /* 倒放展开: 点击卡片返回时由 JS 临时挂上(相纸/投影反向过渡), 过渡结束即摘除。
+       卡片的位移/角度由 photocard.js 反向展开, 不在此处过渡 */
+    .page.is-returning #cinematic-stage {
+      transition: background 1.5s ease,
+                  box-shadow 1.5s ease !important;
+    }
+    /* 画布内缩(相框白边)同步反向扩回全幅: 进入时是瞬切, 返回时给同长过渡更顺 */
+    .page.is-returning #cinematic-stage canvas {
+      transition: top 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  left 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  width 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                  height 1.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
   </style>
 </head>
@@ -188,7 +202,10 @@
   <script src="../js/lib/TransformControls.js"></script>
   <script src="../js/homepage/tyndall.js"></script>
   <script src="../js/homepage/snow.js"></script>
+  <!-- 右下角黑胶唱片 -->
   <script src="../js/homepage/turntable.js"></script>
+  <!-- 相片卡片: 右下角悬浮标题(Rondal) + 舞台相片姿态/悬停微倾/常驻微颤(photocard.js 接管) -->
+  <script src="../js/homepage/photocard.js"></script>
   <!-- 2D RPG 菜单: 自包含模块, 由 tyndall.js 通过 window.RpgMenu 锚定到 3D 标题下方 -->
   <script src="../js/homepage/rpgmenu.js"></script>
   <!-- 左下角署名小字 + 右侧渐隐细线(纯装饰自包含模块) -->
@@ -197,7 +214,10 @@
   <script src="../js/homepage/cursorfilter.js"></script>
 
   <script>
+    // 进入"版本与更新日志"卡片: 2D UI 隐退 → 标题碎块破屏飞出 → 视口收缩为相片
     window.onChangelogTrigger = function () {
+      if (window._isFlyingOut || window._isReturning) return;
+
       // 1. [0.0s] 2D UI (菜单、署名、唱片) 全部淡出隐退
       if (window.RpgMenu) window.RpgMenu.hide();
       if (window.RpgFooter) window.RpgFooter.hide();
@@ -211,9 +231,36 @@
       // 3. [0.4s] 碎块飞出视口后，摄影机后拉，视口收缩为相片
       setTimeout(function () {
         var page = document.querySelector('.page');
-        if (page) page.classList.add('is-photo-mode');
+        if (page && window._isFlyingOut && !window._isReturning) page.classList.add('is-photo-mode');
       }, 400);
     };
+
+    // 点击卡片: 整个进入流程倒放回首页(相片展开 + 碎块倒飞归位 + 2D UI 淡回)
+    window.onCardReturn = function () {
+      var page = document.querySelector('.page');
+      if (!page || !page.classList.contains('is-photo-mode') || window._isReturning) return;
+      window._isReturning = true;
+
+      // 1. [0.0s] 撤销相片态: 临时挂 is-returning(相纸/投影的反向过渡)让舞台展开;
+      //    卡片的位移/角度由 photocard.js 按同缓动反向收回, 完成即摘除 is-returning
+      page.classList.remove('is-photo-mode');
+      page.classList.add('is-returning');
+      setTimeout(function () {
+        page.classList.remove('is-returning');
+        window._isReturning = false;
+      }, 1600);
+
+      // 2. [0.0s] 标题碎块沿同一路径倒放飞回; 落地后 2D UI 由 tyndall.js 收尾淡回
+      if (window.triggerTitleFlyBack) window.triggerTitleFlyBack();
+    };
+
+    // 相片态下点击任意处(调试面板除外)即视为点击卡片(画布外白边在 pointer-events:none 的舞台上, 收不到事件)
+    window.addEventListener('click', function (e) {
+      var page = document.querySelector('.page');
+      if (!page || !page.classList.contains('is-photo-mode')) return;
+      if (e.target && e.target.closest && e.target.closest('.debug-panel')) return;
+      window.onCardReturn();
+    });
   </script>
 </body>
 </html>
