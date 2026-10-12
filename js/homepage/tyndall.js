@@ -968,7 +968,7 @@
   //   Pass1A 阴影贴图 | Pass1B 模型颜色+深度 | Pass2 全屏体积光(45步 raymarch)
   // 帧间隔 avg/p95/max 反映实际流畅度与尖刺; 主线程列为主线程提交命令耗时(不含 GPU)
   // 本机无 EXT_disjoint_timer_query, 故每隔若干帧用 gl.finish() 做一次真同步探针拿 GPU 真耗时
-  var PROFILE = true
+  var PROFILE = false // 首页体积光性能检测: 已关闭(改 true 可重新开启)
   var PROFILE_EVERY = 2000
   var STEPS_INFO = parseInt((/const int STEPS = (\d+)/.exec(tyndallMat.fragmentShader) || [0, 0])[1], 10)
   var profFrames = []

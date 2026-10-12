@@ -253,23 +253,29 @@ function ensureWikiRTs(withChain) {
 }
 // 场景上屏: 有后处理经中继纹理走完整条链, 都没有则直出(与接入前逐像素一致)
 function renderScene() {
+  const _pf = WIKI_PROFILE && profOn // 性能采样开启时, 把"场景绘制"与"后处理链"分开计时
+  const _rt0 = _pf ? performance.now() : 0
   const glowOn = !!(wikiGlow && wikiGlow.supported && wikiGlow.active())
   const dispOn = !!(wikiDisp && wikiDisp.supported && wikiDisp.active())
   if (!glowOn && !dispOn) {
     renderer.setRenderTarget(null)
     renderer.render(scene, camera)
+    if (_pf) profAdd('scene', performance.now() - _rt0)
     return
   }
   ensureWikiRTs(glowOn && dispOn)
   renderer.setRenderTarget(glowRT)
   renderer.render(scene, camera)
   renderer.setRenderTarget(null)
+  if (_pf) profAdd('scene', performance.now() - _rt0)
+  const _rt1 = _pf ? performance.now() : 0
   let tex = glowRT.texture
   if (glowOn) {
     wikiGlow.render(renderer, tex, dispOn ? chainRT : null) // 后面还接色散时散焦链落 chainRT, 免得 Pass4 读写同一张纹理
     if (dispOn) tex = chainRT.texture
   }
   if (dispOn) wikiDisp.render(renderer, tex)
+  if (_pf) profAdd('post', performance.now() - _rt1)
 }
 
 // ===== 纯 RGB 色散(摄影镜头横向色差): 整条 wiki 渲染链的最后一环 =====
@@ -1654,10 +1660,88 @@ function resetFocusClear() {
   wrap.style.visibility = '' // 恢复后交给 updateCardTransform 每帧接管
 }
 
+// ===== 控制台性能检测(定位 wiki 卡顿来源, 自点击「Wiki」那一刻起算) =====
+// 与首页体积光检测同款思路: 帧间隔 avg/p95/max 反映实际流畅度与尖刺; 主线程按功能段拆开分别计时
+// (pose 骨骼/运镜 · 影 · 球 · 眩光 · 海 · 特效 · 场景绘制 · 后处理 · 卡投影 · 面板);
+// 本机无 EXT_disjoint_timer_query, 故每隔若干帧用 gl.finish() 做一次真同步探针, 拿"场景+后处理"的 GPU 真耗时。
+const WIKI_PROFILE = true       // 总开关: false = 完全不采样(零开销)
+const WIKI_PROFILE_EVERY = 2000 // 每多少毫秒往控制台输出一次
+let profOn = false              // 点击 Wiki 后置 true
+let profLast = 0                // 上一帧时间戳
+let profLastFlush = 0           // 上次输出时间戳
+let profProbe = true            // 本帧是否执行 gl.finish 探针
+const profFrames = []           // 帧间隔采样
+const profSegs = Object.create(null) // 各功能段耗时采样
+const gl = renderer.getContext()
+
+function profAdd(name, ms) {
+  const a = profSegs[name] || (profSegs[name] = [])
+  a.push(ms)
+}
+function profReset() {
+  profFrames.length = 0
+  for (const k in profSegs) profSegs[k].length = 0
+  profProbe = true
+}
+function profAvg(a) { let s = 0; for (let i = 0; i < a.length; i++) s += a[i]; return a.length ? s / a.length : 0 }
+function profPct(a, p) { if (!a.length) return 0; const s = a.slice().sort(function (x, y) { return x - y }); return s[Math.min(s.length - 1, Math.floor(s.length * p))] }
+
+function wikiProfFlush() {
+  if (!profFrames.length) return
+  const frame = profAvg(profFrames)
+  const f95 = profPct(profFrames, 0.95), fmax = profPct(profFrames, 1)
+  const gpuArr = profSegs.gpu || []
+  const gpu = gpuArr.length ? profAvg(gpuArr) : -1
+  const w = renderer.domElement.width, h = renderer.domElement.height
+  console.log(
+    '%c[Wiki性能] ' + frame.toFixed(2) + 'ms/帧 (' + (1000 / frame).toFixed(1) + ' FPS)',
+    'color:#8acaff;font-weight:bold',
+    '\n  帧间隔   avg ' + frame.toFixed(2) + '  p95 ' + f95.toFixed(2) + '  max ' + fmax.toFixed(2) + ' ms',
+    '\n  主线程   pose ' + profAvg(profSegs.pose || []).toFixed(3) +
+             ' | 影 ' + profAvg(profSegs.feet || []).toFixed(3) +
+             ' | 球 ' + profAvg(profSegs.orb || []).toFixed(3) +
+             ' | 眩光 ' + profAvg(profSegs.glare || []).toFixed(3) +
+             ' | 海 ' + profAvg(profSegs.sea || []).toFixed(3) +
+             ' | 特效 ' + profAvg(profSegs.fx || []).toFixed(3) +
+             ' | 场景 ' + profAvg(profSegs.scene || []).toFixed(3) +
+             ' | 后处理 ' + profAvg(profSegs.post || []).toFixed(3) +
+             ' | 卡 ' + profAvg(profSegs.card || []).toFixed(3) +
+             ' | 面板 ' + profAvg(profSegs.hud || []).toFixed(3) + ' ms',
+    '\n  GPU      ' + (gpu >= 0 ? '场景+后处理 ' + gpu.toFixed(2) + ' ms' : '采样中…'),
+    '\n  负载     ' + w + '×' + h + ' = ' + (w * h / 1e6).toFixed(2) + 'M 片元  dpr=' + (window.devicePixelRatio || 1).toFixed(2)
+  )
+  // 暴露给浏览器控制台/自动化读取, 避免仅靠 console 文本
+  const _hist = window.__WIKI_PERF__ = window.__WIKI_PERF__ || []
+  _hist.push({
+    t: Math.round(performance.now()),
+    frame: +frame.toFixed(2), p95: +f95.toFixed(2), max: +fmax.toFixed(2),
+    ms: {
+      pose: +profAvg(profSegs.pose || []).toFixed(3), feet: +profAvg(profSegs.feet || []).toFixed(3),
+      orb: +profAvg(profSegs.orb || []).toFixed(3), glare: +profAvg(profSegs.glare || []).toFixed(3),
+      sea: +profAvg(profSegs.sea || []).toFixed(3), fx: +profAvg(profSegs.fx || []).toFixed(3),
+      scene: +profAvg(profSegs.scene || []).toFixed(3), post: +profAvg(profSegs.post || []).toFixed(3),
+      card: +profAvg(profSegs.card || []).toFixed(3), hud: +profAvg(profSegs.hud || []).toFixed(3)
+    },
+    gpu: gpu >= 0 ? +gpu.toFixed(2) : null
+  })
+  if (_hist.length > 60) _hist.shift()
+  profReset()
+}
+
 function frame() {
   requestAnimationFrame(frame)
   const delta = clock.getDelta() // 始终取走(隐藏期丢弃), 避免登场首帧累计大跳
   if (!visible) return
+
+  // 性能采样: 记帧间隔, 到点输出(自点击 Wiki 起算)
+  let _pt = 0
+  if (profOn) {
+    const _pn = performance.now()
+    if (profLast) profFrames.push(_pn - profLast)
+    profLast = _pn
+    if (_pn - profLastFlush >= WIKI_PROFILE_EVERY) { profLastFlush = _pn; wikiProfFlush() }
+    _pt = _pn
+  }
 
   if (timeline) {
     if (isPlaying) {
@@ -1696,12 +1780,17 @@ function frame() {
       wrap.style.visibility = 'hidden'
     }
   }
+  if (profOn) { profAdd('pose', performance.now() - _pt); _pt = performance.now() }
 
   updateFootShadows() // 脚底接触影: 贴脚骨, 抬脚渐隐
+  if (profOn) { profAdd('feet', performance.now() - _pt); _pt = performance.now() }
   const nowS = performance.now() * 0.001
   updateOrbShell(delta, nowS) // 引力球: 小球物理 + 云的时间/位置
+  if (profOn) { profAdd('orb', performance.now() - _pt); _pt = performance.now() }
   updateGlare(nowS) // 眩光: 广告牌面向相机 + 云絮噪波推进
+  if (profOn) { profAdd('glare', performance.now() - _pt); _pt = performance.now() }
   updateSea(nowS) // 海面: 推波的时间
+  if (profOn) { profAdd('sea', performance.now() - _pt); _pt = performance.now() }
   // 光斑滤镜: 两条数值轨(散焦半径/曝光)按内容时刻采样后逐帧下发(wiki 画面本身; 半径 0 = 整条链摘除)
   if (wikiGlow) wikiGlow.setKeyed(sampleTrack(GLOW_RADIUS_KEYS, playTime), sampleTrack(GLOW_EXPOSURE_KEYS, playTime))
   // RGB 色散: 有键 = 按内容时间插值(可在面板 K); 无键 = dispfilter 自带的墙钟渐进(DISP_RAMP_SEC 秒升满并保持)
@@ -1710,9 +1799,17 @@ function frame() {
     if (dV == null) wikiDisp.update(delta)
     else wikiDisp.setStrength(dV)
   }
+  if (profOn) profAdd('fx', performance.now() - _pt)
+
+  const _gpuT = (profOn && profProbe) ? performance.now() : 0
   renderScene()
+  if (_gpuT) { gl.finish(); profAdd('gpu', performance.now() - _gpuT); profProbe = false } // 探针帧: 同步取"场景+后处理"GPU 真耗时
+
+  if (profOn) _pt = performance.now()
   updateCardTransform() // 卡 = 实时页面: 每帧把页面投影到卡面(与 GL 同相机)
+  if (profOn) { profAdd('card', performance.now() - _pt); _pt = performance.now() }
   updateKPanelHud()
+  if (profOn) profAdd('hud', performance.now() - _pt)
 }
 
 // ===== 对外接口: 菜单「Wiki」点击后登场 =====
@@ -1733,6 +1830,12 @@ window.WikiModel = {
   enter: function () {
     if (visible) return
     visible = true
+    // 性能采样自点击「Wiki」这一刻开始(含模型未就绪的加载/等待阶段)
+    profOn = WIKI_PROFILE
+    profLast = 0
+    profLastFlush = performance.now()
+    profReset()
+    if (WIKI_PROFILE) console.log('%c[Wiki性能] 开始采样(自点击「Wiki」起, 每 ' + (WIKI_PROFILE_EVERY / 1000) + 's 输出一次)', 'color:#8acaff;font-weight:bold')
     // 晚创建的元素(碎块飞出画布等)一并收进载体, 免得留在卡外穿帮
     Array.prototype.slice.call(document.body.children).forEach(function (el) {
       if (el !== layer && el !== wrap) wrap.appendChild(el)
