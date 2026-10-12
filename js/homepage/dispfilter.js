@@ -1,6 +1,8 @@
 // dispfilter.js - 纯 RGB 色散(摄影镜头横向色差): 一层全屏后处理, 只错位 RGB 通道, 不加模糊、不加亮。
-// 以画面中心为原点沿半径向外错位, 越靠边界越强(画面角上最强, 正中心为 0):
+// 以画面中心为原点沿半径向外错位, 越靠边界越强(正中心为 0):
 //   R 通道往外扩、B 通道往里收(左右对称), G 通道不动 —— 就是镜头横向色差的空间分布。
+//   最外圈按"几何余量"平滑收到 0: 全屏 pass 取不到画外颜色(硬采样会被 ClampToEdge 沿边框拉出
+//   一条死色带, 并在收口处留下 Mach 带), 故让错位量在逼近画框时恰好归零 —— 边框像素颜色不被污染。
 // 位置: wiki 渲染链的最后一环(光斑滤镜之后)。强度 0 ⇒ active() false ⇒ 整层从链上摘除(场景直出, 零开销)。
 // 效果自包含: 参数(DISP_*)、渐进包络、状态全在本文件; wikimodel.js 只接线(enter 归零 / update(dt) / render)。
 // 用法(与 glowfilter 同款工厂: 材质/相机必须用调用方的 THREE 建, 与各自渲染器同源):
@@ -11,7 +13,7 @@
 // resize 不需要: 每帧按 renderer.getDrawingBufferSize 现算(半径归一与错位量都跟真实帧尺寸走)。
 (function () {
   // ===== 效果参数(都在这里调; 也可由 createDispFilter 的 opts 覆盖) =====
-  var DISP_AMOUNT = 0.0645;  // 满强度时画面角上(r=1)的径向缩放量: 1920×1080 下角上 R/B 各错开≈5px(R 与 B 相距≈10px); 0 = 关
+  var DISP_AMOUNT = 0.0645;  // 角上(r=1)径向缩放量(比例, 按帧尺寸等比放大; 0 = 关)。例 0.0045 ⇒ 1920×1080 角上 R/B 各错开≈5px
   var DISP_FALLOFF = 2.0;    // 径向幂次: 2 = 中心干净、强度集中在四周(1 = 从中心线性变强)
   var DISP_RAMP_SEC = 1.6;   // 进 wiki 后的渐进时长(墙钟秒), 到头保持满强度
 
@@ -22,7 +24,8 @@
     'void main() { gl_Position = vec4(position, 1.0); }'
   ].join('\n');
 
-  // u_amount: 画面角上(r=1)的径向缩放量(0 = 无色散, 直接透传), 由强度缩放后逐帧下发
+  // u_amount: 角上(r=1)的径向缩放量(0 = 无色散, 直接透传), 由强度缩放后逐帧下发
+  //   (例: 0.0045 ⇒ 1920×1080 角上 R/B 各错开≈5px; 具体按帧尺寸等比放大)
   // u_falloff: 径向幂次(1 = 线性增长, 2 = 中心极干净、强度压在四周)
   var fsDisp = [
     'precision highp float;',
@@ -40,8 +43,15 @@
     '    vec2 offA = (uv - c) * vec2(aspect, 1.0);',
     '    float r = clamp(length(offA) / (0.5 * sqrt(aspect * aspect + 1.0)), 0.0, 1.0);',
     '    float k = u_amount * pow(r, u_falloff);',
-    '    vec2 uvr = c + offA * (1.0 + k) / vec2(aspect, 1.0);',
-    '    vec2 uvb = c + offA * (1.0 - k) / vec2(aspect, 1.0);',
+    '    // 位移上限(等比空间): R 往外扩后必须仍在画框内 ⇒ p*(1+k) 的每轴都不越界 ⇒',
+    '    //   k ≤ min(aspect/(2|p.x|), 0.5/|p.y|) - 1 —— 越靠画框余量越小, 到边框恰为 0。',
+    '    // 取软最小值 k*room/(k+room): 中幅区 ≈ k(几乎不损失), 逼近画框时平滑收到 room。',
+    '    // R/B 共用同一个有效量 ⇒ 边框处错位一致地归零(不会"一刀切到画外那一列"), 且全程 C∞ 无折线。',
+    '    vec2 ap = max(abs(offA), vec2(1e-4));',
+    '    float room = clamp(min(aspect / (2.0 * ap.x), 0.5 / ap.y) - 1.0, 0.0, 8.0);',
+    '    float ks = k * room / (k + room);',
+    '    vec2 uvr = c + offA * (1.0 + ks) / vec2(aspect, 1.0);',
+    '    vec2 uvb = c + offA * (1.0 - ks) / vec2(aspect, 1.0);',
     '    vec4 s = texture(u_src, uv);',
     '    // 只换 R/B 的采样位置; G 与 alpha 取自原位(alpha 跟着错位会把覆盖层的透明边界糊出去)',
     '    fragColor = vec4(texture(u_src, uvr).r, s.g, texture(u_src, uvb).b, s.a);',
