@@ -166,7 +166,7 @@
       dispMat.uniforms.u_texel.value.set(1.0 / simW, 1.0 / simH);
       dispMat.uniforms.u_aspect.value = aspect;
     },
-    render: function (renderer, bgTexture) {
+    render: function (renderer, bgTexture, outTarget) {
       // 惰性初始化: tyndall.js 先于本脚本加载, 其初始化 resize 时 window.CursorFilter
       // 尚不存在, FBO 从未创建 → 若直接 return 则首屏全黑, 直到用户手动 resize。
       if (!fboA) this.resize(window.innerWidth, window.innerHeight);
@@ -181,10 +181,10 @@
       mouse.strength *= 0.75;
       mouse.lastX = mouse.x; mouse.lastY = mouse.y;
 
-      // Pass 2: 斯涅尔色散后处理输出到屏幕
+      // Pass 2: 斯涅尔色散后处理输出(默认屏幕; 传入 outTarget 时落该 FBO, 供光斑滤镜再链一层)
       dispMat.uniforms.u_sim.value = fboB.texture;
       dispMat.uniforms.u_bg.value = bgTexture;
-      renderer.setRenderTarget(null);
+      renderer.setRenderTarget(outTarget || null);
       renderer.render(dispScene, cam);
 
       // FBO 交换

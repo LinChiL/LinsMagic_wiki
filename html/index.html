@@ -102,6 +102,16 @@
                   height 1.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
   </style>
+
+  <!-- Wiki 覆盖层模型: 与 model.html 同源的 three@0.165 模块化引入(仅 module 脚本消费, 与全局 r128 不冲突) -->
+  <script type="importmap">
+  {
+      "imports": {
+          "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+      }
+  }
+  </script>
 </head>
 <body>
   <main class="page">
@@ -212,6 +222,13 @@
   <script src="../js/homepage/rpgfooter.js"></script>
   <!-- 鼠标速度水波色散滤镜(整页顶层, screen 混合) -->
   <script src="../js/homepage/cursorfilter.js"></script>
+  <!-- 开场光斑滤镜(端口自 glow.html 六边形电影散景+ACES, 链在色散通道后作用于整帧): 满强度开场, 随模糊衰减, 归零自动停用; 需 WebGL2 -->
+  <script src="../js/homepage/glowfilter.js"></script>
+  <!-- 纯 RGB 色散(摄影镜头横向色差, wiki 覆盖层链末一层): 进 wiki 后渐进到满强度并保持; 需 WebGL2 -->
+  <script src="../js/homepage/dispfilter.js"></script>
+
+  <!-- Wiki 全屏模型: 点击菜单「Wiki」后覆盖整个页面, 骨骼动画+运镜同 model.html(模块脚本) -->
+  <script type="module" src="../js/homepage/wikimodel.js"></script>
 
   <script>
     // 进入"版本与更新日志"卡片: 2D UI 隐退 → 标题碎块破屏飞出 → 视口收缩为相片

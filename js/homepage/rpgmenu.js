@@ -154,6 +154,11 @@
       all.forEach(function (o) { o.classList.remove('active') })
       li.classList.add('active')
 
+      // 【新增】点击"Wiki"触发全屏模型覆盖层
+      if (i === 1 && window.WikiModel) {
+        window.WikiModel.enter();
+      }
+
       // 【新增】点击"版本与更新日志"触发转场
       if (i === 2 && window.onChangelogTrigger) {
         window.onChangelogTrigger();

@@ -1,278 +1,386 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Voronoi Camera Depth - 60FPS Clean</title>
+    <title>4-Body Gravitational Repulsive SDF Spheres</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #000;
-        }
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-        }
+        * { margin: 0; padding: 0; overflow: hidden; }
+        body { background: #f2f2f4; cursor: grab; user-select: none; }
+        body:active { cursor: grabbing; }
+        canvas { width: 100vw; height: 100vh; display: block; }
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="glcanvas"></canvas>
 
     <script>
-        const canvas = document.getElementById('canvas');
-        const gl = canvas.getContext('webgl', { powerPreference: "high-performance" }) 
-                || canvas.getContext('experimental-webgl');
-
-        if (!gl) {
-            alert('WebGL not supported');
-        }
-
-        gl.getExtension('OES_standard_derivatives');
+        const canvas = document.getElementById('glcanvas');
+        const gl = canvas.getContext('webgl');
 
         const vsSource = `
-            attribute vec2 a_position;
-            void main() {
-                gl_Position = vec4(a_position, 0.0, 1.0);
-            }
+            attribute vec2 position;
+            void main() { gl_Position = vec4(position, 0.0, 1.0); }
         `;
 
         const fsSource = `
-            #extension GL_OES_standard_derivatives : enable
             precision highp float;
+            uniform vec2 iResolution;
+            uniform float iTime;
+            uniform vec3 uPos[4];     // 4颗小球的位置数组
+            uniform vec2 uCamAngle;
+            uniform float uCamDist;
 
-            uniform vec2 u_resolution;
-            uniform float u_time;
-            uniform vec2 u_mouse;
-
-            // 轻量步数：36 步即可保证流畅 60FPS
-            #define MAX_STEPS 36
-            #define MAX_DIST 22.0
-            #define SURF_DIST 0.003
-
-            mat2 rot(float a) {
-                float s = sin(a), c = cos(a);
-                return mat2(c, -s, s, c);
+            // ==================== 高精度平滑 3D 噪声 ====================
+            float hash(vec3 p) {
+                return fract(sin(dot(p, vec3(12.9898, 78.233, 45.5432))) * 43758.5453123);
             }
 
-            // 高效 Hash
-            vec3 hash3(vec3 p) {
-                p = fract(p * vec3(0.1031, 0.1030, 0.0973));
-                p += dot(p, p.yxz + 33.33);
-                return fract((p.xxy + p.yxx) * p.zyx);
-            }
-
-            // 3D 沃洛诺伊晶胞场
-            vec3 voronoi3D(vec3 p) {
+            float noise(vec3 p) {
                 vec3 i = floor(p);
                 vec3 f = fract(p);
-
-                float d1 = 8.0, d2 = 8.0, d3 = 8.0;
-
-                for (int z = -1; z <= 1; z++) {
-                    for (int y = -1; y <= 1; y++) {
-                        for (int x = -1; x <= 1; x++) {
-                            vec3 g = vec3(float(x), float(y), float(z));
-                            vec3 o = 0.5 + (hash3(i + g) - 0.5) * 0.65;
-                            vec3 r = g + o - f;
-                            float d = dot(r, r);
-
-                            if (d < d1) {
-                                d3 = d2;
-                                d2 = d1;
-                                d1 = d;
-                            } else if (d < d2) {
-                                d3 = d2;
-                                d2 = d;
-                            } else if (d < d3) {
-                                d3 = d;
-                            }
-                        }
-                    }
-                }
-                return vec3(sqrt(d1), sqrt(d2), sqrt(d3));
-            }
-
-            // 摄像机轨迹
-            vec2 getCamPath(float z) {
-                return vec2(
-                    sin(z * 0.18) * 0.85,
-                    cos(z * 0.14) * 0.65
+                vec3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+                return mix(
+                    mix(mix(hash(i + vec3(0,0,0)), hash(i + vec3(1,0,0)), u.x),
+                        mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), u.x), u.y),
+                    mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), u.x),
+                        mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), u.x), u.y),
+                    u.z
                 );
             }
 
-            // 距离场
+            float fbm(vec3 p) {
+                float v = 0.0;
+                float a = 0.5;
+                for (int i = 0; i < 3; ++i) {
+                    v += a * noise(p);
+                    p = p * 2.02 + vec3(1.7, 9.2, 4.3);
+                    a *= 0.5;
+                }
+                return v;
+            }
+
+            float smin(float a, float b, float k) {
+                float h = max(k - abs(a - b), 0.0) / k;
+                return min(a, b) - h * h * k * 0.25;
+            }
+
+            // ==================== 统一噪声与多球 SDF 融合 ====================
             float map(vec3 p) {
-                float scale = 0.36;
-                vec3 v = voronoi3D(p * scale);
+                vec3 np = p * 1.3 + vec3(0.0, iTime * 0.25, iTime * 0.15);
+                float displacement = (fbm(np) - 0.45) * 0.45;
 
-                float wall = (v.y - v.x) - 0.065;
-                float portal = (v.z - v.y) - 0.13;
-                float structSDF = max(wall, portal) / scale;
+                // 1. 中心大球 (半径 0.9)
+                float dBig = length(p) - (0.9 + displacement);
 
-                // 安全通道
-                vec2 center = getCamPath(p.z);
-                float camDist = length(p.xy - center);
-                float safeHole = 0.95 - camDist;
+                // 2. 四颗不同尺寸的小球
+                float d0 = length(p - uPos[0]) - (0.36 + displacement);
+                float d1 = length(p - uPos[1]) - (0.26 + displacement);
+                float d2 = length(p - uPos[2]) - (0.21 + displacement);
+                float d3 = length(p - uPos[3]) - (0.17 + displacement);
 
-                return max(structSDF, safeHole);
+                // 3. 级联平滑融合
+                float fused = smin(dBig, d0, 0.45);
+                fused = smin(fused, d1, 0.38);
+                fused = smin(fused, d2, 0.32);
+                fused = smin(fused, d3, 0.28);
+
+                return abs(fused) - 0.015;
             }
 
             void main() {
-                vec2 fragCoord = gl_FragCoord.xy;
-                vec2 uv = (fragCoord - 0.5 * u_resolution) / min(u_resolution.x, u_resolution.y);
+                vec2 uv = (gl_FragCoord.xy * 2.0 - iResolution.xy) / iResolution.y;
 
-                float t = u_time * 1.2;
-                vec3 ro = vec3(getCamPath(t), t);
-                vec3 target = vec3(getCamPath(t + 2.0), t + 2.0);
+                vec3 target = vec3(0.0, 0.0, 0.0);
+                vec3 ro = vec3(
+                    uCamDist * cos(uCamAngle.y) * sin(uCamAngle.x),
+                    uCamDist * sin(uCamAngle.y),
+                    uCamDist * cos(uCamAngle.y) * cos(uCamAngle.x)
+                );
 
-                vec3 forward = normalize(target - ro);
-                vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), forward));
-                vec3 up = cross(forward, right);
+                vec3 fwd = normalize(target - ro);
+                vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), fwd));
+                vec3 up = cross(fwd, right);
+                vec3 rd = normalize(uv.x * right + uv.y * up + 1.8 * fwd);
 
-                vec2 mouse = (u_mouse / u_resolution - 0.5) * 2.0;
-                vec3 rd = normalize(forward + uv.x * right + uv.y * up);
-                rd.yz *= rot(-mouse.y * 0.4);
-                rd.xz *= rot(mouse.x * 0.5);
+                // 优雅的浅灰纸张底色
+                vec3 paperBg = vec3(0.85, 0.85, 0.87);
 
-                float dO = 0.0;
-                float d = 0.0;
-                float prev_d = 0.0;
-                float dt = 0.0;
-                bool hit = false;
+                // ==================== 1. 3D 世界网格地面 (Y = -1.45) ====================
+                float floorY = -1.45;
+                if (rd.y < -0.001) {
+                    float tFloor = (floorY - ro.y) / rd.y;
+                    if (tFloor > 0.0) {
+                        vec3 pFloor = ro + rd * tFloor;
+                        float distFade = exp(-length(pFloor.xz) * 0.15);
+                        float pixelSize = tFloor * 0.0028;
 
-                // 核心：36 步高速步进
-                for(int i = 0; i < MAX_STEPS; i++) {
-                    vec3 p = ro + rd * dO;
-                    d = map(p);
+                        vec2 g1 = abs(fract(pFloor.xz - 0.5) - 0.5);
+                        float line1 = 1.0 - smoothstep(0.0, pixelSize * 1.5, min(g1.x, g1.y));
+                        vec2 g2 = abs(fract(pFloor.xz * 0.2 - 0.5) - 0.5);
+                        float line2 = 1.0 - smoothstep(0.0, pixelSize * 2.5, min(g2.x, g2.y));
+                        float grid = (line1 * 0.4 + line2 * 0.8) * distFade;
 
-                    if(d < SURF_DIST) {
-                        // 【0 额外性能开销的亚像素插值精修】
-                        // 不再执行循环二分查找，通过上一步与当步直接线性逼近表面
-                        if(dt > 0.0) {
-                            dO = (dO - dt) + dt * (prev_d / (prev_d - d + 0.0001));
-                        }
-                        hit = true;
-                        break;
+                        float shadow = smoothstep(0.0, 1.3, length(pFloor.xz));
+                        shadow *= smoothstep(0.0, 0.7, length(pFloor.xz - uPos[0].xz));
+                        shadow *= smoothstep(0.0, 0.5, length(pFloor.xz - uPos[1].xz));
+                        shadow *= smoothstep(0.0, 0.4, length(pFloor.xz - uPos[2].xz));
+                        shadow *= smoothstep(0.0, 0.35, length(pFloor.xz - uPos[3].xz));
+
+                        paperBg -= vec3((grid * 0.045 + (1.0 - shadow) * 0.04) * distFade);
                     }
-
-                    if(dO > MAX_DIST) break;
-
-                    prev_d = d;
-                    // 0.68 平衡步长：杜绝穿透黑条，同时大幅节省步数
-                    dt = max(d * 0.68, 0.004);
-                    dO += dt;
                 }
 
-                vec3 col = vec3(0.0);
+                // ==================== 2. 体积光线步进 ====================
+                vec4 N = vec4(0.0);
+                vec3 k = ro;
+                float o = 0.0;
 
-                if(hit && dO < MAX_DIST) {
-                    vec3 p = ro + rd * dO;
+                for (int i = 0; i < 85; i++) {
+                    if (N.a >= 6.0 || o++ >= 85.0) break;
 
-                    // 1. 相机深度图
-                    float cameraZ = dot(p - ro, forward);
-                    float normDepth = clamp((cameraZ - 0.6) / 19.4, 0.0, 1.0);
-                    float depthMap = pow(1.0 - normDepth, 1.35);
+                    float depth = length(k - ro);
+                    float b = max(map(k), 0.0);
 
-                    // 2. 亚像素抗锯齿晶胞棱线（无高频 Jitter 噪点）
-                    vec3 v = voronoi3D(p * 0.36);
-                    float edgeDist = v.z - v.y; 
+                    float edge = min(b * 1024.0, 0.35 - b);
+                    if (edge > 0.0) {
+                        float spatialPhase = dot(k, vec3(0.6, 0.5, 0.4)) + k.z * 0.6;
+                        float fresnel = 1.0 - abs(dot(rd, normalize(k + vec3(0.0001))));
 
-                    float fw = clamp(fwidth(edgeDist), 0.001, 0.04);
-                    float lineWidth = 0.022;
-                    float edge = 1.0 - smoothstep(lineWidth - fw, lineWidth + fw, edgeDist);
+                        // 计算与最近小球的张力响应
+                        float distBig = length(k);
+                        float distMinSmall = min(
+                            min(length(k - uPos[0]), length(k - uPos[1])),
+                            min(length(k - uPos[2]), length(k - uPos[3]))
+                        );
+                        float tensionDiff = abs(distBig - distMinSmall);
+                        float fusionTension = exp(-clamp(tensionDiff, 0.0, 5.0) * 3.5);
 
-                    // 3. 颜色合成
-                    col = vec3(depthMap * 0.85);
-                    col = mix(col, vec3(1.0), edge * 0.9);
-                    col *= smoothstep(1.0, 0.1, normDepth);
+                        float colorPhase = spatialPhase 
+                                         + fresnel * 1.8 
+                                         + fusionTension * 3.14 
+                                         + depth * 0.15 
+                                         - iTime * 0.5;
+
+                        // 提亮色彩基调，让虹彩更通透饱满
+                        vec4 colPalette = 0.04 + 0.02 * cos(colorPhase + vec4(6.0, 1.0, 2.0, 0.0));
+                        colPalette.rgb += vec3(0.025, 0.015, 0.035) * fusionTension;
+                        colPalette.a = 0.04;
+
+                        N += edge * colPalette;
+                    }
+                    k += rd * max(b, 0.0035) * (0.8 + depth * 0.15) * 0.35;
                 }
 
-                // 微暗角
-                vec2 q = fragCoord / u_resolution;
-                col *= 0.85 + 0.15 * pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.25);
+                // ==================== 3. 安全纸张色调映射（彻底移除死黑奇点） ====================
+                vec3 mappedColor;
+                for (int c = 0; c < 3; c++) {
+                    float val = N[c];
+                    float u = val - 0.42;
+                    // 安全平滑项 +0.08，彻底防止除零和负值坍缩
+                    float denom = u + 0.25 + 0.15 / (abs(u) + 0.08);
+                    mappedColor[c] = clamp(u / denom + 0.4, 0.15, 1.0);
+                }
+                // ====== 在这里加入饱和度控制 ======
+                float gray = dot(mappedColor, vec3(0.299, 0.587, 0.114)); // 计算灰度
+                mappedColor = mix(vec3(gray), mappedColor, 0.35);          // 0.35 就是饱和度！
+                // ==================================
 
-                gl_FragColor = vec4(col, 1.0);
+                float mask = smoothstep(0.01, 0.4, N.a);
+                vec3 finalCol = mix(paperBg, mappedColor, mask);    
+
+
+                gl_FragColor = vec4(finalCol, 1.0);
             }
         `;
 
         function createShader(gl, type, source) {
-            const shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error(gl.getShaderInfoLog(shader));
-                gl.deleteShader(shader);
-                return null;
-            }
-            return shader;
+            const s = gl.createShader(type);
+            gl.shaderSource(s, source);
+            gl.compileShader(s);
+            return s;
         }
 
-        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
-        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
-
         const program = gl.createProgram();
-        gl.attachShader(program, vertexShader);
-        gl.attachShader(program, fragmentShader);
+        gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
+        gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
         gl.linkProgram(program);
+        gl.useProgram(program);
 
-        const positionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-            -1, -1,
-             1, -1,
-            -1,  1,
-            -1,  1,
-             1, -1,
-             1,  1,
-        ]), gl.STATIC_DRAW);
+        const posBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+        const posAttr = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(posAttr);
+        gl.vertexAttribPointer(posAttr, 2, gl.FLOAT, false, 0, 0);
 
-        const aPosition = gl.getAttribLocation(program, 'a_position');
-        const uResolution = gl.getUniformLocation(program, 'u_resolution');
-        const uTime = gl.getUniformLocation(program, 'u_time');
-        const uMouse = gl.getUniformLocation(program, 'u_mouse');
+        const uRes = gl.getUniformLocation(program, 'iResolution');
+        const uTime = gl.getUniformLocation(program, 'iTime');
+        // 兼容性获取数组 Uniform
+        const uPosLoc = gl.getUniformLocation(program, 'uPos[0]') || gl.getUniformLocation(program, 'uPos');
+        const uCamAngleLoc = gl.getUniformLocation(program, 'uCamAngle');
+        const uCamDistLoc = gl.getUniformLocation(program, 'uCamDist');
 
-        let mouseX = window.innerWidth * 0.5;
-        let mouseY = window.innerHeight * 0.5;
-        let targetMouseX = mouseX;
-        let targetMouseY = mouseY;
+        // ==================== 4颗小球多体物理系统 ====================
+        const initialBodies = [
+            { pos: { x:  1.55, y:  0.15, z:  0.0  }, vel: { x:  0.0, y:  0.45, z:  1.42 } },
+            { pos: { x: -1.25, y:  0.65, z:  0.4  }, vel: { x:  0.8, y: -0.20, z: -1.25 } },
+            { pos: { x:  0.35, y: -1.15, z: -0.7  }, vel: { x: -1.3, y:  0.35, z:  0.55 } },
+            { pos: { x: -0.40, y:  0.25, z: -1.45 }, vel: { x:  1.3, y:  0.65, z:  0.20 } }
+        ];
 
-        window.addEventListener('mousemove', (e) => {
-            targetMouseX = e.clientX;
-            targetMouseY = window.innerHeight - e.clientY;
+        let bodies = JSON.parse(JSON.stringify(initialBodies));
+
+        const PHYSICS = {
+            G: 3.6,               // 引力强度
+            softening: 0.25,      // 软核常数
+            drag: 0.018,          // 微阻尼
+            brownian: 0.025,      // 微扰动
+            coreRadius: 0.70,     // 排斥核心临界半径
+            repulsionForce: 18.0  // 核心排斥反弹强度
+        };
+
+        function updatePhysics(dt) {
+            // 防御 1：时间步长安全钳制，杜绝后台切回产生极大或非法 dt
+            if (!dt || isNaN(dt) || dt <= 0.0) dt = 0.016;
+            dt = Math.min(dt, 0.033);
+
+            const steps = 8;
+            const subDt = dt / steps;
+            const randScale = PHYSICS.brownian * Math.sqrt(1.0 / subDt);
+
+            for (let s = 0; s < steps; s++) {
+                for (let i = 0; i < bodies.length; i++) {
+                    const b = bodies[i];
+
+                    // 防御 2：NaN 脏数据自动恢复机制
+                    if (isNaN(b.pos.x) || isNaN(b.vel.x)) {
+                        b.pos = { ...initialBodies[i].pos };
+                        b.vel = { ...initialBodies[i].vel };
+                    }
+
+                    const px = b.pos.x, py = b.pos.y, pz = b.pos.z;
+                    const r2 = px * px + py * py + pz * pz;
+                    const r = Math.sqrt(Math.max(r2, 0.001));
+
+                    // 1. 万有引力 (引向中心)
+                    const invR3 = 1.0 / Math.pow(r2 + PHYSICS.softening, 1.5);
+                    let ax = -PHYSICS.G * px * invR3;
+                    let ay = -PHYSICS.G * py * invR3;
+                    let az = -PHYSICS.G * pz * invR3;
+
+                    // 防御 3：核心排斥力加入加速度上限，杜绝近原点除以零
+                    if (r < PHYSICS.coreRadius) {
+                        const overlap = PHYSICS.coreRadius - r;
+                        const repMag = Math.min(PHYSICS.repulsionForce * (overlap * overlap) / (r * r + 0.06), 60.0);
+                        ax += (px / r) * repMag;
+                        ay += (py / r) * repMag;
+                        az += (pz / r) * repMag;
+                    }
+
+                    // 2. 空间微阻尼
+                    ax -= PHYSICS.drag * b.vel.x;
+                    ay -= PHYSICS.drag * b.vel.y;
+                    az -= PHYSICS.drag * b.vel.z;
+
+                    // 3. 微弱布朗热扰动
+                    const bx = (Math.random() * 2.0 - 1.0) * randScale;
+                    const by = (Math.random() * 2.0 - 1.0) * randScale;
+                    const bz = (Math.random() * 2.0 - 1.0) * randScale;
+
+                    b.vel.x += (ax + bx) * subDt;
+                    b.vel.y += (ay + by) * subDt;
+                    b.vel.z += (az + bz) * subDt;
+
+                    // 防御 4：极速钳制，防止任何小球被反弹踢飞出可视区域
+                    const speed = Math.hypot(b.vel.x, b.vel.y, b.vel.z);
+                    if (speed > 4.5) {
+                        const factor = 4.5 / speed;
+                        b.vel.x *= factor;
+                        b.vel.y *= factor;
+                        b.vel.z *= factor;
+                    }
+
+                    b.pos.x += b.vel.x * subDt;
+                    b.pos.y += b.vel.y * subDt;
+                    b.pos.z += b.vel.z * subDt;
+
+                    // 边界回弹
+                    if (r > 3.2) {
+                        b.vel.x -= px * 0.8 * subDt;
+                        b.vel.y -= py * 0.8 * subDt;
+                        b.vel.z -= pz * 0.8 * subDt;
+                    }
+                }
+            }
+        }
+
+        // ==================== 3D 摄像机与交互 ====================
+        let camAngle = { x: 0.0, y: 0.28 };
+        let targetCamAngle = { x: 0.0, y: 0.28 };
+        let camDist = 4.3;
+        let targetCamDist = 4.3;
+        let isDragging = false;
+        let lastPointer = { x: 0, y: 0 };
+
+        window.addEventListener('pointerdown', (e) => {
+            isDragging = true;
+            lastPointer = { x: e.clientX, y: e.clientY };
         });
 
-        // 核心性能：锁定 DPR 为 1.0，防止 2K/4K/Retina 屏幕渲染像素爆炸
+        window.addEventListener('pointermove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastPointer.x;
+                const dy = e.clientY - lastPointer.y;
+                targetCamAngle.x -= dx * 0.007;
+                targetCamAngle.y = Math.max(-1.4, Math.min(1.4, targetCamAngle.y + dy * 0.007));
+                lastPointer = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        window.addEventListener('pointerup', () => isDragging = false);
+        window.addEventListener('pointercancel', () => isDragging = false);
+
+        window.addEventListener('wheel', (e) => {
+            targetCamDist = Math.max(2.0, Math.min(9.0, targetCamDist + e.deltaY * 0.003));
+        }, { passive: true });
+
         function resize() {
-            const dpr = 1.0;
-            canvas.width = Math.floor(window.innerWidth * dpr);
-            canvas.height = Math.floor(window.innerHeight * dpr);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
             gl.viewport(0, 0, canvas.width, canvas.height);
         }
         window.addEventListener('resize', resize);
         resize();
 
-        function render(time) {
-            time *= 0.001;
+        let lastTime = performance.now();
 
-            mouseX += (targetMouseX - mouseX) * 0.05;
-            mouseY += (targetMouseY - mouseY) * 0.05;
+        function render(now) {
+            const dt = (now - lastTime) * 0.001;
+            lastTime = now;
 
-            gl.useProgram(program);
-            gl.enableVertexAttribArray(aPosition);
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
+            updatePhysics(dt);
 
-            gl.uniform2f(uResolution, canvas.width, canvas.height);
-            gl.uniform1f(uTime, time);
-            gl.uniform2f(uMouse, mouseX, mouseY);
+            camAngle.x += (targetCamAngle.x - camAngle.x) * 0.08;
+            camAngle.y += (targetCamAngle.y - camAngle.y) * 0.08;
+            camDist += (targetCamDist - camDist) * 0.08;
+
+            const posArray = new Float32Array([
+                bodies[0].pos.x, bodies[0].pos.y, bodies[0].pos.z,
+                bodies[1].pos.x, bodies[1].pos.y, bodies[1].pos.z,
+                bodies[2].pos.x, bodies[2].pos.y, bodies[2].pos.z,
+                bodies[3].pos.x, bodies[3].pos.y, bodies[3].pos.z
+            ]);
+
+            gl.uniform2f(uRes, canvas.width, canvas.height);
+            gl.uniform1f(uTime, now * 0.001);
+            gl.uniform3fv(uPosLoc, posArray);
+            gl.uniform2f(uCamAngleLoc, camAngle.x, camAngle.y);
+            gl.uniform1f(uCamDistLoc, camDist);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             requestAnimationFrame(render);
         }
-
         requestAnimationFrame(render);
     </script>
 </body>

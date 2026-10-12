@@ -664,9 +664,53 @@
     _skipToEnd = true;
   });
 
+  // ===== 开场电影遮幅: 与 wikimodel.js 进场同款 2.35:1 黑条, 覆盖"飞来动画段"(UI 出现前) =====
+  var INTRO_LB_ASPECT = 2.35; // 与 wikimodel.js LETTERBOX_ASPECT 同值
+  var INTRO_LB_SEC = 0.7;     // 滑入/滑出时长(秒), 与 wikimodel.js LETTERBOX_SEC 同款缓动
+  // 【滑出时机】装配进度到该值黑条开始滑出: 0.825 ≈ 滑完(0.7s)恰好 UI 出现; 改 1.0 = 与 UI 淡入同刻才开始滑出
+  var INTRO_LB_OUT_AT = 0.825;
+  // SKIP 按钮距下方黑条上沿的间距(px): 让按钮站在黑条"上方", 不压在黑边上
+  var SKIP_BTN_GAP = 18;
+  var _introLbGone = false;
+  function mkIntroBar(offY) { // offY: -101 顶部条(藏于上沿外), 101 底部条
+    var bar = document.createElement('div');
+    bar.style.cssText = [
+      'position:fixed', 'left:0', 'right:0', offY < 0 ? 'top:0' : 'bottom:0',
+      'height:0', 'background:#000', 'z-index:40', 'pointer-events:none',
+      'transform:translateY(' + offY + '%)',
+      'transition:transform ' + INTRO_LB_SEC + 's cubic-bezier(0.65, 0, 0.35, 1)'
+    ].join(';');
+    document.body.appendChild(bar);
+    return bar;
+  }
+  var introBarTop = mkIntroBar(-101), introBarBottom = mkIntroBar(101);
+  function layoutIntroBars() {
+    var h = Math.max(0, (window.innerHeight - window.innerWidth / INTRO_LB_ASPECT) / 2);
+    introBarTop.style.height = h + 'px';
+    introBarBottom.style.height = h + 'px';
+    // SKIP 按钮抬到下方黑条上沿之上(与 wikimodel 字幕同款做法), 避免压在变比例黑边上
+    skipBtn.style.bottom = (h + SKIP_BTN_GAP) + 'px';
+  }
+  layoutIntroBars();
+  void introBarTop.offsetHeight; // 强制布局冲刷: 否则"出场位→0"与首帧合并, 滑入过渡被吞
+  introBarTop.style.transform = 'translateY(0)';
+  introBarBottom.style.transform = 'translateY(0)';
+  function retractIntroBars() {
+    if (_introLbGone) return;
+    _introLbGone = true;
+    introBarTop.style.transform = 'translateY(-101%)';
+    introBarBottom.style.transform = 'translateY(101%)';
+    setTimeout(function () { // 滑出结束即摘除, 避免残留元素参与后续合成
+      introBarTop.style.display = 'none';
+      introBarBottom.style.display = 'none';
+    }, INTRO_LB_SEC * 1000 + 120);
+  }
+
   // ===== 3D 标题下方的 2D 菜单: 屏幕位置由标题碎块的真实投影包围盒驱动 =====
   // 菜单本体(样式/DOM/交互)在独立的 rpgmenu.js 中, 通过 window.RpgMenu 接口锚定
   var _rpgMenuPlaced = false; // 防止每帧调 place; resize 时置 false 重定位
+  // UI 出现时的光斑闪动(0→1→0)单次触发标志: resize 会让 _projReady 失效重跑装配块, 但不该重复闪
+  var _glowFlashFired = false;
   // 【菜单位置微调】水平像素偏移: 负值左移、正值右移(改这里即可移动菜单)
   var MENU_X_OFFSET = -70;
   // UI 出现状态: target 由装配完成态切换, cur 逐帧平滑过渡, 驱动上方暗角减弱
@@ -711,7 +755,9 @@
     modelColorDepthTarget.setSize(w, h);
     sceneTarget.setSize(w, h);
     if (window.CursorFilter) window.CursorFilter.resize(w, h);
+    if (window.GlowFilter) window.GlowFilter.resize(w, h); // 光斑滤镜后备纹理随视口
     tyndallMat.uniforms.u_res.value.set(w, h);
+    layoutIntroBars(); // 遮幅高度按新视口重算(不在开场期也无害: display:none 上写高度)
     _projReady = false; // 尺寸变化后碎块屏幕坐标失效, 下次装配完成时重算
     _rpgMenuPlaced = false; // 菜单屏幕锚点同步失效, 下一帧重定位
   }
@@ -732,6 +778,7 @@
       _lastStageTf = 'none'; _lastStageOrigin = ''; _lastStageFilter = 'none';
       // 关闭运镜时畸变回到全屏居中、原强度
       _cineCenterU = 0.5; _cineCenterV = 0.5; _cineScale = 1.0;
+      if (window.GlowFilter) window.GlowFilter.setIntensity(0); // 无模糊则无散光
       return;
     }
 
@@ -855,6 +902,10 @@
     if (originStr !== _lastStageOrigin) { stage.style.transformOrigin = originStr; _lastStageOrigin = originStr; }
     if (tfStr !== _lastStageTf) { stage.style.transform = tfStr; _lastStageTf = tfStr; }
     if (filterStr !== _lastStageFilter) { stage.style.filter = filterStr; _lastStageFilter = filterStr; }
+
+    // 全局散光滤镜强度: 与本次"实际应用"的模糊量同源(用未量化值; ?blur=0 时连带为 0)
+    // —— 模糊消失 → 强度归零, 归零即从渲染链摘除(零开销); UI 出现时的闪动由 flash() 单独触发
+    if (window.GlowFilter) window.GlowFilter.setIntensity(Math.min(blur * CINE_BLUR, BLUR_MAX));
 
     // 5. 把"畸变跟随特写"所需的中心与强度写回缓存(供下一帧 Pass2 使用):
     //    - 中心取 CSS transform-origin 的焦点(含手持微颤), 让球弧圆心与放大圆心重合;
@@ -1104,6 +1155,9 @@
       skipBtn.style.pointerEvents = shouldShow ? 'auto' : 'none';
     }
 
+    // 开场遮幅滑出: 装配进度到阈值后黑条撤出(点 Skip 会拉满 globalT, 自动同帧生效)
+    if (!_introLbGone && globalT >= INTRO_LB_OUT_AT) retractIntroBars();
+
     // UI 出现状态指数平滑(~0.5s): 同时驱动上方暗角减弱与 3D 文字压扁(必须在 Pass1 渲染前算好)
     var _uiDt = Math.min(Math.max(time - _uiShownPrevT, 0.0), 0.05);
     _uiShownPrevT = time;
@@ -1337,6 +1391,8 @@
         if (window.RpgFooter) window.RpgFooter.show();
         if (window.TurntableUI) window.TurntableUI.show();
       }
+      // UI 出现瞬间: 光斑滤镜来一次 0→1→0 的闪动(只动滤镜强度, 不加模糊; 单次, 见 _glowFlashFired)
+      if (!_glowFlashFired && window.GlowFilter) { _glowFlashFired = true; window.GlowFilter.flash(); }
       _uiShownTarget = 1.0;
     } else {
       _settleStartTime = -1; // 未在装配完成态: 重置淡入计时, 下次装配完成时重新平滑淡入微颤
@@ -1482,8 +1538,13 @@
     renderer.setRenderTarget(sceneTarget);
     renderer.render(postScene, postCam);
     renderer.setRenderTarget(null);
+    // 光斑滤镜(glowfilter): 开场期链在色散通道之后 —— 色散输出落 GlowFilter 后备纹理,
+    // 光斑滤镜读它做 Log-Exp 散景并混出到屏幕; 停用后整条 pass 摘除, 恢复 色散->屏幕 直出
+    var _glowOn = !!(window.GlowFilter && window.GlowFilter.active());
     if (window.CursorFilter) {
-      window.CursorFilter.render(renderer, sceneTarget.texture);
+      var _glowRT = _glowOn ? window.GlowFilter.target() : null;
+      window.CursorFilter.render(renderer, sceneTarget.texture, _glowRT);
+      if (_glowOn) window.GlowFilter.render(renderer, _glowRT.texture);
     }
     var _c = PROFILE ? performance.now() : 0
     if (PROFILE) {

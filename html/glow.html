@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>六边形电影散景 (Hexagonal Bokeh)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        canvas { width: 100%; height: 100%; display: block; }
+        
+        .panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 18px;
+            border-radius: 12px;
+            color: #f1f5f9;
+            z-index: 10;
+            width: 280px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            user-select: none;
+        }
+        .panel h3 { font-size: 14px; margin-bottom: 12px; color: #38bdf8; }
+        .upload-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background: #0284c7;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 14px;
+            border: 1px dashed rgba(255,255,255,0.4);
+            transition: 0.2s;
+        }
+        .upload-btn:hover { background: #0369a1; }
+        input[type="file"] { display: none; }
+        
+        .slider-group { margin-top: 10px; }
+        .slider-group label { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+        .slider-group input { width: 100%; accent-color: #38bdf8; }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <h3>⬡ 六边形电影散景 (ACES)</h3>
+        <label class="upload-btn" for="file-input">📂 换图（点击上传或拖入图片）</label>
+        <input type="file" id="file-input" accept="image/*">
+
+        <div class="slider-group">
+            <label>散焦半径 (Radius) <span id="radius-val">自动呼吸</span></label>
+            <input type="range" id="param-radius" min="0" max="80" value="0" step="1">
+        </div>
+        <div class="slider-group">
+            <label>曝光度 (Exposure) <span id="exp-val">0.75</span></label>
+            <input type="range" id="param-exp" min="0.2" max="2.0" value="0.75" step="0.05">
+        </div>
+    </div>
+
+    <canvas id="glcanvas"></canvas>
+
+    <script id="vs" type="x-shader/x-vertex">#version 300 es
+        in vec2 a_pos;
+        void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+    </script>
+
+    <!-- Pass 1: 图像转 ACES 线性空间并消除偏置 -->
+    <script id="fs-init" type="x-shader/x-fragment">#version 300 es
+        precision highp float;
+        uniform sampler2D u_image;
+        uniform vec2 u_resolution;
+        uniform vec2 u_imgResolution;
+        out vec4 fragColor;
+
+        const mat3 ACESInputMat = mat3(
+            0.59719, 0.35458, 0.04823,
+            0.07600, 0.90834, 0.01566,
+            0.02840, 0.13383, 0.83777
+        );
+        const mat3 ACESOutputMat = mat3(
+             1.60475, -0.53108, -0.07367,
+            -0.10208,  1.10813, -0.00605,
+            -0.00327, -0.07276,  1.07602
+        );
+
+        vec3 InvRRTAndODTFit(vec3 x) {
+            return -1.0/100.0*(21647550.0*x + sqrt(-1873455419487500.0*x*x + 2326712714032270.0*x + 2415638944900.0) - 1228930.0)/(983729.0*x - 1000000.0);
+        }
+
+        vec3 InvACESFitted(vec3 color) {    
+            color = color * inverse(ACESOutputMat);
+            color = InvRRTAndODTFit(color);
+            color = color * inverse(ACESInputMat);
+            return color;
+        }
+
+        void main() {
+            vec2 uv = gl_FragCoord.xy / u_resolution;
+            float sRatio = u_resolution.x / u_resolution.y;
+            float iRatio = u_imgResolution.x / u_imgResolution.y;
+            vec2 imgUV = uv;
+            if (sRatio > iRatio) {
+                float s = sRatio / iRatio;
+                imgUV.y = (imgUV.y - 0.5) * s + 0.5;
+            } else {
+                float s = iRatio / sRatio;
+                imgUV.x = (imgUV.x - 0.5) * s + 0.5;
+            }
+
+            vec4 col = texture(u_image, imgUV);
+            vec3 linCol = InvACESFitted(pow(col.rgb, vec3(2.2)));
+            fragColor = vec4(linCol - 0.5, 1.0);
+        }
+    </script>
+
+    <!-- Pass 2: GPU 水平前缀积分 (Jump Flooding) -->
+    <script id="fs-sat" type="x-shader/x-fragment">#version 300 es
+        precision highp float;
+        uniform sampler2D u_src;
+        uniform int u_step;
+        out vec4 fragColor;
+
+        void main() {
+            ivec2 fc = ivec2(gl_FragCoord.xy);
+            vec4 val = texelFetch(u_src, fc, 0);
+            int prevX = fc.x - u_step;
+            if (prevX >= 0) {
+                val += texelFetch(u_src, ivec2(prevX, fc.y), 0);
+            }
+            fragColor = val;
+        }
+    </script>
+
+    <!-- Pass 3: 纯六边形积分散景渲染 -->
+    <script id="fs-bokeh" type="x-shader/x-fragment">#version 300 es
+        precision highp float;
+        uniform sampler2D u_sat;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform float u_manualRadius;
+        uniform float u_exposure;
+        out vec4 fragColor;
+
+        const float tau = 6.2831853;
+
+        const mat3 ACESInputMat = mat3(
+            0.59719, 0.35458, 0.04823,
+            0.07600, 0.90834, 0.01566,
+            0.02840, 0.13383, 0.83777
+        );
+        const mat3 ACESOutputMat = mat3(
+             1.60475, -0.53108, -0.07367,
+            -0.10208,  1.10813, -0.00605,
+            -0.00327, -0.07276,  1.07602
+        );
+
+        vec3 RRTAndODTFit(vec3 v) {
+            vec3 a = v * (v + 0.0245786) - 0.000090537;
+            vec3 b = v * (0.983729 * v + 0.4329510) + 0.238081;
+            return a / b;
+        }
+
+        vec3 ACESFitted(vec3 color) {
+            color = color * ACESInputMat;
+            color = RRTAndODTFit(color);
+            color = color * ACESOutputMat;
+            return clamp(color, 0.0, 1.0);
+        }
+
+        void main() {
+            vec2 pw = 1.0 / u_resolution;
+            vec2 uv = gl_FragCoord.xy * pw;
+            vec2 rb = (uv * 2.0 - 1.0) * vec2(u_resolution.x / u_resolution.y, 1.0);
+
+            // 六边形垂直半径 R.y
+            float Ry;
+            if (u_manualRadius <= 0.01) {
+                Ry = exp(mix(log(3.0), log(55.0), cos(-rb.y * 0.15 * tau - 0.8 + u_time) * 0.5 + 0.5));
+            } else {
+                Ry = u_manualRadius;
+            }
+
+            vec4 c = vec4(0.0);
+            int IRy = int(Ry);
+            float cw = 0.0;
+
+            // 纯六边形积分遍历 (直接内联公式，移除一切分支判断)
+            for (int i = -IRy; i <= IRy; ++i) {
+                float fi = float(i);
+                
+                // 六边形在纵坐标 fi 处的水平半宽
+                float w = 0.866025 * min(1.0, (1.0 - abs(fi / Ry)) / 0.5) * Ry;
+
+                float owl = max(0.0, w - gl_FragCoord.x);
+                float owr = max(0.0, gl_FragCoord.x - u_resolution.x + w);
+                cw += 2.0 * w - owl - owr;
+
+                w *= pw.x;
+                float y = uv.y + pw.y * fi;
+                
+                // 利用前缀和直接做两端相减，O(1) 算出水平切片光通量
+                vec4 p0 = texture(u_sat, vec2(uv.x - w, y));
+                vec4 p1 = texture(u_sat, vec2(uv.x + w, y));
+                c += (p1 - p0);
+            }
+
+            // ACES 胶片色调映射
+            vec3 finalColor = (c.rgb / max(cw, 0.001) + 0.5) * u_exposure;
+            fragColor = vec4(pow(ACESFitted(finalColor), vec3(1.0 / 2.2)), 1.0);
+        }
+    </script>
+
+    <script>
+        const canvas = document.getElementById('glcanvas');
+        const gl = canvas.getContext('webgl2');
+        if (!gl) alert('需要 WebGL 2 支持');
+
+        gl.getExtension('EXT_color_buffer_float');
+        gl.getExtension('OES_texture_float_linear');
+
+        function createShader(gl, type, src) {
+            const s = gl.createShader(type);
+            gl.shaderSource(s, src);
+            gl.compileShader(s);
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s));
+            return s;
+        }
+
+        function createProg(vs, fs) {
+            const p = gl.createProgram();
+            gl.attachShader(p, createShader(gl, gl.VERTEX_SHADER, vs));
+            gl.attachShader(p, createShader(gl, gl.FRAGMENT_SHADER, fs));
+            gl.linkProgram(p);
+            return p;
+        }
+
+        const vsSrc = document.getElementById('vs').text;
+        const progInit = createProg(vsSrc, document.getElementById('fs-init').text);
+        const progSat = createProg(vsSrc, document.getElementById('fs-sat').text);
+        const progBokeh = createProg(vsSrc, document.getElementById('fs-bokeh').text);
+
+        const quadVAO = gl.createVertexArray();
+        gl.bindVertexArray(quadVAO);
+        const quadVBO = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadVBO);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(0);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+        let fbos = [null, null], satTextures = [null, null];
+        let currentSATIdx = 0;
+
+        function initSATFBOs(w, h) {
+            for(let i=0; i<2; i++) {
+                if (fbos[i]) gl.deleteFramebuffer(fbos[i]);
+                if (satTextures[i]) gl.deleteTexture(satTextures[i]);
+
+                satTextures[i] = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, satTextures[i]);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, w, h, 0, gl.RGBA, gl.FLOAT, null);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+                fbos[i] = gl.createFramebuffer();
+                gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[i]);
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, satTextures[i], 0);
+            }
+        }
+
+        let imageTex = gl.createTexture();
+        let imgW = 1920, imgH = 1080;
+        let needsRebuildSAT = true;
+
+        function createDefaultNightScene() {
+            const c = document.createElement('canvas');
+            c.width = imgW; c.height = imgH;
+            const ctx = c.getContext('2d');
+
+            const g = ctx.createLinearGradient(0, 0, 0, imgH);
+            g.addColorStop(0, '#020612');
+            g.addColorStop(0.7, '#081426');
+            g.addColorStop(1, '#0c1b30');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, imgW, imgH);
+
+            const colors = ['#ffffff', '#ffeb3b', '#00f0ff', '#ff007f', '#ffaa00'];
+            for(let x = 0; x < imgW; x += Math.random() * 40 + 30) {
+                const bw = Math.random() * 40 + 25;
+                const bh = Math.random() * 500 + 200;
+                ctx.fillStyle = '#060d18';
+                ctx.fillRect(x, imgH - bh, bw, bh);
+
+                for(let wy = imgH - bh + 20; wy < imgH - 40; wy += 14) {
+                    for(let wx = x + 5; wx < x + bw - 5; wx += 9) {
+                        if(Math.random() > 0.45) {
+                            ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                            ctx.fillRect(wx, wy, 4, 6);
+                        }
+                    }
+                }
+            }
+
+            for(let i=0; i<80; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random() * imgW, imgH - Math.random() * 40 - 10, Math.random() * 5 + 2, 0, Math.PI * 2);
+                ctx.fillStyle = Math.random() > 0.4 ? '#ffffff' : '#ff3344';
+                ctx.shadowColor = '#ff3344';
+                ctx.shadowBlur = 10;
+                ctx.fill();
+            }
+
+            updateTexture(c);
+        }
+
+        function updateTexture(elem) {
+            imgW = elem.width;
+            imgH = elem.height;
+            gl.bindTexture(gl.TEXTURE_2D, imageTex);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, elem);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            needsRebuildSAT = true;
+        }
+
+        createDefaultNightScene();
+
+        function rebuildSAT() {
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.bindVertexArray(quadVAO);
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[0]);
+            gl.useProgram(progInit);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, imageTex);
+            gl.uniform1i(gl.getUniformLocation(progInit, "u_image"), 0);
+            gl.uniform2f(gl.getUniformLocation(progInit, "u_resolution"), canvas.width, canvas.height);
+            gl.uniform2f(gl.getUniformLocation(progInit, "u_imgResolution"), imgW, imgH);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+            gl.useProgram(progSat);
+            let srcIdx = 0;
+            const steps = Math.ceil(Math.log2(canvas.width));
+            for(let i = 0; i < steps; i++) {
+                const dstIdx = 1 - srcIdx;
+                gl.bindFramebuffer(gl.FRAMEBUFFER, fbos[dstIdx]);
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, satTextures[srcIdx]);
+                gl.uniform1i(gl.getUniformLocation(progSat, "u_src"), 0);
+                gl.uniform1i(gl.getUniformLocation(progSat, "u_step"), 1 << i);
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+                srcIdx = dstIdx;
+            }
+
+            currentSATIdx = srcIdx;
+            needsRebuildSAT = false;
+        }
+
+        function resize() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            if (canvas.width !== w || canvas.height !== h) {
+                canvas.width = w; canvas.height = h;
+                initSATFBOs(w, h);
+                needsRebuildSAT = true;
+            }
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const uiRadius = document.getElementById('param-radius');
+        const uiExp = document.getElementById('param-exp');
+        uiRadius.oninput = (e) => {
+            const v = parseFloat(e.target.value);
+            document.getElementById('radius-val').innerText = v === 0 ? '自动呼吸' : `${v} px`;
+        };
+        uiExp.oninput = (e) => {
+            document.getElementById('exp-val').innerText = parseFloat(e.target.value).toFixed(2);
+        };
+
+        function handleFile(file) {
+            if(!file || !file.type.startsWith('image/')) return;
+            const r = new FileReader();
+            r.onload = (e) => {
+                const img = new Image();
+                img.onload = () => updateTexture(img);
+                img.src = e.target.result;
+            };
+            r.readAsDataURL(file);
+        }
+        document.getElementById('file-input').onchange = (e) => handleFile(e.target.files[0]);
+        window.ondragover = (e) => e.preventDefault();
+        window.ondrop = (e) => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); };
+
+        const start = performance.now();
+        function loop() {
+            resize();
+            if (needsRebuildSAT) rebuildSAT();
+
+            const time = (performance.now() - start) * 0.001;
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.useProgram(progBokeh);
+            gl.bindVertexArray(quadVAO);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, satTextures[currentSATIdx]);
+            gl.uniform1i(gl.getUniformLocation(progBokeh, "u_sat"), 0);
+
+            gl.uniform2f(gl.getUniformLocation(progBokeh, "u_resolution"), canvas.width, canvas.height);
+            gl.uniform1f(gl.getUniformLocation(progBokeh, "u_time"), time);
+            gl.uniform1f(gl.getUniformLocation(progBokeh, "u_manualRadius"), parseFloat(uiRadius.value));
+            gl.uniform1f(gl.getUniformLocation(progBokeh, "u_exposure"), parseFloat(uiExp.value));
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
+</body>
+</html>
