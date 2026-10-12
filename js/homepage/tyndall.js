@@ -7,7 +7,8 @@
   var MODEL_ROT_Z = Math.PI*0.9;   // 绕 Z 轴 180°
 
   var panel = document.querySelector('.debug-panel');
-  if (panel && !SHOW_DEBUG_PANEL) panel.style.display = 'none';
+  // 面板默认由 CSS 隐藏(display:none); 仅在显式开启时才恢复显示
+  if (panel && SHOW_DEBUG_PANEL) panel.style.display = 'block';
 
   var canvas = document.getElementById('tyndall3d');
   var stage = document.getElementById('cinematic-stage');
@@ -167,6 +168,13 @@
       u_d2: { value: null },
       u_d3: { value: null },
       u_d4: { value: null },
+      // ===== 第二张壁纸(与第一张同结构, 供轮播交叉过渡) =====
+      u_color2: { value: null },
+      u_d1b: { value: null },
+      u_d2b: { value: null },
+      u_d3b: { value: null },
+      u_d4b: { value: null },
+      u_wallMix: { value: 0.0 }, // 0 = 第一张(t1_1), 1 = 第二张(t1_2); 轮播时渐变
       u_modelTex: { value: modelColorDepthTarget.texture },
       u_modelShadowMap: { value: modelShadowTarget.texture },
       u_lightMatrix: { value: new THREE.Matrix4() },
@@ -204,6 +212,12 @@
       'uniform sampler2D u_d2;',
       'uniform sampler2D u_d3;',
       'uniform sampler2D u_d4;',
+      'uniform sampler2D u_color2; // 第二张壁纸',
+      'uniform sampler2D u_d1b;',
+      'uniform sampler2D u_d2b;',
+      'uniform sampler2D u_d3b;',
+      'uniform sampler2D u_d4b;',
+      'uniform float u_wallMix; // 0 = 第一张壁纸, 1 = 第二张',
       'uniform sampler2D u_modelTex;',
       'uniform sampler2D u_modelShadowMap;',
       '',
@@ -284,14 +298,18 @@
       '  uv.y = (p.y / (p.z * FOV_TAN)) * 0.5 + 0.5;',
       '  return uv;',
       '}',
-      'bool isOccluded(sampler2D tex, vec3 p) {',
+      '// 单层遮挡强度 (0 = 透光, 1 = 全挡): 两份深度图按 u_wallMix 混合后经 smoothstep 连续化。',
+      '// 静止时遮罩为 0/1 ⇒ 结果也是 0/1(与原硬遮挡一致); 交叉过渡时遮罩为中间值 ⇒ 连续变化, 不瞬变。',
+      'float layerOcc(sampler2D texA, sampler2D texB, vec3 p) {',
       '  vec2 suv = projectToUV(p);',
       '  // 交点投影飞出屏幕 = 阴影射线越过山脊/山体轮廓射向高空, 此时无物可挡, 必须放行。',
       '  // 旧实现 clamp 到屏幕边缘再采样: 光源高挂(y=31)时, 山前空气点与深层平面(z=14/20)',
       '  // 的交点常在屏幕之外, 被钳到顶边后恰好命中贴边的远山遮罩 → 全部误判遮挡,',
       '  // 这正是"石头前面的空气一点光都没有"的根因。',
-      '  if (suv.x < 0.0 || suv.x > 1.0 || suv.y < 0.0 || suv.y > 1.0) return false;',
-      '  return texture2D(tex, suv).r > 0.35;',
+      '  if (suv.x < 0.0 || suv.x > 1.0 || suv.y < 0.0 || suv.y > 1.0) return 0.0;',
+      '  // 窗口 (0.05, 0.33) 落在遮罩的空隙内(实测像素只有 0 或 ≥0.35, 中间无值):',
+      '  // 静止时存在=1/不存在=0, 与原硬阈值一致; 过渡时混合值扫过空隙 ⇒ 连续, 不瞬变。',
+      '  return smoothstep(0.05, 0.33, mix(texture2D(texA, suv).r, texture2D(texB, suv).r, u_wallMix));',
       '}',
       '',
       '// 3D 阴影射线计算（包含岩石 + 真实 3D 碎裂模型阴影）',
@@ -301,31 +319,33 @@
       '  vec3 L = toL / dL;',
       '  if (L.z <= 0.0001) return 0.0;',
       '',
-      '  // 1. 山石分层遮挡 (从最近前景 d1 起逐层硬遮挡)',
+      '  // 1. 山石分层遮挡 (从最近前景 d1 起逐层累积; 静止时每层为 0/1 ⇒ 等效原硬遮挡)',
+      '  float rockOcc = 0.0;',
       '  if (p.z < Z_D1 && u_lightPos.z > Z_D1) {',
-      '    if (isOccluded(u_d1, p + L * ((Z_D1 - p.z) / L.z))) return 0.0;',
+      '    rockOcc = max(rockOcc, layerOcc(u_d1, u_d1b, p + L * ((Z_D1 - p.z) / L.z)));',
       '  }',
       '  if (p.z < Z_D2 && u_lightPos.z > Z_D2) {',
-      '    if (isOccluded(u_d2, p + L * ((Z_D2 - p.z) / L.z))) return 0.0;',
+      '    rockOcc = max(rockOcc, layerOcc(u_d2, u_d2b, p + L * ((Z_D2 - p.z) / L.z)));',
       '  }',
       '  if (p.z < Z_D3 && u_lightPos.z > Z_D3) {',
-      '    if (isOccluded(u_d3, p + L * ((Z_D3 - p.z) / L.z))) return 0.0;',
+      '    rockOcc = max(rockOcc, layerOcc(u_d3, u_d3b, p + L * ((Z_D3 - p.z) / L.z)));',
       '  }',
       '  if (p.z < Z_D4 && u_lightPos.z > Z_D4) {',
-      '    if (isOccluded(u_d4, p + L * ((Z_D4 - p.z) / L.z))) return 0.0;',
+      '    rockOcc = max(rockOcc, layerOcc(u_d4, u_d4b, p + L * ((Z_D4 - p.z) / L.z)));',
       '  }',
       '',
       '  // 2. 【核心】：真实 3D 碎块阴影投射（碎缝切光）',
+      '  float modelOcc = 0.0;',
       '  vec4 lClip = u_lightMatrix * vec4(p, 1.0);',
       '  // 点在光源相机背后时(lClip.w<=0)透视除法会翻转坐标, 误落进阴影图范围 → 必须排除',
       '  if (lClip.w > 0.0) {',
       '    vec3 lUV = (lClip.xyz / lClip.w) * 0.5 + 0.5;',
       '    if (lUV.x >= 0.0 && lUV.x <= 1.0 && lUV.y >= 0.0 && lUV.y <= 1.0) {',
       '      float shadowDepth = texture2D(u_modelShadowMap, lUV.xy).r;',
-      '      if (lUV.z > shadowDepth + 0.002) return 0.0; // 被碎石挡住，形成阴影缝隙',
+      '      if (lUV.z > shadowDepth + 0.002) modelOcc = 1.0; // 被碎石挡住，形成阴影缝隙',
       '    }',
       '  }',
-      '  return 1.0;',
+      '  return (1.0 - rockOcc) * (1.0 - modelOcc);',
       '}',
       '',
       'void main() {',
@@ -335,25 +355,28 @@
       '  // 2. 超广角边缘色散（拉箱剧烈变焦时边缘红蓝分离）',
       '  vec2 uvR = barrelDistort(v_uv, u_lensDistortion + u_lensChroma);',
       '  vec2 uvB = barrelDistort(v_uv, u_lensDistortion - u_lensChroma);',
-      '  float rCol = texture2D(u_color, uvR).r;',
-      '  float gCol = texture2D(u_color, uv).g;',
-      '  float bCol = texture2D(u_color, uvB).b;',
-      '  vec4 bgCol = vec4(rCol, gCol, bCol, 1.0);',
+      '  // 两张壁纸各自的 RGB 色散采样, 再按轮播进度 u_wallMix 交叉混合',
+      '  vec3 wallA = vec3(texture2D(u_color, uvR).r, texture2D(u_color, uv).g, texture2D(u_color, uvB).b);',
+      '  vec3 wallB = vec3(texture2D(u_color2, uvR).r, texture2D(u_color2, uv).g, texture2D(u_color2, uvB).b);',
+      '  vec4 bgCol = vec4(mix(wallA, wallB, u_wallMix), 1.0);',
       '',
       '  vec4 modelSample = texture2D(u_modelTex, uv);',
       '  float modelZ = modelSample.a; // 模型像素的绝对 3D 深度',
       '',
-      '  float m1 = texture2D(u_d1, uv).r;',
-      '  float m2 = texture2D(u_d2, uv).r;',
-      '  float m3 = texture2D(u_d3, uv).r;',
-      '  float m4 = texture2D(u_d4, uv).r;',
+      '  // 深度遮罩同样按 u_wallMix 交叉混合(两张壁纸的山石分层各自独立)',
+      '  float m1 = mix(texture2D(u_d1, uv).r, texture2D(u_d1b, uv).r, u_wallMix);',
+      '  float m2 = mix(texture2D(u_d2, uv).r, texture2D(u_d2b, uv).r, u_wallMix);',
+      '  float m3 = mix(texture2D(u_d3, uv).r, texture2D(u_d3b, uv).r, u_wallMix);',
+      '  float m4 = mix(texture2D(u_d4, uv).r, texture2D(u_d4b, uv).r, u_wallMix);',
       '',
-      '  // 判定初始山石深度 (d1 最近前景, 逐层取 min 得到最近的遮挡面)',
+      '  // 判定初始山石深度 (d1 最近前景, 逐层取 min 得到最近的遮挡面)。',
+      '  // 遮罩已按 u_wallMix 连续混合, 这里用 smoothstep 权重软化硬阈值(窗口落在遮罩空隙内, 见 layerOcc 注释):',
+      '  // 静止时权重 0/1 与原逻辑一致; 交叉过渡时权重连续变化 ⇒ sceneDepth 平滑推移, 体积光不会整块闪现。',
       '  float sceneDepth = Z_BG;',
-      '  if (m4 > 0.25) sceneDepth = min(sceneDepth, Z_D4);',
-      '  if (m3 > 0.25) sceneDepth = min(sceneDepth, Z_D3);',
-      '  if (m2 > 0.25) sceneDepth = min(sceneDepth, Z_D2);',
-      '  if (m1 > 0.25) sceneDepth = min(sceneDepth, Z_D1);',
+      '  sceneDepth = min(sceneDepth, mix(Z_BG, Z_D4, smoothstep(0.05, 0.33, m4)));',
+      '  sceneDepth = min(sceneDepth, mix(Z_BG, Z_D3, smoothstep(0.05, 0.33, m3)));',
+      '  sceneDepth = min(sceneDepth, mix(Z_BG, Z_D2, smoothstep(0.05, 0.33, m2)));',
+      '  sceneDepth = min(sceneDepth, mix(Z_BG, Z_D1, smoothstep(0.05, 0.33, m1)));',
       '',
       '  // 【物理交汇】：判断当前像素是看到山石还是看到 3D 模型',
       '  vec3 surfaceColor = bgCol.rgb;',
@@ -457,11 +480,34 @@
       tyndallMat.uniforms[uniformKey].value = t;
     });
   }
+  // 第一张壁纸 (t1_1, 深度图在 depth/w1/)
   loadTex('../asset/image/wallpaper/void/t1_1.jpg', 'u_color');
-  loadTex('../asset/image/wallpaper/void/depth/d1.jpg', 'u_d1');
-  loadTex('../asset/image/wallpaper/void/depth/d2.jpg', 'u_d2');
-  loadTex('../asset/image/wallpaper/void/depth/d3.jpg', 'u_d3');
-  loadTex('../asset/image/wallpaper/void/depth/d4.jpg', 'u_d4');
+  loadTex('../asset/image/wallpaper/void/depth/w1/d1.jpg', 'u_d1');
+  loadTex('../asset/image/wallpaper/void/depth/w1/d2.jpg', 'u_d2');
+  loadTex('../asset/image/wallpaper/void/depth/w1/d3.jpg', 'u_d3');
+  loadTex('../asset/image/wallpaper/void/depth/w1/d4.jpg', 'u_d4');
+  // 第二张壁纸 (t1_2, 深度图在 depth/w2/)
+  loadTex('../asset/image/wallpaper/void/t1_2.jpg', 'u_color2');
+  loadTex('../asset/image/wallpaper/void/depth/w2/d1.jpg', 'u_d1b');
+  loadTex('../asset/image/wallpaper/void/depth/w2/d2.jpg', 'u_d2b');
+  loadTex('../asset/image/wallpaper/void/depth/w2/d3.jpg', 'u_d3b');
+  loadTex('../asset/image/wallpaper/void/depth/w2/d4.jpg', 'u_d4b');
+
+  // ===== 6.6 双壁纸轮播 =====
+  // 每次进页面 t=0 必为第一张; 停留 WALL_DWELL_SEC 后交叉过渡到第二张, 再停留同样时长后切回, 循环往复。
+  var WALL_DWELL_SEC = 10.0; // 每张壁纸停留时长(秒)
+  var WALL_FADE_SEC = 1.5;   // 交叉过渡(渐变)时长(秒)
+  function wallMixAt(t) {
+    var d = WALL_DWELL_SEC, f = WALL_FADE_SEC;
+    var period = 2.0 * (d + f); // 一 → 二 → 一的完整周期
+    var ph = t % period;
+    var m;
+    if (ph < d) m = 0.0;                      // 第一张停留
+    else if (ph < d + f) m = (ph - d) / f;    // 第一张 → 第二张
+    else if (ph < 2.0 * d + f) m = 1.0;       // 第二张停留
+    else m = 1.0 - (ph - (2.0 * d + f)) / f;  // 第二张 → 第一张
+    return m * m * (3.0 - 2.0 * m);           // smoothstep: 两端斜率为 0, 过渡无顿挫
+  }
 
   // ===== 6.5 路径曲线与可视化编辑器 =====
   // 注意: 编辑器对象必须放进独立 scene. 若放进 modelScene, 会被两次
@@ -1487,6 +1533,8 @@
     // _uiShownCur 已在动画段提前平滑计算(供文字压扁使用), 这里仅写入 uniform
     tyndallMat.uniforms.u_uiShown.value = _uiShownCur;
     tyndallMat.uniforms.u_time.value = time;
+    // 双壁纸轮播: 由页面累计时间直接求混合系数(每次刷新 t 从 0 起 ⇒ 必从第一张开始)
+    tyndallMat.uniforms.u_wallMix.value = wallMixAt(time);
     tyndallMat.uniforms.u_debugMode.value = parseInt(pMode.value, 10);
     tyndallMat.uniforms.u_lightPos.value.copy(lightPos);
     // 丁达尔光强: UI 出现前为 0, UI 出现后随 _uiShownCur 平滑过渡到面板设定值

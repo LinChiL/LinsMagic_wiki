@@ -3,7 +3,7 @@
     "id": "void-stride",
     "title": "Void Stride（深渊跬步）",
     "src": "../asset/music/lmgc.mp3",
-    "volume": 0.5,
+    "volume": 0.75,
     "loop": true
   }
 ]

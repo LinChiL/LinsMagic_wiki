@@ -32,6 +32,7 @@
     /* 调试面板 */
     .debug-panel {
       position: fixed; top: 16px; left: 16px; z-index: 100;
+      display: none; /* 默认隐藏, 由 tyndall.js 按 SHOW_DEBUG_PANEL 决定是否显示: 避免刷新瞬间先绘出一帧再被 JS 隐藏 */
       background: rgba(12, 16, 22, 0.92); border: 1px solid rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
       padding: 16px 20px; color: #e5edf5; font-family: Consolas, Monaco, monospace;

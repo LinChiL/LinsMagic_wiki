@@ -22,6 +22,10 @@
     '  opacity: 1;',
     '  transform: translate(-50%, 0);',
     '}',
+    '/* 转场互斥锁: 菜单淡出(opacity:0)期间菜单项仍可点击, 此处彻底禁用点击 */',
+    '.rpg-menu-container.is-locked .rpg-menu-item {',
+    '  pointer-events: none;',
+    '}',
     '.rpg-menu-list {',
     '  list-style: none; margin: 0; padding: 0;',
     '  display: flex; flex-direction: column; gap: clamp(16px, 2.4vh, 28px);',
@@ -97,7 +101,7 @@
     '}',
     '.rpg-title-caption .caption-line {',
     '  margin-right: 32px;',
-    '  width: clamp(120px, 48vw, 320px); /* 线长, 与左下角署名一致 */',
+    '  width: clamp(32px, 12vw, 320px); /* 线长, 与左下角署名一致 */',
     '  height: 1px;',
     '  /* 镜像: 右端实、向左渐隐(左下角署名为左端实、向右渐隐) */',
     '  background: linear-gradient(',
@@ -132,6 +136,18 @@
   var ul = document.createElement('ul')
   ul.className = 'rpg-menu-list'
 
+  // 转场互斥锁: 触发重转场(Wiki/版本卡)的瞬间立刻锁死菜单,
+  // 防止同一时刻的第二次点击再触发另一段转场, 导致两段流程叠加
+  var locked = false
+  function lockMenu() {
+    locked = true
+    nav.classList.add('is-locked')
+  }
+  function unlockMenu() {
+    locked = false
+    nav.classList.remove('is-locked')
+  }
+
   ITEMS.forEach(function (text, i) {
     var li = document.createElement('li')
     li.className = 'rpg-menu-item' + (i === 0 ? ' active' : '')
@@ -150,17 +166,21 @@
 
     // 点击切换 .active 选中项(三角指示符/横线仅在 hover 或 active 时显现)
     li.addEventListener('click', function () {
+      if (locked) return // 转场进行中: 忽略后续点击
+
       var all = ul.querySelectorAll('.rpg-menu-item')
       all.forEach(function (o) { o.classList.remove('active') })
       li.classList.add('active')
 
       // 【新增】点击"Wiki"触发全屏模型覆盖层
       if (i === 1 && window.WikiModel) {
+        lockMenu() // 先锁菜单再触发, 保证转场开始的同一瞬间其它项即不可点
         window.WikiModel.enter();
       }
 
       // 【新增】点击"版本与更新日志"触发转场
       if (i === 2 && window.onChangelogTrigger) {
+        lockMenu() // 400ms 转场期间菜单仍在淡出, 不锁会被"同一瞬间"的第二次点击穿透
         window.onChangelogTrigger();
       }
     })
@@ -190,7 +210,7 @@
       nav.style.setProperty('--menu-x', centerX + 'px')
       nav.style.setProperty('--menu-y', topY + 'px')
     },
-    show: function () { nav.classList.add('show') },
+    show: function () { unlockMenu(); nav.classList.add('show') },
     hide: function () { nav.classList.remove('show') }
   }
 })();

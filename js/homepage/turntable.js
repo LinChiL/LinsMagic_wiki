@@ -159,6 +159,43 @@
         audio.volume = typeof track.volume === 'number' ? track.volume : 0.8
         audio.preload = 'auto'
 
+        // ===== 播放进度记忆: 往 localStorage 记当前位置, 刷新后接着播而不是从头 =====
+        var PROGRESS_KEY = 'wb_bgm_progress_v1'
+        function readSavedTime() {
+          try {
+            var o = JSON.parse(window.localStorage.getItem(PROGRESS_KEY) || 'null')
+            if (o && o.src === track.src && typeof o.t === 'number') return o.t
+          } catch (e) {}
+          return 0
+        }
+        function saveSavedTime() {
+          try {
+            window.localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+              src: track.src, t: audio.currentTime, at: Date.now()
+            }))
+          } catch (e) {}
+        }
+        // 元数据就绪后才能安全 seek; 已接近结尾(loop 边界)则从头, 避免刚恢复就跳回开头
+        audio.addEventListener('loadedmetadata', function () {
+          var t = readSavedTime()
+          if (t > 0.3 && (!isFinite(audio.duration) || t < audio.duration - 0.5)) {
+            try { audio.currentTime = t } catch (e) {}
+          }
+        })
+        // timeupdate ~4 次/秒, 节流到每秒最多写一次, 降低写入频率
+        var _lastProgSave = 0
+        audio.addEventListener('timeupdate', function () {
+          var now = Date.now()
+          if (now - _lastProgSave < 1000) return
+          _lastProgSave = now
+          saveSavedTime()
+        })
+        audio.addEventListener('pause', saveSavedTime)
+        window.addEventListener('pagehide', saveSavedTime)
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'hidden') saveSavedTime()
+        })
+
         var actx = null, analyser = null, waveData = null
         var SHADOW_LAYERS = 5 // 5 层时间滞后影子波
         var SHADOW_STRIDE = 3 // 每隔 N 帧滚动一次历史, 拉开影子时间差(~250ms 总拖影)

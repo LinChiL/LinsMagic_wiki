@@ -3,384 +3,471 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4-Body Gravitational Repulsive SDF Spheres</title>
+    <title>交叉排线手绘素描滤镜 (Crosshatch Sketch Filter)</title>
     <style>
-        * { margin: 0; padding: 0; overflow: hidden; }
-        body { background: #f2f2f4; cursor: grab; user-select: none; }
-        body:active { cursor: grabbing; }
-        canvas { width: 100vw; height: 100vh; display: block; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #eee;
+        }
+        canvas#glcanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        /* 浮动控制栏 */
+        .toolbar {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(28, 28, 30, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 20px;
+            border-radius: 40px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .btn {
+            background: #3a3a3c;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            background: #505054;
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background: #007aff;
+            border-color: #007aff;
+        }
+        .btn-primary:hover {
+            background: #258cfb;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        /* 左上角提示 */
+        .tips {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(8px);
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 13px;
+            line-height: 1.6;
+            pointer-events: none;
+        }
+        /* 拖拽上传覆盖层提示 */
+        .drop-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 122, 255, 0.2);
+            border: 3px dashed #007aff;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            pointer-events: none;
+            z-index: 99;
+        }
     </style>
 </head>
 <body>
+
+    <div class="tips">
+        📷 <b>换图方式</b>：点击下方按钮 / 直接拖拽图片进网页 / <b>Ctrl+V</b> 粘贴剪贴板截图
+    </div>
+
+    <div class="drop-overlay" id="dropOverlay">松开鼠标即可载入图片 ✨</div>
+
     <canvas id="glcanvas"></canvas>
+
+    <div class="toolbar">
+        <label class="btn btn-primary">
+            📁 上传你的图片
+            <input type="file" id="fileInput" accept="image/*">
+        </label>
+        <button class="btn" id="toggleAnimate">⏸️ 暂停手抖动画</button>
+        <button class="btn" id="saveBtn">💾 保存素描图片</button>
+        <button class="btn" id="defaultBtn">🔄 恢复示例图</button>
+    </div>
 
     <script>
         const canvas = document.getElementById('glcanvas');
-        const gl = canvas.getContext('webgl');
+        // preserveDrawingBuffer 允许将 WebGL 画布直接保存为图片
+        const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
 
-        const vsSource = `
-            attribute vec2 position;
-            void main() { gl_Position = vec4(position, 0.0, 1.0); }
-        `;
+        if (!gl) {
+            alert('当前浏览器不支持 WebGL 2.0，请使用最新版 Chrome / Edge / Safari！');
+        }
 
-        const fsSource = `
-            precision highp float;
-            uniform vec2 iResolution;
-            uniform float iTime;
-            uniform vec3 uPos[4];     // 4颗小球的位置数组
-            uniform vec2 uCamAngle;
-            uniform float uCamDist;
+        // ================= 1. 顶点着色器 =================
+        const vsSource = `#version 300 es
+        in vec2 position;
+        void main() {
+            gl_Position = vec4(position, 0.0, 1.0);
+        }`;
 
-            // ==================== 高精度平滑 3D 噪声 ====================
-            float hash(vec3 p) {
-                return fract(sin(dot(p, vec3(12.9898, 78.233, 45.5432))) * 43758.5453123);
+        // ================= 2. 交叉排线片段着色器 (已适配图片纹理与比例) =================
+        const fsSource = `#version 300 es
+        precision highp float;
+        out vec4 fragColor;
+
+        uniform vec3 iResolution;
+        uniform float iTime;
+        uniform sampler2D iChannel0; // 输入图片
+        uniform sampler2D iChannel1; // 噪波纹理
+        uniform float uFlicker;      // 手绘动态抖动开关
+
+        #define PI2 6.28318530718
+        #define sc (iResolution.x/600.0)
+            
+        vec2 roffs;
+        float ramp;
+        float rsc;
+
+        vec2 uvSmooth(vec2 uv, vec2 res) {
+            return uv + 0.6 * sin(uv * res * PI2) / PI2 / res;
+        }
+
+        vec4 getRand(vec2 pos) {
+            vec2 tres = vec2(textureSize(iChannel1, 0));
+            vec2 uv = pos / tres.xy;
+            uv = uvSmooth(uv, tres);
+            return textureLod(iChannel1, uv, 0.0);
+        }
+
+        // 保持上传图片纵横比居中，超出边界自然融入画纸白底
+        vec4 getCol(vec2 pos) {
+            vec4 r1 = (getRand((pos + roffs) * 0.05 * rsc / sc + iTime * 131.0 * uFlicker) - 0.5) * 10.0 * ramp;
+            vec2 res0 = vec2(textureSize(iChannel0, 0));
+            
+            vec2 p = pos + r1.xy * sc;
+            vec2 uv = ((p - iResolution.xy * 0.5) / iResolution.y * res0.y) / res0.xy + 0.5;
+
+            // 超出原图范围的边角填充为纯白画纸
+            if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+                return vec4(1.0);
             }
 
-            float noise(vec3 p) {
-                vec3 i = floor(p);
-                vec3 f = fract(p);
-                vec3 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
-                return mix(
-                    mix(mix(hash(i + vec3(0,0,0)), hash(i + vec3(1,0,0)), u.x),
-                        mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), u.x), u.y),
-                    mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), u.x),
-                        mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), u.x), u.y),
-                    u.z
-                );
+            return texture(iChannel0, uv);
+        }
+
+        float getVal(vec2 pos) {
+            return clamp(dot(getCol(pos).xyz, vec3(0.333)), 0.0, 1.0);
+        }
+
+        vec2 getGrad(vec2 pos, float eps) {
+            vec2 d = vec2(eps, 0.0);
+            return vec2(
+                getVal(pos + d.xy) - getVal(pos - d.xy),
+                getVal(pos + d.yx) - getVal(pos - d.yx)
+            ) / eps / 2.0;
+        }
+
+        void main() {
+            vec2 fragCoord = gl_FragCoord.xy;
+
+            // 噪波计算（降低白噪刺眼感）
+            vec4 r = getRand(fragCoord * 1.2 / sqrt(sc)) - getRand(fragCoord * 1.2 / sqrt(sc) + vec2(1.0, -1.0) * 1.5);
+            vec4 r2 = getRand(fragCoord * 1.2 / sqrt(sc));
+            
+            // 1. 勾勒边缘轮廓线 (Outlines)
+            float br = 0.0;
+            roffs = vec2(0.0);
+            ramp = 0.7;
+            rsc = 0.7;
+            int num = 3;
+            for(int i = 0; i < num; i++) {
+                float fi = float(i) / float(num - 1);
+                float t = 0.03 + 0.25 * fi, w = t * 2.0;
+                // 主轮廓线
+                ramp = 0.15 * pow(1.3, fi * 5.0); 
+                rsc  = 1.7 * pow(1.3, -fi * 5.0);
+                br += 0.6 * (0.5 + fi) * smoothstep(t - w/2.0, t + w/2.0, length(getGrad(fragCoord, 0.4 * sc)) * sc);
+                // 飘逸手绘复线
+                ramp = 0.3 * pow(1.3, fi * 5.0); 
+                rsc  = 10.7 * pow(1.3, -fi * 5.0);
+                br += 0.4 * (0.2 + fi) * smoothstep(t - w/2.0, t + w/2.0, length(getGrad(fragCoord, 0.4 * sc)) * sc);
             }
+            vec3 col = vec3(1.0) - 0.7 * br * (0.5 + 0.5 * r2.z) * 3.0 / float(num);
+            col = clamp(col, 0.0, 1.0);
+            
+            // 2. 交叉排线阴影 (Cross Hatching)
+            ramp = 0.0;
+            int hnum = 5;
+            #define N(v) (v.yx * vec2(-1.0, 1.0))
+            #define CS(ang) cos(ang - vec2(0.0, 1.6))
+            float hatch = 0.0;
+            float hatch2 = 0.0;
+            float sum = 0.0;
 
-            float fbm(vec3 p) {
-                float v = 0.0;
-                float a = 0.5;
-                for (int i = 0; i < 3; ++i) {
-                    v += a * noise(p);
-                    p = p * 2.02 + vec3(1.7, 9.2, 4.3);
-                    a *= 0.5;
-                }
-                return v;
+            for(int i = 0; i < hnum; i++) {
+                float brVal = getVal(fragCoord + 1.5 * sc * (getRand(fragCoord * 0.02 + iTime * 1120.0).xy - 0.5) * clamp(uFlicker, -1.0, 1.0)) * 1.7;
+                // 排线角度随层数变化（形成多向交叉笔触）
+                float ang = -0.5 - 0.08 * float(i * i);
+                vec2 uvh = mat2(CS(ang), N(CS(ang))) * fragCoord / sqrt(sc) * vec2(0.05, 1.0) * 1.3;
+                vec4 rh = pow(getRand(uvh + 1003.123 * iTime * uFlicker + vec2(sin(uvh.y), 0.0)), vec4(1.0));
+                
+                hatch  += 1.0 - smoothstep(0.5, 1.5, rh.x + brVal) - 0.3 * abs(r.z);
+                hatch2  = max(hatch2, 1.0 - smoothstep(0.5, 1.5, rh.x + brVal) - 0.3 * abs(r.z));
+                sum += 1.0;
+                if( float(i) > (1.0 - brVal) * float(hnum) && i >= 2 ) break;
             }
+            
+            col *= 1.0 - clamp(mix(hatch / sum, hatch2, 0.5), 0.0, 1.0);
+            col = 1.0 - ((1.0 - col) * 0.7);
 
-            float smin(float a, float b, float k) {
-                float h = max(k - abs(a - b), 0.0) / k;
-                return min(a, b) - h * h * k * 0.25;
-            }
+            // 3. 素描纸张肌理 (Paper Texture)
+            col *= 0.95 + 0.06 * r.xxx + 0.06 * r.xyz;
 
-            // ==================== 统一噪声与多球 SDF 融合 ====================
-            float map(vec3 p) {
-                vec3 np = p * 1.3 + vec3(0.0, iTime * 0.25, iTime * 0.15);
-                float displacement = (fbm(np) - 0.45) * 0.45;
+            // 4. 画纸边缘自然暗角 (Vignette)
+            vec2 scc = (fragCoord - 0.5 * iResolution.xy) / iResolution.x;
+            float vign = 1.0 - 0.3 * dot(scc, scc);
+            vign *= 1.0 - 0.7 * exp(-sin(fragCoord.x / iResolution.x * 3.1416) * 40.0);
+            vign *= 1.0 - 0.7 * exp(-sin(fragCoord.y / iResolution.y * 3.1416) * 20.0);
+            col *= vign;
 
-                // 1. 中心大球 (半径 0.9)
-                float dBig = length(p) - (0.9 + displacement);
+            fragColor = vec4(col, 1.0);
+        }`;
 
-                // 2. 四颗不同尺寸的小球
-                float d0 = length(p - uPos[0]) - (0.36 + displacement);
-                float d1 = length(p - uPos[1]) - (0.26 + displacement);
-                float d2 = length(p - uPos[2]) - (0.21 + displacement);
-                float d3 = length(p - uPos[3]) - (0.17 + displacement);
-
-                // 3. 级联平滑融合
-                float fused = smin(dBig, d0, 0.45);
-                fused = smin(fused, d1, 0.38);
-                fused = smin(fused, d2, 0.32);
-                fused = smin(fused, d3, 0.28);
-
-                return abs(fused) - 0.015;
-            }
-
-            void main() {
-                vec2 uv = (gl_FragCoord.xy * 2.0 - iResolution.xy) / iResolution.y;
-
-                vec3 target = vec3(0.0, 0.0, 0.0);
-                vec3 ro = vec3(
-                    uCamDist * cos(uCamAngle.y) * sin(uCamAngle.x),
-                    uCamDist * sin(uCamAngle.y),
-                    uCamDist * cos(uCamAngle.y) * cos(uCamAngle.x)
-                );
-
-                vec3 fwd = normalize(target - ro);
-                vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), fwd));
-                vec3 up = cross(fwd, right);
-                vec3 rd = normalize(uv.x * right + uv.y * up + 1.8 * fwd);
-
-                // 优雅的浅灰纸张底色
-                vec3 paperBg = vec3(0.85, 0.85, 0.87);
-
-                // ==================== 1. 3D 世界网格地面 (Y = -1.45) ====================
-                float floorY = -1.45;
-                if (rd.y < -0.001) {
-                    float tFloor = (floorY - ro.y) / rd.y;
-                    if (tFloor > 0.0) {
-                        vec3 pFloor = ro + rd * tFloor;
-                        float distFade = exp(-length(pFloor.xz) * 0.15);
-                        float pixelSize = tFloor * 0.0028;
-
-                        vec2 g1 = abs(fract(pFloor.xz - 0.5) - 0.5);
-                        float line1 = 1.0 - smoothstep(0.0, pixelSize * 1.5, min(g1.x, g1.y));
-                        vec2 g2 = abs(fract(pFloor.xz * 0.2 - 0.5) - 0.5);
-                        float line2 = 1.0 - smoothstep(0.0, pixelSize * 2.5, min(g2.x, g2.y));
-                        float grid = (line1 * 0.4 + line2 * 0.8) * distFade;
-
-                        float shadow = smoothstep(0.0, 1.3, length(pFloor.xz));
-                        shadow *= smoothstep(0.0, 0.7, length(pFloor.xz - uPos[0].xz));
-                        shadow *= smoothstep(0.0, 0.5, length(pFloor.xz - uPos[1].xz));
-                        shadow *= smoothstep(0.0, 0.4, length(pFloor.xz - uPos[2].xz));
-                        shadow *= smoothstep(0.0, 0.35, length(pFloor.xz - uPos[3].xz));
-
-                        paperBg -= vec3((grid * 0.045 + (1.0 - shadow) * 0.04) * distFade);
-                    }
-                }
-
-                // ==================== 2. 体积光线步进 ====================
-                vec4 N = vec4(0.0);
-                vec3 k = ro;
-                float o = 0.0;
-
-                for (int i = 0; i < 85; i++) {
-                    if (N.a >= 6.0 || o++ >= 85.0) break;
-
-                    float depth = length(k - ro);
-                    float b = max(map(k), 0.0);
-
-                    float edge = min(b * 1024.0, 0.35 - b);
-                    if (edge > 0.0) {
-                        float spatialPhase = dot(k, vec3(0.6, 0.5, 0.4)) + k.z * 0.6;
-                        float fresnel = 1.0 - abs(dot(rd, normalize(k + vec3(0.0001))));
-
-                        // 计算与最近小球的张力响应
-                        float distBig = length(k);
-                        float distMinSmall = min(
-                            min(length(k - uPos[0]), length(k - uPos[1])),
-                            min(length(k - uPos[2]), length(k - uPos[3]))
-                        );
-                        float tensionDiff = abs(distBig - distMinSmall);
-                        float fusionTension = exp(-clamp(tensionDiff, 0.0, 5.0) * 3.5);
-
-                        float colorPhase = spatialPhase 
-                                         + fresnel * 1.8 
-                                         + fusionTension * 3.14 
-                                         + depth * 0.15 
-                                         - iTime * 0.5;
-
-                        // 提亮色彩基调，让虹彩更通透饱满
-                        vec4 colPalette = 0.04 + 0.02 * cos(colorPhase + vec4(6.0, 1.0, 2.0, 0.0));
-                        colPalette.rgb += vec3(0.025, 0.015, 0.035) * fusionTension;
-                        colPalette.a = 0.04;
-
-                        N += edge * colPalette;
-                    }
-                    k += rd * max(b, 0.0035) * (0.8 + depth * 0.15) * 0.35;
-                }
-
-                // ==================== 3. 安全纸张色调映射（彻底移除死黑奇点） ====================
-                vec3 mappedColor;
-                for (int c = 0; c < 3; c++) {
-                    float val = N[c];
-                    float u = val - 0.42;
-                    // 安全平滑项 +0.08，彻底防止除零和负值坍缩
-                    float denom = u + 0.25 + 0.15 / (abs(u) + 0.08);
-                    mappedColor[c] = clamp(u / denom + 0.4, 0.15, 1.0);
-                }
-                // ====== 在这里加入饱和度控制 ======
-                float gray = dot(mappedColor, vec3(0.299, 0.587, 0.114)); // 计算灰度
-                mappedColor = mix(vec3(gray), mappedColor, 0.35);          // 0.35 就是饱和度！
-                // ==================================
-
-                float mask = smoothstep(0.01, 0.4, N.a);
-                vec3 finalCol = mix(paperBg, mappedColor, mask);    
-
-
-                gl_FragColor = vec4(finalCol, 1.0);
-            }
-        `;
-
-        function createShader(gl, type, source) {
+        // ================= 3. 编译 Shader =================
+        function compileShader(type, src) {
             const s = gl.createShader(type);
-            gl.shaderSource(s, source);
+            gl.shaderSource(s, src);
             gl.compileShader(s);
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(s));
+            }
             return s;
         }
 
         const program = gl.createProgram();
-        gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
-        gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
+        gl.attachShader(program, compileShader(gl.VERTEX_SHADER, vsSource));
+        gl.attachShader(program, compileShader(gl.FRAGMENT_SHADER, fsSource));
         gl.linkProgram(program);
-        gl.useProgram(program);
 
-        const posBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
-        const posAttr = gl.getAttribLocation(program, 'position');
-        gl.enableVertexAttribArray(posAttr);
-        gl.vertexAttribPointer(posAttr, 2, gl.FLOAT, false, 0, 0);
+        // 顶点四边形
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+            -1, -1,  1, -1, -1,  1,
+            -1,  1,  1, -1,  1,  1,
+        ]), gl.STATIC_DRAW);
 
+        const posLoc = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        // Uniforms
         const uRes = gl.getUniformLocation(program, 'iResolution');
         const uTime = gl.getUniformLocation(program, 'iTime');
-        // 兼容性获取数组 Uniform
-        const uPosLoc = gl.getUniformLocation(program, 'uPos[0]') || gl.getUniformLocation(program, 'uPos');
-        const uCamAngleLoc = gl.getUniformLocation(program, 'uCamAngle');
-        const uCamDistLoc = gl.getUniformLocation(program, 'uCamDist');
+        const uChan0 = gl.getUniformLocation(program, 'iChannel0');
+        const uChan1 = gl.getUniformLocation(program, 'iChannel1');
+        const uFlicker = gl.getUniformLocation(program, 'uFlicker');
 
-        // ==================== 4颗小球多体物理系统 ====================
-        const initialBodies = [
-            { pos: { x:  1.55, y:  0.15, z:  0.0  }, vel: { x:  0.0, y:  0.45, z:  1.42 } },
-            { pos: { x: -1.25, y:  0.65, z:  0.4  }, vel: { x:  0.8, y: -0.20, z: -1.25 } },
-            { pos: { x:  0.35, y: -1.15, z: -0.7  }, vel: { x: -1.3, y:  0.35, z:  0.55 } },
-            { pos: { x: -0.40, y:  0.25, z: -1.45 }, vel: { x:  1.3, y:  0.65, z:  0.20 } }
-        ];
+        // ================= 4. 生成 256x256 噪波纹理 (iChannel1) =================
+        const noiseSize = 256;
+        const noiseData = new Uint8Array(noiseSize * noiseSize * 4);
+        for (let i = 0; i < noiseData.length; i++) {
+            noiseData[i] = Math.floor(Math.random() * 256);
+        }
+        const noiseTex = gl.createTexture();
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, noiseTex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, noiseSize, noiseSize, 0, gl.RGBA, gl.UNSIGNED_BYTE, noiseData);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+        gl.generateMipmap(gl.TEXTURE_2D);
 
-        let bodies = JSON.parse(JSON.stringify(initialBodies));
+        // ================= 5. 图片纹理 (iChannel0) =================
+        const imageTex = gl.createTexture();
 
-        const PHYSICS = {
-            G: 3.6,               // 引力强度
-            softening: 0.25,      // 软核常数
-            drag: 0.018,          // 微阻尼
-            brownian: 0.025,      // 微扰动
-            coreRadius: 0.70,     // 排斥核心临界半径
-            repulsionForce: 18.0  // 核心排斥反弹强度
-        };
+        function loadTextureFromImage(img) {
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, imageTex);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        }
 
-        function updatePhysics(dt) {
-            // 防御 1：时间步长安全钳制，杜绝后台切回产生极大或非法 dt
-            if (!dt || isNaN(dt) || dt <= 0.0) dt = 0.016;
-            dt = Math.min(dt, 0.033);
+        // 生成高质量默认示例图（古典静物花瓶与水果）
+        function createDefaultArt() {
+            const c = document.createElement('canvas');
+            c.width = 1024; c.height = 768;
+            const ctx = c.getContext('2d');
 
-            const steps = 8;
-            const subDt = dt / steps;
-            const randScale = PHYSICS.brownian * Math.sqrt(1.0 / subDt);
+            // 柔和光影背景
+            const bgGrad = ctx.createRadialGradient(400, 300, 50, 512, 384, 600);
+            bgGrad.addColorStop(0, '#f2ece4');
+            bgGrad.addColorStop(0.7, '#b8a99a');
+            bgGrad.addColorStop(1, '#61544a');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, c.width, c.height);
 
-            for (let s = 0; s < steps; s++) {
-                for (let i = 0; i < bodies.length; i++) {
-                    const b = bodies[i];
+            // 木桌台面
+            ctx.fillStyle = '#4a3b32';
+            ctx.fillRect(0, 550, 1024, 218);
 
-                    // 防御 2：NaN 脏数据自动恢复机制
-                    if (isNaN(b.pos.x) || isNaN(b.vel.x)) {
-                        b.pos = { ...initialBodies[i].pos };
-                        b.vel = { ...initialBodies[i].vel };
-                    }
+            // 陶罐花瓶
+            ctx.fillStyle = '#2d3748';
+            ctx.beginPath();
+            ctx.moveTo(460, 240);
+            ctx.quadraticCurveTo(380, 360, 420, 520);
+            ctx.lineTo(604, 520);
+            ctx.quadraticCurveTo(644, 360, 564, 240);
+            ctx.closePath();
+            ctx.fill();
 
-                    const px = b.pos.x, py = b.pos.y, pz = b.pos.z;
-                    const r2 = px * px + py * py + pz * pz;
-                    const r = Math.sqrt(Math.max(r2, 0.001));
+            // 水果静物（苹果/橙子）
+            ctx.fillStyle = '#c53030';
+            ctx.beginPath();
+            ctx.arc(360, 540, 55, 0, Math.PI * 2);
+            ctx.fill();
 
-                    // 1. 万有引力 (引向中心)
-                    const invR3 = 1.0 / Math.pow(r2 + PHYSICS.softening, 1.5);
-                    let ax = -PHYSICS.G * px * invR3;
-                    let ay = -PHYSICS.G * py * invR3;
-                    let az = -PHYSICS.G * pz * invR3;
+            ctx.fillStyle = '#dd6b20';
+            ctx.beginPath();
+            ctx.arc(650, 550, 48, 0, Math.PI * 2);
+            ctx.fill();
 
-                    // 防御 3：核心排斥力加入加速度上限，杜绝近原点除以零
-                    if (r < PHYSICS.coreRadius) {
-                        const overlap = PHYSICS.coreRadius - r;
-                        const repMag = Math.min(PHYSICS.repulsionForce * (overlap * overlap) / (r * r + 0.06), 60.0);
-                        ax += (px / r) * repMag;
-                        ay += (py / r) * repMag;
-                        az += (pz / r) * repMag;
-                    }
+            // 花枝细节
+            ctx.strokeStyle = '#1a202c';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(512, 240);
+            ctx.bezierCurveTo(480, 120, 400, 90, 340, 60);
+            ctx.moveTo(512, 240);
+            ctx.bezierCurveTo(550, 150, 620, 110, 680, 80);
+            ctx.stroke();
 
-                    // 2. 空间微阻尼
-                    ax -= PHYSICS.drag * b.vel.x;
-                    ay -= PHYSICS.drag * b.vel.y;
-                    az -= PHYSICS.drag * b.vel.z;
+            return c;
+        }
 
-                    // 3. 微弱布朗热扰动
-                    const bx = (Math.random() * 2.0 - 1.0) * randScale;
-                    const by = (Math.random() * 2.0 - 1.0) * randScale;
-                    const bz = (Math.random() * 2.0 - 1.0) * randScale;
+        loadTextureFromImage(createDefaultArt());
 
-                    b.vel.x += (ax + bx) * subDt;
-                    b.vel.y += (ay + by) * subDt;
-                    b.vel.z += (az + bz) * subDt;
+        // ================= 6. 交互处理 (文件、拖拽、剪贴板粘贴) =================
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => loadTextureFromImage(img);
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
 
-                    // 防御 4：极速钳制，防止任何小球被反弹踢飞出可视区域
-                    const speed = Math.hypot(b.vel.x, b.vel.y, b.vel.z);
-                    if (speed > 4.5) {
-                        const factor = 4.5 / speed;
-                        b.vel.x *= factor;
-                        b.vel.y *= factor;
-                        b.vel.z *= factor;
-                    }
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFile(e.target.files[0]);
+        });
 
-                    b.pos.x += b.vel.x * subDt;
-                    b.pos.y += b.vel.y * subDt;
-                    b.pos.z += b.vel.z * subDt;
-
-                    // 边界回弹
-                    if (r > 3.2) {
-                        b.vel.x -= px * 0.8 * subDt;
-                        b.vel.y -= py * 0.8 * subDt;
-                        b.vel.z -= pz * 0.8 * subDt;
-                    }
+        // 剪贴板直接粘贴 (Ctrl+V)
+        window.addEventListener('paste', (e) => {
+            const items = e.clipboardData?.items;
+            if (!items) return;
+            for (let item of items) {
+                if (item.type.startsWith('image/')) {
+                    handleFile(item.getAsFile());
+                    break;
                 }
             }
-        }
-
-        // ==================== 3D 摄像机与交互 ====================
-        let camAngle = { x: 0.0, y: 0.28 };
-        let targetCamAngle = { x: 0.0, y: 0.28 };
-        let camDist = 4.3;
-        let targetCamDist = 4.3;
-        let isDragging = false;
-        let lastPointer = { x: 0, y: 0 };
-
-        window.addEventListener('pointerdown', (e) => {
-            isDragging = true;
-            lastPointer = { x: e.clientX, y: e.clientY };
         });
 
-        window.addEventListener('pointermove', (e) => {
-            if (isDragging) {
-                const dx = e.clientX - lastPointer.x;
-                const dy = e.clientY - lastPointer.y;
-                targetCamAngle.x -= dx * 0.007;
-                targetCamAngle.y = Math.max(-1.4, Math.min(1.4, targetCamAngle.y + dy * 0.007));
-                lastPointer = { x: e.clientX, y: e.clientY };
+        // 拖拽上传
+        const dropOverlay = document.getElementById('dropOverlay');
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropOverlay.style.display = 'flex';
+        });
+        window.addEventListener('dragleave', (e) => {
+            if (e.relatedTarget === null) dropOverlay.style.display = 'none';
+        });
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropOverlay.style.display = 'none';
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
             }
         });
 
-        window.addEventListener('pointerup', () => isDragging = false);
-        window.addEventListener('pointercancel', () => isDragging = false);
+        // 控制按钮
+        let flicker = 1.0;
+        const toggleBtn = document.getElementById('toggleAnimate');
+        toggleBtn.addEventListener('click', () => {
+            flicker = flicker === 1.0 ? 0.0 : 1.0;
+            toggleBtn.textContent = flicker === 1.0 ? '⏸️ 暂停手抖动画' : '▶️ 开启手绘动效';
+        });
 
-        window.addEventListener('wheel', (e) => {
-            targetCamDist = Math.max(2.0, Math.min(9.0, targetCamDist + e.deltaY * 0.003));
-        }, { passive: true });
+        document.getElementById('defaultBtn').addEventListener('click', () => {
+            loadTextureFromImage(createDefaultArt());
+        });
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            gl.viewport(0, 0, canvas.width, canvas.height);
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        // 保存素描图片
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `crosshatch_sketch_${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
 
-        let lastTime = performance.now();
+        // ================= 7. 渲染主循环 =================
+        let startTime = performance.now();
 
         function render(now) {
-            const dt = (now - lastTime) * 0.001;
-            lastTime = now;
+            const timeSec = (now - startTime) * 0.001;
 
-            updatePhysics(dt);
+            if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            }
 
-            camAngle.x += (targetCamAngle.x - camAngle.x) * 0.08;
-            camAngle.y += (targetCamAngle.y - camAngle.y) * 0.08;
-            camDist += (targetCamDist - camDist) * 0.08;
+            gl.useProgram(program);
 
-            const posArray = new Float32Array([
-                bodies[0].pos.x, bodies[0].pos.y, bodies[0].pos.z,
-                bodies[1].pos.x, bodies[1].pos.y, bodies[1].pos.z,
-                bodies[2].pos.x, bodies[2].pos.y, bodies[2].pos.z,
-                bodies[3].pos.x, bodies[3].pos.y, bodies[3].pos.z
-            ]);
-
-            gl.uniform2f(uRes, canvas.width, canvas.height);
-            gl.uniform1f(uTime, now * 0.001);
-            gl.uniform3fv(uPosLoc, posArray);
-            gl.uniform2f(uCamAngleLoc, camAngle.x, camAngle.y);
-            gl.uniform1f(uCamDistLoc, camDist);
+            gl.uniform1i(uChan0, 0);
+            gl.uniform1i(uChan1, 1);
+            gl.uniform3f(uRes, canvas.width, canvas.height, 1.0);
+            gl.uniform1f(uTime, timeSec);
+            gl.uniform1f(uFlicker, flicker);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
+
             requestAnimationFrame(render);
         }
+
         requestAnimationFrame(render);
     </script>
 </body>

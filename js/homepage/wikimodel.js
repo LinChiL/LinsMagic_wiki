@@ -21,7 +21,14 @@ const LETTERBOX_SEC = 0.7     // 黑条滑入时长(秒)
 const SUBTITLE_TEXT = 'ON THE WAY TO WIKI' // 电影字幕文案(下黑条上方居中)
 const SUBTITLE_LINE_W = 120   // 字幕两侧横线长度(px)
 const SUBTITLE_GAP = 20       // 字幕底边离下黑条上沿(px)
+const SKIP_BTN_GAP = 18       // Skip 按钮底边离下黑条上沿(px), 与首页开场 Skip 同款抬升(tyndall.js SKIP_BTN_GAP)
 const SUBTITLE_LINE_SEC = 1.0 // 两侧横线画出时长(秒)
+// 运镜停止后字幕逐字替换: 旧文案逐字消失 → 新文案逐字出现(触发点 = beginFocusClear, 运镜播完那刻)
+const SUBTITLE_NEXT = 'LINSMAGIC WIKI' // 替换成的文案
+const SUBTITLE_SWAP_LEAD = 0.15  // 运镜停止到第一个字开始变化的延迟(秒)
+const SUBTITLE_SWAP_STEP = 0.055 // 逐字间隔(秒)
+const SUBTITLE_SWAP_HOLD = 0.35  // 旧文案清完后到新文案起现的间隔(秒)
+const SUBTITLE_SWAP_FADE = 0.14  // 单字淡入/淡出时长(秒)
 const style = document.createElement('style')
 style.textContent = [
   '.wiki-layer {',
@@ -94,11 +101,23 @@ style.textContent = [
   '/* ---- 电影字幕(下黑条上方): 文案淡入 + 两侧横线一左一右向文字画出 ---- */',
   '.wiki-subtitle { position: fixed; left: 0; right: 0; display: flex; align-items: center; justify-content: center; gap: 18px; z-index: 20; pointer-events: none; opacity: 0; transition: opacity 0.7s ease 0.2s; }',
   '.wiki-subtitle.on { opacity: 1; }',
-  '.ws-text { color: #fff; font-family: Rondal, "Times New Roman", Georgia, serif; font-weight: 700; font-size: clamp(12px, 1.1vw, 24px); line-height: 1; letter-spacing: 0.34em; text-indent: 0.34em; white-space: nowrap; text-shadow: -1px 0 0 rgba(0,0,0,0.85), 1px 0 0 rgba(0,0,0,0.85), 0 -1px 0 rgba(0,0,0,0.85), 0 1px 0 rgba(0,0,0,0.85), 0 0 10px rgba(0,0,0,0.9); }',
+  '.ws-text { color: #fff; font-family: Rondal, "Times New Roman", Georgia, serif; font-weight: 700; font-size: clamp(12px, 1.1vw, 24px); line-height: 1; letter-spacing: 0.34em; text-indent: 0.34em; white-space: pre; text-shadow: -1px 0 0 rgba(0,0,0,0.85), 1px 0 0 rgba(0,0,0,0.85), 0 -1px 0 rgba(0,0,0,0.85), 0 1px 0 rgba(0,0,0,0.85), 0 0 10px rgba(0,0,0,0.9); }',
   '.ws-line { width: ' + SUBTITLE_LINE_W + 'px; height: 1px; background: rgba(255,255,255,0.85); transform: scaleX(0); }',
   '.ws-line-l { transform-origin: 0 50%; transition: transform ' + SUBTITLE_LINE_SEC + 's cubic-bezier(0.22, 0.61, 0.36, 1) 0.35s; }', // 从左往右画
   '.ws-line-r { transform-origin: 100% 50%; transition: transform ' + SUBTITLE_LINE_SEC + 's cubic-bezier(0.22, 0.61, 0.36, 1) 0.35s; }', // 从右往左画
-  '.wiki-subtitle.on .ws-line { transform: scaleX(1); }'
+  '.wiki-subtitle.on .ws-line { transform: scaleX(1); }',
+  '/* ---- 字幕逐字替换(运镜停止后): 旧文案逐字淡出 → 新文案逐字淡入 ---- */',
+  // 两份文案叠在同一格(inline-grid 同 grid-area): 盒子宽 = 两者较大值 ⇒ 换字全程盒子尺寸不变, 两侧横线不会被推着走
+  '.ws-textbox { display: inline-grid; justify-items: center; }',
+  '.ws-textbox > .ws-text { grid-area: 1 / 1; }',
+  // 每个字一个 span, 各自的 transition-delay 在 JS 里按序写(旧字用短延迟, 新字排在旧字点完后) ⇒ 一次加类即完成两段串行
+  '.ws-ch { display: inline-block; opacity: 1; transition: opacity ' + SUBTITLE_SWAP_FADE + 's ease; }',
+  '.ws-text-new .ws-ch { opacity: 0; }',
+  '.wiki-subtitle.swapped .ws-text-old .ws-ch { opacity: 0; }',
+  '.wiki-subtitle.swapped .ws-text-new .ws-ch { opacity: 1; }',
+  '/* ---- Skip 按钮(右下角, 与首页开场 Skip 同款文案/字体/配色): 播放运镜期间可点, 直接跳到末机位 ---- */',
+  '.wiki-skip { position: fixed; right: 24px; bottom: 24px; z-index: 25; pointer-events: none; opacity: 0; transition: opacity 2.4s ease; cursor: pointer; user-select: none; -webkit-user-select: none; font-family: Rondal, serif; font-size: 2vw; letter-spacing: 0.12em; font-style: italic; color: rgba(208, 212, 235, 0.34); }',
+  '.wiki-skip.on { opacity: 1; pointer-events: auto; }'
 ].join('\n')
 document.head.appendChild(style)
 
@@ -123,19 +142,48 @@ layer.appendChild(barTop)
 layer.appendChild(barBottom)
 
 // 电影字幕: 下黑条上方居中 —— 文案淡入, 左线从左往右画、右线从右往左画(一同向文字收拢)
+// 文案按字拆 span: 旧文案与"运镜停止后要换上的"新文案叠在同一格, 逐字淡出/淡入(见 beginFocusClear)
 const subtitleEl = document.createElement('div')
 subtitleEl.className = 'wiki-subtitle'
 const subtitleLineL = document.createElement('i')
 subtitleLineL.className = 'ws-line ws-line-l'
 const subtitleLineR = document.createElement('i')
 subtitleLineR.className = 'ws-line ws-line-r'
-const subtitleTextEl = document.createElement('span')
-subtitleTextEl.className = 'ws-text'
-subtitleTextEl.textContent = SUBTITLE_TEXT
+const subtitleBox = document.createElement('span')
+subtitleBox.className = 'ws-textbox'
+const subtitleOldEl = document.createElement('span')
+subtitleOldEl.className = 'ws-text ws-text-old'
+const subtitleNewEl = document.createElement('span')
+subtitleNewEl.className = 'ws-text ws-text-new'
+function fillSubtitleChars(el, text, delay0) {
+  el.textContent = ''
+  for (let i = 0; i < text.length; i++) {
+    const ch = document.createElement('span')
+    ch.className = 'ws-ch'
+    ch.textContent = text.charAt(i)
+    ch.style.transitionDelay = (delay0 + i * SUBTITLE_SWAP_STEP).toFixed(3) + 's' // 逐字错开
+    el.appendChild(ch)
+  }
+}
+fillSubtitleChars(subtitleOldEl, SUBTITLE_TEXT, SUBTITLE_SWAP_LEAD)
+fillSubtitleChars(subtitleNewEl, SUBTITLE_NEXT, SUBTITLE_SWAP_LEAD + SUBTITLE_TEXT.length * SUBTITLE_SWAP_STEP + SUBTITLE_SWAP_HOLD)
+subtitleBox.appendChild(subtitleOldEl)
+subtitleBox.appendChild(subtitleNewEl)
 subtitleEl.appendChild(subtitleLineL)
-subtitleEl.appendChild(subtitleTextEl)
+subtitleEl.appendChild(subtitleBox)
 subtitleEl.appendChild(subtitleLineR)
 layer.appendChild(subtitleEl)
+
+// Skip 按钮: 右下角, 与首页开场 Skip 同款文案与样式; 播放运镜期间点击直接跳到末机位
+const skipBtnEl = document.createElement('div')
+skipBtnEl.className = 'wiki-skip'
+skipBtnEl.textContent = 'Skip（跳过）'
+skipBtnEl.addEventListener('click', function () {
+  if (!timeline || !isPlaying) return
+  const endW = playSegs.length ? playSegs[playSegs.length - 1].w1 : timeline.totalTime
+  wallTime = endW // 墙钟推到结尾: 下一帧走既有"播完"分支(末机位 + 聚焦收尾), 复用同一套收尾逻辑
+})
+layer.appendChild(skipBtnEl)
 
 function layoutLetterbox() {
   // 每边条高 = (视口高 − 视口宽/比例) / 2; 窗口本身就比目标比例宽时 = 0(不遮)
@@ -143,6 +191,7 @@ function layoutLetterbox() {
   barTop.style.height = h + 'px'
   barBottom.style.height = h + 'px'
   subtitleEl.style.bottom = (h + SUBTITLE_GAP) + 'px' // 字幕贴着下黑条上沿站
+  skipBtnEl.style.bottom = (h + SKIP_BTN_GAP) + 'px'  // Skip 同法抬到下黑条上沿之上, 不压在黑边上
 }
 
 // ===== 场景: 与 model.html 同规格 =====
@@ -401,16 +450,20 @@ const _shakeEuler = new THREE.Euler()
 const _shakeQuat = new THREE.Quaternion()
 
 // 手持摄影抖动参数(播放运镜时叠加在理想轨迹上)
-const SHAKE_POS_AMP = 0.012    // 基础位置抖动幅度(米)
-const SHAKE_ROT_AMP = 0.0022   // 基础角度抖动幅度(弧度, 约 0.13°)
+const SHAKE_POS_AMP = 0.042    // 基础位置抖动幅度(米)
+const SHAKE_ROT_AMP = 0.0222   // 基础角度抖动幅度(弧度, 约 0.13°)
 const SHAKE_MOVE_GAIN = 1.4    // 移动段放大系数
 const SHAKE_HOLD_SCALE = 0.35  // 停留时保留的抖动比例(呼吸感)
+const SHAKE_AMP_TAU = 0.25     // 手抖幅度平滑时间常数(秒): 越大进出暂停段越柔; 0 = 不平滑(会突跳)
+const SHAKE_END_FADE = 1.5     // 末段手抖渐隐时长(内容秒): 到达末节点(=播放终点)时手抖完全禁用; 0 = 不启用
+const SHAKE_FREQ_SCALE = 0.64   // 频率整体倍率(改这一个即可调快慢): 1 = 原始; >1 更急促, <1 更缓
 
 // 多频正弦叠加, 构造拟真手抖噪声; 返回约 [-1, 1]
 function shakeNoise(t, f1, f2, f3, ph) {
-  return Math.sin(t * f1 + ph) * 0.55
-       + Math.sin(t * f2 + ph * 2.1) * 0.30
-       + Math.sin(t * f3 + ph * 3.7) * 0.15
+  const tt = t * SHAKE_FREQ_SCALE // 频率整体倍率统一作用在时间轴上, 一处调全部快慢
+  return Math.sin(tt * f1 + ph) * 0.55
+       + Math.sin(tt * f2 + ph * 2.1) * 0.30
+       + Math.sin(tt * f3 + ph * 3.7) * 0.15
 }
 
 // 在理想位姿之上叠加手抖(每帧基于基准重算, 不累积)
@@ -1498,6 +1551,9 @@ let visible = false
 let pendingEnter = false // 点击时模型尚未加载完: 等落地后补起跑
 const clock = new THREE.Clock()
 let _mixerT = -1 // 骨骼上次摆到的内容时刻(停着时不用每帧空转 setTime)
+// 手抖幅度平滑状态: motionFactor 段内恒定、暂停段骤降, 直接切换会让抖动偏移瞬间跳变(卡一下)
+let _shakeAmpSmooth = SHAKE_HOLD_SCALE // 平滑后的运动因子
+let _shakeAmpPrevWall = -1             // 上一帧墙钟(算 dt); -1 = 尚未初始化
 
 // 按内容时刻摆好骨骼与相机(含手抖); withShake=false 用于拖动预览(拖时免抖, 画面干净)
 function poseAt(t, withShake) {
@@ -1554,7 +1610,24 @@ function poseAt(t, withShake) {
   }
 
   // 理想位姿上叠加手持抖动(相位走墙钟: 暂停平台里画面也会轻轻呼吸)
-  if (withShake) applyHandheldShake(wallTime, motionFactor * shakeGain(t, wallTime))
+  if (withShake) {
+    // 幅度平滑: motionFactor 段内恒定、暂停段骤降到 SHAKE_HOLD_SCALE, 直接切换会让抖动偏移
+    // 瞬间跳变(表现为"卡一下"且幅度突变); 这里按墙钟 dt 做指数趋近, 让进出暂停段的幅度无缝过渡。
+    if (_shakeAmpPrevWall < 0) {
+      _shakeAmpSmooth = motionFactor // 首帧直接对齐, 不从头渐入
+    } else if (wallTime > _shakeAmpPrevWall) {
+      const a = 1 - Math.exp(-(wallTime - _shakeAmpPrevWall) / SHAKE_AMP_TAU)
+      _shakeAmpSmooth += (motionFactor - _shakeAmpSmooth) * a
+    }
+    _shakeAmpPrevWall = wallTime
+    // 末段渐隐: 接近末节点时手抖完全过渡到禁用(内容时刻到达 totalTime 时增益为 0)
+    let endFade = 1
+    if (SHAKE_END_FADE > 0) {
+      let x = Math.min(1, Math.max(0, (timeline.totalTime - t) / SHAKE_END_FADE))
+      endFade = x * x * (3 - 2 * x) // smoothstep: 两端斜率为 0, 起止无顿挫
+    }
+    applyHandheldShake(wallTime, _shakeAmpSmooth * shakeGain(t, wallTime) * endFade)
+  }
 }
 
 // ===== 聚焦收尾: 运镜停到白球后, 世界整个撤退 =====
@@ -1565,6 +1638,7 @@ let worldCleared = false
 function beginFocusClear() {
   if (focusT >= 0) return
   focusT = 0
+  subtitleEl.classList.add('swapped') // 电影字幕: 旧文案逐字消失 → 新文案逐字出现(逐字延迟写在字符 span 上)
   if (model) model.visible = false // 骨骼每帧计算随隐藏一起停
   shadowPlane.visible = false // 影源没了, 接影板一起收
   hideFootShadows() // 脚底接触影一起收(重播恢复后由 updateFootShadows 每帧接管可见性)
@@ -1573,6 +1647,7 @@ function resetFocusClear() {
   if (focusT < 0) return
   focusT = -1
   worldCleared = false
+  subtitleEl.classList.remove('swapped') // 字幕回到旧文案(重播/拖进度条/调帧时)
   if (model) model.visible = true
   if (groundMesh) { groundMesh.visible = true; groundMesh.material.opacity = 1 }
   shadowPlane.visible = true
@@ -1591,6 +1666,7 @@ function frame() {
       if (wallTime >= endW) {
         wallTime = endW
         isPlaying = false // 播完停在末机位(与 model.html 停止播放后的状态一致)
+        skipBtnEl.classList.remove('on') // 播放结束: Skip 按钮淡出
         poseAt(timeline.totalTime, true)
         syncPlayLabel()
         beginFocusClear() // 聚焦收尾: 世界撤退(地面渐隐, 见 FOCUS_GROUND_FADE)
@@ -1646,9 +1722,11 @@ function startPlayback() {
   if (startEdit) exitStartEdit()
   resetFocusClear() // 重播: 世界(地面/人物/页面卡)全部恢复
   wallTime = 0
+  _shakeAmpPrevWall = -1 // 手抖幅度平滑重新对齐(避免与上次播放的墙钟差出大 dt 造成突跳)
   playTime = PLAY_FROM
   isPlaying = true
   syncPlayLabel()
+  skipBtnEl.classList.add('on') // Skip 按钮随播放淡入(与首页开场 Skip 同款过渡)
 }
 
 window.WikiModel = {
