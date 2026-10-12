@@ -1,0 +1,21 @@
+# 系统临时文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# 日志
+*.log
+
+# 音频工程临时文件（Adobe Audition 会话）
+*.asd
+*.asd.bak
+
+# 本地临时文件
+/html/temp
+/temp/

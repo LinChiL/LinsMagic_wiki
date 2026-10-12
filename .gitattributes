@@ -1,0 +1,20 @@
+# 文本文件统一以 LF 入库，避免跨平台换行符告警与无意义差异
+* text=auto eol=lf
+
+# 二进制资源不做换行符转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.otf binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+*.glb binary
+*.gltf binary
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.zip binary
