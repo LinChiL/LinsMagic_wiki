@@ -195,7 +195,7 @@
   captionLine.className = 'caption-line'
   var captionText = document.createElement('span')
   captionText.className = 'caption-text'
-  captionText.textContent = 'LINSMAGIC V1.10 虚空与深渊'
+  captionText.textContent = 'LINSMAGIC V1.10.5.X 虚空与深渊'
   caption.appendChild(captionLine)
   caption.appendChild(captionText)
   nav.appendChild(caption)
