@@ -696,7 +696,8 @@
   document.querySelector('.debug-panel').addEventListener('input', syncUI);
 
   // ===== Skip 按钮: 开场期间点击直接跳到 UI 出现态 =====
-  var _skipToEnd = false;
+  // 直达 wiki 链接(URL 带 #wiki, 由菜单「Wiki」点击时写入)首帧即跳过开场, 不播飞来动画
+  var _skipToEnd = (location.hash === '#wiki');
   var skipBtn = document.createElement('div');
   skipBtn.textContent = 'Skip（跳过）';
   skipBtn.style.cssText = [

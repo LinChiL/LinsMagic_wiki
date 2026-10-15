@@ -13,6 +13,11 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 
 const MODEL_URL = '../asset/model/character/diver.glb'
 
+// 直达链接: 菜单「Wiki」点击时把 #wiki 标签写进 URL(见 enter); 之后再打开带标签的链接
+// 就跳过首页开场与整段运镜, 直接落在运镜播完的 wiki 终态(白球 + 海面 + 字幕替换)。
+// 开场跳过在 tyndall.js 里用同一判据(location.hash === '#wiki')。
+const WIKI_DEEPLINK = location.hash === '#wiki'
+
 // ===== 覆盖层(自注入 DOM/CSS) =====
 // 电影遮幅(letterbox): 点击 Wiki 后上下滑入两条黑条, 把整幅屏幕画面裁成 LETTERBOX_ASPECT:1。
 // 纯屏幕空间遮罩(挂在 layer 里压住 GL 画布, 不改 3D 相机/卡片投影)—— 目标比例低于窗口比例时才会出现。
@@ -29,6 +34,11 @@ const SUBTITLE_SWAP_LEAD = 0.15  // 运镜停止到第一个字开始变化的�
 const SUBTITLE_SWAP_STEP = 0.055 // 逐字间隔(秒)
 const SUBTITLE_SWAP_HOLD = 0.35  // 旧文案清完后到新文案起现的间隔(秒)
 const SUBTITLE_SWAP_FADE = 0.14  // 单字淡入/淡出时长(秒)
+// 环视模式(正式 wiki 部分)的准心几何: CSS(尺寸/样式)与 JS(逐帧画)共用这几个数
+const XH_SIZE = 56 // 准心画布尺寸(css px)
+const XH_GAP = 4   // 准心中心空档(px)
+const XH_ARM = 9   // 准心臂长(px)
+const XH_W = 1.5   // 准心线宽(px)
 const style = document.createElement('style')
 style.textContent = [
   '.wiki-layer {',
@@ -117,7 +127,13 @@ style.textContent = [
   '.wiki-subtitle.swapped .ws-text-new .ws-ch { opacity: 1; }',
   '/* ---- Skip 按钮(右下角, 与首页开场 Skip 同款文案/字体/配色): 播放运镜期间可点, 直接跳到末机位 ---- */',
   '.wiki-skip { position: fixed; right: 24px; bottom: 24px; z-index: 25; pointer-events: none; opacity: 0; transition: opacity 2.4s ease; cursor: pointer; user-select: none; -webkit-user-select: none; font-family: Rondal, serif; font-size: 2vw; letter-spacing: 0.12em; font-style: italic; color: rgba(208, 212, 235, 0.34); }',
-  '.wiki-skip.on { opacity: 1; pointer-events: auto; }'
+  '.wiki-skip.on { opacity: 1; pointer-events: auto; }',
+  '/* ---- 环视模式: 十字准心(屏幕中心; 故障 RGB 闪动由 JS 逐帧画; 对下层反色 = difference) ---- */',
+  '.wiki-xhair { position: fixed; left: 50%; top: 50%; width: ' + XH_SIZE + 'px; height: ' + XH_SIZE + 'px; transform: translate(-50%, -50%); z-index: 25; pointer-events: none; display: none; mix-blend-mode: difference; }',
+  '.wiki-xhair.on { display: block; }',
+  '/* ---- 环视模式: 未锁定鼠标时的提示(准心下方一行小字) ---- */',
+  '.wiki-lockhint { position: fixed; left: 50%; top: calc(50% + 40px); transform: translateX(-50%); z-index: 25; pointer-events: none; opacity: 0; transition: opacity 0.5s ease; color: rgba(228, 233, 240, 0.95); font-family: "Source Han Serif CN", "Noto Serif CJK SC", "Songti SC", "STSong", "SimSun", serif; font-size: 22px; letter-spacing: 0.3em; text-indent: 0.3em; -webkit-text-stroke: 3px #000; paint-order: stroke fill; }',
+  '.wiki-lockhint.on { opacity: 1; }'
 ].join('\n')
 document.head.appendChild(style)
 
@@ -427,6 +443,7 @@ new GLTFLoader().load(MODEL_URL, (gltf) => {
     console.warn('[wiki] 脚骨未找齐, 跳过脚底接触影:', lfB && lfB.name, rfB && rfB.name, ltB && ltB.name, rtB && rtB.name)
   }
   modelReady = true
+  if (WIKI_DEEPLINK && focusT >= 0) model.visible = false // 直达: 收尾已先行, 迟到的模型不再露脸
   if (pendingEnter) startPlayback() // 模型迟到落地: 此刻才与运镜一起起跑, 保证踩脚与运镜同相位
 })
 
@@ -991,6 +1008,53 @@ const GROUND_TEX_MAX = 2048    // 烘焙贴图最大宽(px); 高按视口比例
 // 聚焦收尾: 运镜播完停在白球最后一位后, 地面(先渐隐)/人物/页面卡全部撤掉, 只留白球+引力球+眩光;
 // 重播、拖进度条、调起始帧会自动把整个世界恢复。
 const FOCUS_GROUND_FADE = 1.2  // 地面渐隐时长(墙钟秒): 播完起算, 淡到全透明后地面网格整个关掉
+
+// 鼠标环视(正式 wiki 部分): 运镜停稳(或直达进入)后进入"环视模式" —— 鼠标被吃掉(指针锁定),
+// 移动鼠标直接转视角(游戏式, 机位不动); 屏幕中心出故障 RGB 十字准心。浏览器要求手势才能锁定:
+// 进入时自动试一次, 失败(或按 Esc 释放)后点画面任意处重新锁定, 未锁定时准心下有提示。
+// 播放/拖动/调起始帧期间不生效(运镜与取帧要干净), 聚焦收尾那一刻接上(见 updateMouseLook)。
+const LOOK_SENS = 0.12    // 灵敏度(度/像素): 鼠标每移动 1px 转多少度
+const LOOK_TAU = 0.12     // 追赶平滑时间常数(秒): 视角拖着往目标滑, 越大越"重"越飘, 0.05 以下近乎硬跟
+const LOOK_YAW_MAX = 36   // 左右最大转角(度): 转到头停住(四角字幕都在这个范围内可达)
+const LOOK_PITCH_MAX = 20 // 上下最大转角(度)
+const LOOK_YAW_SIGN = 1   // 鼠标推右 = 视角朝右为 1, 反了改 -1
+const LOOK_PITCH_SIGN = 1 // 鼠标推上 = 视角朝上为 1 (想要"反向鼠标"改 -1)
+const LOOK_HINT = '点击锁定视角' // 未锁定时准心下方提示文案
+
+// 四角 3D 引导字幕(环视模式): 悬在末机位四周、面朝摄像机的精灵文字 —— 每个初始"微微露出"在画面
+// 四角外, 转头即可读全, 引导玩家环视。位置按"当前可见半角 + 标签自身尺寸"实时摆放(见 layoutLabels):
+// 横向只露 LABEL_PEEK 比例、纵向贴黑条内侧; 窗口比例变了自动重排。
+const LABEL_TL = '世界观设定'
+const LABEL_BL = '游戏理念设定'
+const LABEL_TR = '游戏（插件）内容WIKI'
+const LABEL_BR = '部署文档'
+const LABEL_TL_EN = 'Worldview'           // 第一行英文(放大): 左上
+const LABEL_BL_EN = 'Design Philosophy'   // 左下
+const LABEL_TR_EN = 'Plugin Content Wiki' // 右上
+const LABEL_BR_EN = 'Deployment Docs'     // 右下
+const LABEL_DIST = 8           // 距末机位距离(米): 只影响透视视差, 屏上大小另算(恒定)
+const LABEL_PX = 44            // 中文行屏上字高(px, 1080p 基准): 随窗口高等比
+const LABEL_EN_BIG = 1.5       // 第一行英文相对中文行的放大倍数
+const LABEL_STROKE = 0.14      // 字形黑描边线宽(占字号比例): 视觉厚度≈一半, 与提示语同款
+const LABEL_SCAN_FREQ = 1.6    // 扫描闪动: 横纹频率(弧度/px): 越大纹越密
+const LABEL_SCAN_SPEED = 60    // 扫描闪动: 亮暗纹上扫速度(px/秒)
+const LABEL_SCAN_MIN = 0.72    // 扫描闪动: 暗纹处亮度(0~1): 越小纹越深
+const LABEL_FLICKER = 0.28     // 扫描闪动: 亮度抖动幅度(0~1): 越大闪得越凶
+const LABEL_PEEK = 0.3         // 每个标签露在画面内的宽度占比(调大 = 露更多, 0.5 = 露一半)
+const LABEL_EDGE_INSET = 0.06  // 纵向离黑条内沿的空隙(占可见半高的比例)
+const LABEL_FADE = 0.9         // 亮相淡入时长(墙钟秒): 与聚焦收尾同起算
+
+// 四角按钮对应的模型"故障色散虚影": 准心转向某个按钮(方向夹角进 LABEL_GHOST_NEAR~FAR)时, 按钮锚点
+// 浮现该按钮的纯色模型 —— 不接光照, RGB 三通道加法混合、各自沿屏幕错位(偶发爆发), 同吃扫描闪动;
+// 摆位沿标签视线上再往深 LABEL_GHOST_DEPTH 米 → 角度与标签完全同位, 透明排序天然垫在标签之下。
+const WIKI_UI_DIR = '../asset/model/wiki-ui/' // 四按钮模型目录(与四角一一对应, 见 buildLabels)
+const LABEL_GHOST_DEPTH = 1.5    // 比标签深的米数(沿视线后移): 越大越"沉"在标签层级之下
+const LABEL_GHOST_SIZE = 2.2     // 虚影屏上尺寸(× 标签文字块高): 与窗口无关的观感大小
+const LABEL_GHOST_NEAR = 12      // 准心与按钮夹角(度)小到此值: 虚影全亮
+const LABEL_GHOST_FAR = 23       // 大到此值: 完全隐没(中间 smoothstep 过渡; 4:3 下静置夹角最小 ≈25°)
+const LABEL_GHOST_OPACITY = 0.5  // 单通道基础不透明度(加法混合: 三通道重叠处泛白)
+const LABEL_GHOST_DISP = 2.2     // 三通道横向错位基准(px, 1080p 基准): 越大色散越散
+const LABEL_GHOST_BURST = 3      // 偶发爆发时错位放大倍数(瞬间"炸一下")
 
 // ===== wiki 期间首页(卡片)的开销削减: 按"卡片在屏幕上的占比"分级 =====
 // 卡片就是首页本身(活页面, 跑在另一个 WebGL 上下文), 实测它在运镜中每帧约 4~5ms, 是 wiki 期间
@@ -1907,6 +1971,16 @@ function beginFocusClear() {
   shadowPlane.visible = false // 影源没了, 接影板一起收
   hideFootShadows() // 脚底接触影一起收(重播恢复后由 updateFootShadows 每帧接管可见性)
   rippleT = -1; rippleMesh.visible = false // 踩卡水波也一起收(世界都没了)
+  // 环视模式就位: 快照末机位(字幕锚点), 准心亮起, 四角字幕排好待淡入, 试锁鼠标(无手势失败走点击兜底)
+  _lookBasePos.copy(camera.position)
+  _lookBaseQuat.copy(camera.quaternion)
+  buildLabels()
+  layoutLabels()
+  for (let i = 0; i < labelSprites.length; i++) labelSprites[i].sp.visible = true
+  _labelFade = -1 // 下一帧起按 focusT 进度淡入
+  xhCanvas.classList.add('on')
+  requestLookLock()
+  syncLockHint()
 }
 function resetFocusClear() {
   if (focusT < 0) return
@@ -1921,6 +1995,333 @@ function resetFocusClear() {
   homeLod = 1
   if (window.HomeGate) { window.HomeGate.setScale(1); window.HomeGate.resume() } // 首页循环以全质量重新起跑(重播/拖进度条/调起始帧)
   resetRipplePlayback() // 踩卡水波重新武装(下次踩卡再触发一次)
+  // 环视模式收摊: 准心/提示/四角字幕全收, 释放鼠标, 转角归零(下次进来从末机位原朝向开始)
+  _lookYaw = 0; _lookPitch = 0
+  _lookYawT = 0; _lookPitchT = 0
+  _labelFade = -1
+  for (let i = 0; i < labelSprites.length; i++) {
+    labelSprites[i].sp.visible = false; labelSprites[i].sp.material.opacity = 0
+    labelSprites[i].ghost.root.visible = false // 虚影一起收(下次进来重新按接近度判定)
+  }
+  xhCanvas.classList.remove('on')
+  hintEl.classList.remove('on')
+  if (_lookLocked && document.exitPointerLock) document.exitPointerLock() // 解锁触发 pointerlockchange, 光标在那里还回来
+}
+
+// ===== 环视模式(正式 wiki 部分): 指针锁定(吃掉鼠标) + 十字准心 + 四角 3D 引导字幕 =====
+// 运镜停稳(或直达进入)后进入该模式; 播放/拖动/调起始帧期间不生效。
+// 接入/复位见 beginFocusClear / resetFocusClear(快照末机位、亮准心、排字幕、试锁鼠标 / 全部收起)。
+let _lookYawT = 0, _lookPitchT = 0 // 环视转角目标(弧度): 鼠标增量累加到这里, yaw 正 = 朝右, pitch 正 = 朝上
+let _lookYaw = 0, _lookPitch = 0   // 每帧实际叠加的转角: 指数追赶目标(丝滑收尾, 不过冲)
+let _lookLocked = false            // 指针是否已锁定在渲染画布上
+const _lookBasePos = new THREE.Vector3()  // 末机位基准(字幕摆放锚点), 进入环视时快照
+const _lookBaseQuat = new THREE.Quaternion()
+
+function requestLookLock() {
+  if (_lookLocked) return
+  try {
+    const p = renderer.domElement.requestPointerLock()
+    if (p && typeof p.catch === 'function') p.catch(function () {}) // 无手势会被拒: 静默, 交给点击兜底
+  } catch (e) {}
+}
+function syncLockHint() {
+  hintEl.classList.toggle('on', visible && focusT >= 0 && !_lookLocked)
+}
+function _onLockChange() { // change/error 都按真实状态校正(迟到的 error 不能把已锁状态抹掉)
+  _lookLocked = document.pointerLockElement === renderer.domElement
+  renderer.domElement.style.cursor = _lookLocked ? 'none' : '' // 锁定才藏光标, Esc 解锁要把鼠标还回来
+  syncLockHint()
+}
+document.addEventListener('pointerlockchange', _onLockChange)
+document.addEventListener('pointerlockerror', _onLockChange)
+// 锁定期间: 鼠标增量累加到目标视角(限位内钳住); 实际转角由 updateMouseLook 每帧平滑追赶
+window.addEventListener('mousemove', function (e) {
+  if (!_lookLocked || focusT < 0) return
+  const k = THREE.MathUtils.degToRad(LOOK_SENS)
+  const yawMax = THREE.MathUtils.degToRad(LOOK_YAW_MAX)
+  const pitchMax = THREE.MathUtils.degToRad(LOOK_PITCH_MAX)
+  _lookYawT = Math.max(-yawMax, Math.min(yawMax, _lookYawT + e.movementX * k * LOOK_YAW_SIGN))
+  _lookPitchT = Math.max(-pitchMax, Math.min(pitchMax, _lookPitchT - e.movementY * k * LOOK_PITCH_SIGN))
+})
+// 未锁定时点击画面重新锁定(K 面板上的点击除外); 进环视模式时 beginFocusClear 已自动试过一次
+window.addEventListener('click', function (e) {
+  if (!visible || focusT < 0 || _lookLocked) return
+  if (e.target && e.target.closest && e.target.closest('.wiki-kpanel')) return
+  requestLookLock()
+})
+
+// 每帧在 poseAt 摆完位姿后调用: 实际转角指数追赶目标(帧率无关), 再叠加到末机位基准朝向(只转朝向, 不动机位)
+function updateMouseLook(delta) {
+  if (focusT < 0) return
+  const k = 1 - Math.exp(-delta / LOOK_TAU) // 一阶低通: 快甩后拖着滑到位, 就是"速度余量"
+  _lookYaw += (_lookYawT - _lookYaw) * k
+  _lookPitch += (_lookPitchT - _lookPitch) * k
+  if (Math.abs(_lookYawT - _lookYaw) < 2e-4) _lookYaw = _lookYawT // 够近就吸附, 免得永远追不干净
+  if (Math.abs(_lookPitchT - _lookPitch) < 2e-4) _lookPitch = _lookPitchT
+  if (_lookYaw === 0 && _lookPitch === 0) return
+  camera.rotateY(-_lookYaw) // rotateY 正角朝左, 取负 ⇒ yaw 正 = 朝右(见上方约定)
+  camera.rotateX(_lookPitch) // rotateX 正角朝上
+}
+
+// ---- 十字准心(屏幕中心): 故障 RGB 闪动 —— 逐帧画三色通道错位 + 随机爆发撕裂; CSS 反色(difference) ----
+const xhCanvas = document.createElement('canvas')
+xhCanvas.className = 'wiki-xhair'
+const _xhDpr = Math.min(window.devicePixelRatio || 1, 2)
+xhCanvas.width = XH_SIZE * _xhDpr
+xhCanvas.height = XH_SIZE * _xhDpr
+const xhCtx = xhCanvas.getContext('2d')
+layer.appendChild(xhCanvas)
+// 未锁定鼠标时的提示(准心下方一行小字)
+const hintEl = document.createElement('div')
+hintEl.className = 'wiki-lockhint'
+hintEl.textContent = LOOK_HINT
+layer.appendChild(hintEl)
+
+let _xhBurstUntil = 0, _xhNextBurst = 0
+function drawCrosshair(now) {
+  const c = xhCtx
+  const C = XH_SIZE / 2
+  if (now >= _xhNextBurst) { // 安排下一次故障爆发(爆发期通道错位与撕裂都放大)
+    _xhBurstUntil = now + 0.05 + Math.random() * 0.13
+    _xhNextBurst = now + 0.9 + Math.random() * 1.9
+  }
+  const burst = now < _xhBurstUntil
+  const amp = burst ? 3.2 : 0.7 // 三色通道错位幅度(css px)
+  const dx = (Math.random() - 0.5) * 2 * amp
+  const dy = (Math.random() - 0.5) * 2 * amp
+  c.setTransform(_xhDpr, 0, 0, _xhDpr, 0, 0)
+  c.clearRect(0, 0, XH_SIZE, XH_SIZE)
+  c.globalCompositeOperation = 'lighter' // R/G/B 三份叠加: 重合处成白, 错开处见彩边(故障感)
+  c.globalAlpha = burst ? 0.45 + Math.random() * 0.55 : 0.78 + Math.random() * 0.22 // 闪动
+  c.lineWidth = XH_W
+  function arms(ox, oy, color) {
+    c.strokeStyle = color
+    c.beginPath()
+    c.moveTo(C + ox, C + oy - XH_GAP - XH_ARM); c.lineTo(C + ox, C + oy - XH_GAP)
+    c.moveTo(C + ox, C + oy + XH_GAP); c.lineTo(C + ox, C + oy + XH_GAP + XH_ARM)
+    c.moveTo(C + ox - XH_GAP - XH_ARM, C + oy); c.lineTo(C + ox - XH_GAP, C + oy)
+    c.moveTo(C + ox + XH_GAP, C + oy); c.lineTo(C + ox + XH_GAP + XH_ARM, C + oy)
+    c.stroke()
+  }
+  arms(dx, dy, 'rgb(255, 48, 48)')
+  arms(0, 0, 'rgb(48, 255, 48)')
+  arms(-dx, -dy, 'rgb(48, 48, 255)')
+  if (burst) { // 撕裂: 中间一条横带整体错位(只重画被裁进带内的部分)
+    const bandY = C - 5, shift = (Math.random() - 0.5) * 14
+    c.save()
+    c.beginPath(); c.rect(0, bandY, XH_SIZE, 10); c.clip()
+    c.globalAlpha = 0.9
+    arms(dx + shift, dy, 'rgb(255, 48, 48)')
+    arms(shift, 0, 'rgb(48, 255, 48)')
+    arms(-dx + shift, dy, 'rgb(48, 48, 255)')
+    c.restore()
+  }
+  c.globalCompositeOperation = 'source-over'
+  c.globalAlpha = 1
+}
+
+// ---- 四角 3D 引导字幕(面朝摄像机的精灵文字, 双行: 英文放大 + 中文现尺寸; 摆放见 layoutLabels) ----
+const labelSprites = [] // { sp, sideX, sideY, asp, hunit, pos }
+let _labelFade = -1     // 已写入材质的淡入进度(值变才写, 平时零开销)
+const _labelScanU = { uTime: { value: 0 } } // 扫描闪动共享时间 uniform: 四个标签同一节奏
+// 扫描闪动 GLSL(注入精灵片段着色器, 见 makeLabelSprite): 屏幕空间细横纹上扫 + 24Hz 亮度抖动 + 偶发强闪。
+// 用 gl_FragCoord 而非 uv —— 纹路钉在屏幕上扫, 是"显示层"故障语言(同准心), 不是世界里的雾。
+const LABEL_SCAN_GLSL =
+  'float scan = ' + LABEL_SCAN_MIN.toFixed(3) + ' + ' + (1 - LABEL_SCAN_MIN).toFixed(3) +
+  ' * (0.5 + 0.5 * sin((gl_FragCoord.y + uTime * ' + LABEL_SCAN_SPEED.toFixed(1) + ') * ' + LABEL_SCAN_FREQ.toFixed(3) + '));\n' +
+  'float flick = 1.0 - ' + LABEL_FLICKER.toFixed(3) + ' * wkhash(floor(uTime * 24.0));\n' +
+  'float strobe = wkhash(floor(uTime * 2.0) + 7.0) > 0.88 ? 1.3 : 1.0;\n' +
+  'diffuseColor.rgb *= scan * flick * strobe;'
+// 扫描闪动注入: 精灵贴图与虚影纯色材质共用(两者片段着色器都带 map_fragment); 时间走 _labelScanU
+function injectScan(mat) {
+  mat.onBeforeCompile = function (shader) {
+    shader.uniforms.uTime = _labelScanU.uTime
+    shader.fragmentShader = 'uniform float uTime;\nfloat wkhash(float x) { return fract(sin(x * 127.1) * 43758.5453); }\n' +
+      shader.fragmentShader.replace('#include <map_fragment>', '#include <map_fragment>\n' + LABEL_SCAN_GLSL)
+  }
+}
+function makeLabelSprite(enText, zhText) {
+  const F = 96, PAD = 18 // 中文行画布字号/留白: 只决定贴图清晰度, 屏上大小由 LABEL_PX 换算
+  const FEN = Math.round(F * LABEL_EN_BIG) // 英文行字号 = 中文行 × 放大倍数
+  const lineHen = Math.round(FEN * 1.3), lineHz = Math.round(F * 1.4), gap = Math.round(F * 0.18)
+  const cv = document.createElement('canvas')
+  const cx = cv.getContext('2d')
+  const serif = '"Source Han Serif CN", "Noto Serif CJK SC", "Songti SC", "STSong", "SimSun", serif'
+  const spEn = Math.round(FEN * 0.12) + 'px', spZh = Math.round(F * 0.15) + 'px' // 衬线大间距, 同 RPG 菜单
+  function meas(text, size, spacing) {
+    if ('letterSpacing' in cx) cx.letterSpacing = spacing
+    cx.font = '700 ' + size + 'px ' + serif
+    return Math.ceil(cx.measureText(text).width)
+  }
+  const twEn = meas(enText, FEN, spEn), twZh = meas(zhText, F, spZh)
+  cv.width = Math.max(twEn, twZh) + PAD * 2
+  cv.height = lineHen + gap + lineHz
+  function draw(text, size, spacing, cyCenter) { // 改画布尺寸会重置 2D 状态: 每次调用重设全套
+    if ('letterSpacing' in cx) cx.letterSpacing = spacing
+    cx.font = '700 ' + size + 'px ' + serif
+    cx.textAlign = 'center'
+    cx.textBaseline = 'middle'
+    cx.lineJoin = 'round'
+    cx.lineWidth = Math.round(size * LABEL_STROKE)
+    cx.strokeStyle = '#000'
+    cx.strokeText(text, cv.width / 2, cyCenter) // 先描黑边再填字身(描边被字身盖掉内半, 外面留厚黑边)
+    cx.fillStyle = 'rgba(228, 233, 240, 0.92)'
+    cx.fillText(text, cv.width / 2, cyCenter)
+  }
+  draw(enText, FEN, spEn, lineHen / 2)              // 第一行: 英文(放大)
+  draw(zhText, F, spZh, lineHen + gap + lineHz / 2) // 第二行: 中文(现尺寸)
+  const tex = new THREE.CanvasTexture(cv)
+  tex.colorSpace = THREE.SRGBColorSpace
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, toneMapped: false, opacity: 0 })
+  injectScan(mat) // 扫描闪动(见 LABEL_SCAN_GLSL): 时间走 _labelScanU, 四个标签共享
+  const sp = new THREE.Sprite(mat)
+  sp.visible = false
+  scene.add(sp)
+  return {
+    sp: sp,
+    asp: cv.width / cv.height,
+    hunit: cv.height / Math.ceil(F * 1.4) // 全块高/旧单行画布高: 中文行屏上大小与旧版逐像素一致
+  }
+}
+function buildLabels() {
+  if (labelSprites.length) return
+  // [英文行, 中文行, 横向, 纵向, 虚影模型] —— 模型与四角一一对应(wiki-ui 目录)
+  const defs = [
+    [LABEL_TL_EN, LABEL_TL, -1, 1, 'worldview.glb'],
+    [LABEL_BL_EN, LABEL_BL, -1, -1, 'design.glb'],
+    [LABEL_TR_EN, LABEL_TR, 1, 1, 'content.glb'],
+    [LABEL_BR_EN, LABEL_BR, 1, -1, 'deployment.glb']
+  ]
+  for (let i = 0; i < defs.length; i++) {
+    const r = makeLabelSprite(defs[i][0], defs[i][1])
+    labelSprites.push({ sp: r.sp, sideX: defs[i][2], sideY: defs[i][3], asp: r.asp, hunit: r.hunit, pos: new THREE.Vector3(), ghost: makeLabelGhost(defs[i][4]) })
+  }
+}
+// 按当前窗口的"可见半角"摆四角(锚点 = 快照的末机位): 横向中心放到画面外, 只露 LABEL_PEEK 比例;
+// 纵向贴黑条内侧(见 LABEL_* 常量)。窗口比例变了重排即保持"微微露出"。
+function layoutLabels() {
+  if (!labelSprites.length) return
+  const winW = window.innerWidth, winH = window.innerHeight
+  const tanHalfV = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)
+  const tanHalfH = tanHalfV * (winW / winH)
+  const bandH = Math.min(winH, winW / LETTERBOX_ASPECT) // 遮幅后的可见高
+  const tanHalfVv = tanHalfV * (bandH / winH)
+  const _v = new THREE.Vector3()
+  for (let i = 0; i < labelSprites.length; i++) {
+    const L = labelSprites[i]
+    const hh = tanHalfV * (LABEL_PX / 1080) * L.hunit // 全块半高的 tan 值(中文行基准尺寸 × 块高倍数)
+    const hw = hh * L.asp                              // 全块半宽的 tan 值
+    const tx = L.sideX * (tanHalfH + hw * (1 - 2 * LABEL_PEEK))
+    const ty = L.sideY * (tanHalfVv - hh - tanHalfVv * LABEL_EDGE_INSET) // 外侧一行(顶标签=英文, 底标签=中文)贴黑条内沿
+    const hWorld = 2 * LABEL_DIST * hh                 // 全块世界高: 中文行屏上大小 = LABEL_PX(与旧版一致)
+    _v.set(tx * LABEL_DIST, ty * LABEL_DIST, -LABEL_DIST).applyQuaternion(_lookBaseQuat)
+    L.pos.copy(_lookBasePos).add(_v) // 世界锚点(扫描闪动在屏幕空间着色, 锚点本身不动)
+    L.sp.position.copy(L.pos)
+    L.sp.scale.set(hWorld * L.asp, hWorld, 1)
+    // 虚影: 同一视线上再往深 LABEL_GHOST_DEPTH 米(角度与标签完全同位, 深度更远 → 透明排序垫在标签
+    // 之下), 屏上尺寸 = 标签文字块高 × LABEL_GHOST_SIZE; qInv/scale 供逐帧把屏幕向错位换算回 root 局部
+    const G = L.ghost
+    const Dg = LABEL_DIST + LABEL_GHOST_DEPTH
+    G.dist = Dg
+    G.scale = 2 * Dg * hh * LABEL_GHOST_SIZE
+    _v.set(tx * Dg, ty * Dg, -Dg).applyQuaternion(_lookBaseQuat)
+    G.pos.copy(_lookBasePos).add(_v)
+    G.root.position.copy(G.pos)
+    G.root.quaternion.copy(_lookBaseQuat)
+    G.root.scale.setScalar(G.scale)
+    G.qInv.copy(_lookBaseQuat).invert()
+  }
+}
+
+// 按钮虚影: 载入对应模型 → Box3 归一化(居中, 最长边=1) → 克隆三个 RGB 通道层(纯色加法混合,
+// 各自记录屏幕错位方向), 全挂在一个 root 组下(摆位/缩放见 layoutLabels, 逐帧错位见 updateLabelGhosts)。
+const WIKI_UI_LOADER = new GLTFLoader()
+const GHOST_CHANNELS = [[0xff4040, 1, 0.12], [0x40ff40, 0, 0], [0x5050ff, -1, -0.12]] // [色, 横错位方向, 纵错位方向]
+function makeLabelGhost(file) {
+  const root = new THREE.Group()
+  root.visible = false
+  scene.add(root)
+  const G = { root: root, chans: null, pos: new THREE.Vector3(), qInv: new THREE.Quaternion(), scale: 1, dist: LABEL_DIST + LABEL_GHOST_DEPTH }
+  WIKI_UI_LOADER.load(WIKI_UI_DIR + file, function (gltf) {
+    const norm = new THREE.Group() // 归一化层: 原模型塞进去整体缩/移, 最长边=1 且中心在原点
+    norm.add(gltf.scene)
+    norm.updateMatrixWorld(true)
+    const box = new THREE.Box3().setFromObject(norm)
+    const sz = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3())
+    const s = 1 / Math.max(sz.x, sz.y, sz.z, 1e-6)
+    norm.scale.setScalar(s)
+    norm.position.set(-c.x * s, -c.y * s, -c.z * s)
+    const chans = []
+    for (let i = 0; i < GHOST_CHANNELS.length; i++) {
+      const node = new THREE.Group() // 外套一层: 逐帧往这里写色散错位, 内层保持归一化变换
+      node.add(norm.clone(true))     // 几何共享(Mesh.clone 不深拷 geometry), 材质逐层换成纯色
+      const mat = new THREE.MeshBasicMaterial({
+        color: GHOST_CHANNELS[i][0], transparent: true, opacity: 0,
+        blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false
+      })
+      injectScan(mat)
+      node.traverse(function (o) { if (o.isMesh) o.material = mat })
+      root.add(node)
+      chans.push({ node: node, mat: mat, sx: GHOST_CHANNELS[i][1], sy: GHOST_CHANNELS[i][2] })
+    }
+    G.chans = chans
+  }, undefined, function () {}) // 加载失败静默: 虚影缺席不影响四角字幕
+  return G
+}
+
+// 逐帧(仅环视模式): 按"准心方向 ↔ 按钮方向"夹角把虚影淡入淡出, 并给三通道写屏幕向色散错位。
+// 偶发爆发(共享调度)瞬间放大错位 —— 与扫描闪动同一套"共享故障"语言; 屏幕横/纵轴取当前相机朝向。
+const _ghFwd = new THREE.Vector3(), _ghDir = new THREE.Vector3()
+const _ghRight = new THREE.Vector3(), _ghUp = new THREE.Vector3(), _ghOff = new THREE.Vector3()
+let _ghBurstUntil = -1, _ghBurstNext = 0
+function ghHash(x) { const s = Math.sin(x * 127.1) * 43758.5453; return s - Math.floor(s) }
+function updateLabelGhosts(now, fade) {
+  if (fade <= 0) return // 还没开始淡入: 不动(材质本来 opacity 0)
+  _ghFwd.set(0, 0, -1).applyQuaternion(camera.quaternion)
+  if (now >= _ghBurstNext) { // 偶发爆发调度(四个虚影共节奏)
+    _ghBurstNext = now + 0.7 + ghHash(now) * 1.8
+    _ghBurstUntil = now + 0.1 + ghHash(now + 3.7) * 0.22
+  }
+  const burst = now < _ghBurstUntil ? LABEL_GHOST_BURST : 1
+  const winH = window.innerHeight
+  const tanHalfV = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)
+  _ghRight.set(1, 0, 0).applyQuaternion(camera.quaternion)
+  _ghUp.set(0, 1, 0).applyQuaternion(camera.quaternion)
+  for (let i = 0; i < labelSprites.length; i++) {
+    const G = labelSprites[i].ghost
+    if (!G.chans) continue // 模型还没加载完
+    _ghDir.copy(G.pos).sub(camera.position)
+    const ang = Math.acos(Math.min(1, Math.max(-1, _ghDir.normalize().dot(_ghFwd)))) * 180 / Math.PI
+    let k = (LABEL_GHOST_FAR - ang) / (LABEL_GHOST_FAR - LABEL_GHOST_NEAR)
+    k = k <= 0 ? 0 : k >= 1 ? 1 : k
+    k = k * k * (3 - 2 * k) // smoothstep: 进入/退出两端都柔和
+    if (k <= 0.002) { if (G.root.visible) G.root.visible = false; continue }
+    G.root.visible = true
+    const split = LABEL_GHOST_DISP * burst * (0.75 + 0.25 * Math.sin(now * 9.1 + i * 1.7) + 0.15 * Math.sin(now * 23.7 + i * 2.3))
+    const wpp = 2 * G.dist * tanHalfV / winH // 该深度上 1px 对应的世界长度
+    for (let c = 0; c < G.chans.length; c++) {
+      const C = G.chans[c]
+      C.mat.opacity = LABEL_GHOST_OPACITY * k * fade
+      _ghOff.copy(_ghRight).multiplyScalar(C.sx * split * wpp).addScaledVector(_ghUp, C.sy * split * wpp)
+      _ghOff.applyQuaternion(G.qInv).divideScalar(G.scale)
+      C.node.position.copy(_ghOff)
+    }
+  }
+}
+
+// 每帧(仅环视模式): 准心动画 + 字幕淡入/扫描闪动 + 按钮虚影(显示开关都在 beginFocusClear/resetFocusClear 里)
+function updateLookUi(now) {
+  if (!visible || focusT < 0) return
+  drawCrosshair(now)
+  if (labelSprites.length) {
+    const f = Math.min(1, focusT / LABEL_FADE)
+    if (f !== _labelFade) {
+      _labelFade = f
+      for (let i = 0; i < labelSprites.length; i++) labelSprites[i].sp.material.opacity = f
+    }
+    _labelScanU.uTime.value = now // 扫描闪动: 推进共享时间(注入着色器的 uTime)
+    updateLabelGhosts(now, f)     // 虚影: 按准心接近度淡入 + 色散错位动画
+  }
 }
 
 // ===== 控制台性能检测(定位 wiki 卡顿来源, 自点击「Wiki」那一刻起算) =====
@@ -2036,6 +2437,9 @@ function frame() {
     }
   }
 
+  // 鼠标环视: 聚焦收尾后(正式 wiki 部分)生效(指针锁定, 见"环视模式"段)
+  updateMouseLook(delta)
+
   // 聚焦收尾: 地面渐隐, 完了把地面网格与页面卡整个关掉(每帧更新随之停)
   if (focusT >= 0 && !worldCleared) {
     focusT += delta
@@ -2081,6 +2485,7 @@ function frame() {
   updateCardTransform() // 卡 = 实时页面: 每帧把页面投影到卡面(与 GL 同相机)
   applyHomeLod() // 按卡片屏幕占比分级削减首页开销(镜头远 → 降分辨率 → 冻结)
   if (profOn) { profAdd('card', performance.now() - _pt); _pt = performance.now() }
+  updateLookUi(nowS) // 准心逐帧故障动画 + 四角字幕淡入(仅环视模式)
   updateKPanelHud()
   if (profOn) profAdd('hud', performance.now() - _pt)
 }
@@ -2104,6 +2509,8 @@ window.WikiModel = {
   enter: function () {
     if (visible) return
     visible = true
+    // 链接写上 #wiki 标签: 玩家保存/分享的链接再次打开时直达 wiki 终态(见 WIKI_DEEPLINK)
+    try { history.replaceState(null, '', location.pathname + location.search + '#wiki') } catch (e) { location.hash = 'wiki' }
     // 性能采样自点击「Wiki」这一刻开始(含模型未就绪的加载/等待阶段)
     profOn = WIKI_PROFILE
     profLast = 0
@@ -2116,8 +2523,9 @@ window.WikiModel = {
     })
     poseAt(contentAt(0), false) // 摆到起播帧(相机+骨骼归位, 不抖)
     buildCardRect(true) // 卡位从起播视角按当期视口比例反推
+    if (WIKI_DEEPLINK) poseAt(timeline.totalTime, false) // 直达: 相机一步摆到末机位(卡位已反推, 收尾状态与正常播完一致)
     if (wikiDisp) wikiDisp.enter() // RGB 色散重新从 0 渐进入场
-    renderScene() // 先出运镜第一帧(相机矩阵就位)
+    renderScene() // 先出运镜第一帧(相机矩阵就位; 直达时即终帧)
     updateCardTransform() // 此刻为恒等变换: 页面与切场前逐像素同位
     layer.classList.add('show')
     layoutLetterbox() // 先按当前窗口量好条高(此时条还在画面外)
@@ -2126,9 +2534,10 @@ window.WikiModel = {
     barBottom.classList.add('on')
     subtitleEl.classList.add('on') // 字幕: 文案淡入 + 两侧线向文字画出(CSS 里各带延迟)
     document.body.classList.add('wiki-on') // 页面本体已"变成"3D 里的整页卡
-    bakeGroundTile() // 异步烘焙世界地面贴图(在占位 hold 的两秒里完成, 拉远前就位)
+    if (!WIKI_DEEPLINK) bakeGroundTile() // 异步烘焙世界地面贴图(在占位 hold 的两秒里完成, 拉远前就位); 直达时世界立即撤退, 不需要地面
     wrap.style.willChange = 'transform'
-    if (modelReady) startPlayback()
+    if (WIKI_DEEPLINK) beginFocusClear() // 直达: 世界立即进入收尾(与运镜播完那一刻同一路径)
+    else if (modelReady) startPlayback()
     else pendingEnter = true // 模型未就绪: 先只展示卡面空场, 落地回调里再起跑
   }
 }
@@ -2556,6 +2965,10 @@ window.addEventListener('resize', function () {
   camera.updateProjectionMatrix()
   renderer.setSize(window.innerWidth, window.innerHeight)
   layoutLetterbox() // 遮幅条高随窗口比例重算
+  if (focusT >= 0) layoutLabels() // 环视模式: 四角字幕按新窗口比例重排
 })
 
 frame()
+
+// 直达 wiki 链接(URL 带 #wiki): 模块就绪即自动进入, 不经过首页菜单(开场已由 tyndall.js 跳过)
+if (WIKI_DEEPLINK) WikiModel.enter()
