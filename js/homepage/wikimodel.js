@@ -17,12 +17,31 @@ const MODEL_URL = '../asset/model/character/diver.glb'
 // 就跳过首页开场与整段运镜, 直接落在运镜播完的 wiki 终态(白球 + 海面 + 字幕替换)。
 // 开场跳过在 tyndall.js 里用同一判据(location.hash === '#wiki')。
 const WIKI_DEEPLINK = location.hash === '#wiki'
+// 内容 wiki 终态(纸色底 + 黑字 logo + header 横线)也有自己的直达标签:
+// 点击内容WIKI按钮时写入, 之后带 #content 打开就直接落到这一页(不再播反相/合拢/飞出那几段)。
+const CONTENT_HASH = '#content'
+const CONTENT_DEEPLINK = location.hash === CONTENT_HASH
 
 // ===== 覆盖层(自注入 DOM/CSS) =====
 // 电影遮幅(letterbox): 点击 Wiki 后上下滑入两条黑条, 把整幅屏幕画面裁成 LETTERBOX_ASPECT:1。
 // 纯屏幕空间遮罩(挂在 layer 里压住 GL 画布, 不改 3D 相机/卡片投影)—— 目标比例低于窗口比例时才会出现。
 const LETTERBOX_ASPECT = 2.35 // 遮幅目标宽高比(2.35 ≈ 宽银幕); 调小 = 画面更矮、条更粗
 const LETTERBOX_SEC = 0.7     // 黑条滑入时长(秒)
+// 点击右上「游戏（插件）内容WIKI」按钮: 黑边转白与整幅画面反相同时开始;
+// 反相完成后上下白边向中间合拢, 同时镜头对准按钮文字中心; 白幕合拢即只剩纯白底 + 按钮文字, 释放渲染器。
+const CONTENT_LABEL_I = 2     // 四角按钮顺序与 buildLabels 一致: 0 左上 / 1 左下 / 2 右上(内容WIKI) / 3 右下
+const INV_BAR_SEC = 0.75      // 黑边 → 白边过渡时长(秒, 与反相同起)
+const INV_FADE_SEC = 1.6      // 画面渐变反色的时长(秒); 同步写进 CSS 过渡
+const INV_CLOSE_SEC = 1.2     // 白边向中间合拢 / 镜头对准文字中心的时长(秒)
+const INV_PAPER = '#f2f2f2'   // 白边 / 反相后的底色(带灰压暗, 不用纯白)
+// 白幕之后: 按钮字飞向左上、渐变纯黑当 logo; logo 下方一条 3D 曲线从镜头外飞入并压平成 header 横线
+const LOGO_HOLD_SEC = 0.35    // 白幕合拢后先留一拍(白底 + 居中标题)再起飞
+const LOGO_FLY_SEC = 1.05     // 字飞向左上 / 变黑的时长(秒)
+const HLINE_DELAY_SEC = 0.5   // 横线相对字起飞的延迟(字快到位时入场)
+const HLINE_FLY_SEC = 1.2     // 3D 曲线飞入并压平成横线的时长(秒)
+const HEADER_MARGIN_X = 64    // header 左右留白(logo 左缘与横线左端对齐)
+const HEADER_MARGIN_Y = 48    // logo 上缘离视口顶的距离
+const HEADER_GAP = 26         // logo 底缘到横线的间距
 const SUBTITLE_TEXT = 'ON THE WAY TO WIKI' // 电影字幕文案(下黑条上方居中)
 const SUBTITLE_LINE_W = 120   // 字幕两侧横线长度(px)
 const SUBTITLE_GAP = 20       // 字幕底边离下黑条上沿(px)
@@ -104,10 +123,37 @@ style.textContent = [
   '.wiki-kpanel.editing .wk-scrub, .wiki-kpanel.editing .wk-track, .wiki-kpanel.editing .wk-kbtns, .wiki-kpanel.editing .wk-rows { opacity: 0.35; pointer-events: none; }',
   'body.wiki-editing .wiki-layer canvas { cursor: grab; }',
   '/* ---- 电影遮幅黑条(高度由 layoutLetterbox 按 LETTERBOX_ASPECT 算; 点 Wiki 后加 .on 滑入) ---- */',
-  '.wiki-bar { position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 20; pointer-events: none; transition: transform ' + LETTERBOX_SEC + 's cubic-bezier(0.65, 0, 0.35, 1); }',
+  '.wiki-bar { position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 20; pointer-events: none; transition: transform ' + LETTERBOX_SEC + 's cubic-bezier(0.65, 0, 0.35, 1), background-color ' + INV_BAR_SEC + 's ease; }',
   '.wiki-bar.wb-top { top: 0; transform: translateY(-101%); }',
   '.wiki-bar.wb-bottom { bottom: 0; transform: translateY(101%); }',
   '.wiki-bar.on { transform: translateY(0); }',
+  '.wiki-bar.to-white { background: ' + INV_PAPER + '; }',
+  '/* ---- 内容WIKI点击: 除该按钮文字外, 3D画面/字幕/准心/首页卡一起渐变反相(白边不参与) ---- */',
+  'html, body { transition: background-color ' + INV_FADE_SEC + 's ease; }',
+  'html.wiki-invert, html.wiki-invert body { background-color: ' + INV_PAPER + '; }',
+  '.wiki-glcanvas { transition: filter ' + INV_FADE_SEC + 's ease; }',
+  '.wiki-xhair, .wiki-kpanel, .wiki-card { transition: filter ' + INV_FADE_SEC + 's ease; }',
+  'html.wiki-invert .wiki-glcanvas, html.wiki-invert .wiki-subtitle, html.wiki-invert .wiki-skip,',
+  'html.wiki-invert .wiki-lockhint, html.wiki-invert .wiki-xhair, html.wiki-invert .wiki-kpanel,',
+  'html.wiki-invert .wiki-card { filter: invert(1); }',
+  '/* 反相期间接替该按钮的 DOM 复刻: 不参与反相, 逐帧贴合原 3D 精灵的屏幕矩形 */',
+  '.wiki-exempt { position: fixed; z-index: 15; transform: translate(-50%, -50%); pointer-events: none; opacity: 0; }', // 低于遮幅白边(20): 转头到条下时和原精灵一样被遮住
+  '.wiki-exempt.on { opacity: 1; }',
+  '.wiki-exempt.top { z-index: 26; }', // 白边合拢阶段: 压过白边, 成为最后留下的按钮字
+  '.wiki-exempt canvas { display: block; width: 100%; height: 100%; transition: opacity 0.8s ease; }',
+  '.wiki-exempt .scan { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; background: repeating-linear-gradient(to top, rgba(0,0,0,0.26) 0px, rgba(0,0,0,0.26) 1.2px, rgba(0,0,0,0.02) 1.3px, rgba(0,0,0,0.02) 4px); animation: wikiExemptScan 0.14s linear infinite; }',
+  '@keyframes wikiExemptScan { from { background-position: 0 0; } to { background-position: 0 -4px; } }',
+  '/* 白幕之后: 字飞向左上(位移+缩小写进 CSS 变量); 同时叠一张无描边的纯黑字身画布, 交叉淡入成为 logo */',
+  '.wiki-exempt { transition: transform ' + LOGO_FLY_SEC + 's cubic-bezier(0.22, 0.61, 0.36, 1); }',
+  '.wiki-exempt.logo { transform: translate(-50%, -50%) translate(var(--logo-tx, 0px), var(--logo-ty, 0px)) scale(var(--logo-s, 1)); }',
+  '.wiki-exempt .logo-ink { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.9s ease; }',
+  '.wiki-exempt.logo .logo-ink { opacity: 1; }',
+  '.wiki-exempt.logo > canvas:first-child { opacity: 0; }', // 带描边的 HUD 字身淡出, 只留纯黑字身
+  '.wiki-exempt .scan { transition: opacity 0.6s ease; }',
+  '.wiki-exempt.logo .scan { opacity: 0; }',
+  '/* header 横线的容器: 蛇形曲线路径与落位由 JS 逐帧写, 落位后是一条静止直线 */',
+  '.wiki-hline { position: fixed; inset: 0; z-index: 25; pointer-events: none; }',
+  '.wiki-hline canvas { display: block; width: 100%; height: 100%; }',
   '/* ---- 电影字幕(下黑条上方): 文案淡入 + 两侧横线一左一右向文字画出 ---- */',
   '.wiki-subtitle { position: fixed; left: 0; right: 0; display: flex; align-items: center; justify-content: center; gap: 18px; z-index: 20; pointer-events: none; opacity: 0; transition: opacity 0.7s ease 0.2s; }',
   '.wiki-subtitle.on { opacity: 1; }',
@@ -133,7 +179,11 @@ style.textContent = [
   '.wiki-xhair.on { display: block; }',
   '/* ---- 环视模式: 未锁定鼠标时的提示(准心下方一行小字) ---- */',
   '.wiki-lockhint { position: fixed; left: 50%; top: calc(50% + 40px); transform: translateX(-50%); z-index: 25; pointer-events: none; opacity: 0; transition: opacity 0.5s ease; color: rgba(228, 233, 240, 0.95); font-family: "Source Han Serif CN", "Noto Serif CJK SC", "Songti SC", "STSong", "SimSun", serif; font-size: 22px; letter-spacing: 0.3em; text-indent: 0.3em; -webkit-text-stroke: 3px #000; paint-order: stroke fill; }',
-  '.wiki-lockhint.on { opacity: 1; }'
+  '.wiki-lockhint.on { opacity: 1; }',
+  '/* 反相过渡: 这几个元素原有 opacity 过渡, 追加 filter 时把原属性一并列出(须排在其简写之后) */',
+  '.wiki-subtitle { transition: opacity 0.7s ease 0.2s, filter ' + INV_FADE_SEC + 's ease; }',
+  '.wiki-skip { transition: opacity 2.4s ease, filter ' + INV_FADE_SEC + 's ease; }',
+  '.wiki-lockhint { transition: opacity 0.5s ease, filter ' + INV_FADE_SEC + 's ease; }'
 ].join('\n')
 document.head.appendChild(style)
 
@@ -202,6 +252,7 @@ skipBtnEl.addEventListener('click', function () {
 layer.appendChild(skipBtnEl)
 
 function layoutLetterbox() {
+  if (_contentInvT >= 0 && _contentCloseT >= 0) return // 合拢阶段由 updateContentInvite 逐帧驱动条高
   // 每边条高 = (视口高 − 视口宽/比例) / 2; 窗口本身就比目标比例宽时 = 0(不遮)
   const h = Math.max(0, (window.innerHeight - window.innerWidth / LETTERBOX_ASPECT) / 2)
   barTop.style.height = h + 'px'
@@ -224,6 +275,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.toneMappingExposure = 1.0 // 曝光总闸(整体明暗): 0 = 一切光变全黑, 不是"环境光开关"
 renderer.shadowMap.enabled = true
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
+renderer.domElement.classList.add('wiki-glcanvas') // 反相过渡只作用于场景画布, 不连累遮幅白边
 layer.appendChild(renderer.domElement)
 
 // ===== 光斑滤镜(wiki 版): 复用 glowfilter.js 的工厂, 用本模块的 r165 THREE 建资源(与渲染器同源) =====
@@ -419,7 +471,8 @@ function updateFootShadows() {
 let mixer = null
 let model = null // 人物模型根(聚焦收尾时连骨骼一起收掉)
 let modelReady = false
-new GLTFLoader().load(MODEL_URL, (gltf) => {
+if (!CONTENT_DEEPLINK) new GLTFLoader().load(MODEL_URL, (gltf) => {
+  if (_released) return // 白屏收尾后迟到的模型不再挂进场景(免得上传纹理后又泄漏)
   model = gltf.scene
   scene.add(model)
   model.traverse((c) => {
@@ -1984,6 +2037,7 @@ function beginFocusClear() {
 }
 function resetFocusClear() {
   if (focusT < 0) return
+  resetContentInvite() // 重播/拖进度条: 反相态与按钮复刻一起撤销
   focusT = -1
   worldCleared = false
   subtitleEl.classList.remove('swapped') // 字幕回到旧文案(重播/拖进度条/调帧时)
@@ -2025,7 +2079,7 @@ function requestLookLock() {
   } catch (e) {}
 }
 function syncLockHint() {
-  hintEl.classList.toggle('on', visible && focusT >= 0 && !_lookLocked)
+  hintEl.classList.toggle('on', visible && focusT >= 0 && !_lookLocked && _contentInvT < 0)
 }
 function _onLockChange() { // change/error 都按真实状态校正(迟到的 error 不能把已锁状态抹掉)
   _lookLocked = document.pointerLockElement === renderer.domElement
@@ -2036,23 +2090,475 @@ document.addEventListener('pointerlockchange', _onLockChange)
 document.addEventListener('pointerlockerror', _onLockChange)
 // 锁定期间: 鼠标增量累加到目标视角(限位内钳住); 实际转角由 updateMouseLook 每帧平滑追赶
 window.addEventListener('mousemove', function (e) {
-  if (!_lookLocked || focusT < 0) return
+  if (!_lookLocked || focusT < 0 || _contentInvT >= 0) return
   const k = THREE.MathUtils.degToRad(LOOK_SENS)
   const yawMax = THREE.MathUtils.degToRad(LOOK_YAW_MAX)
   const pitchMax = THREE.MathUtils.degToRad(LOOK_PITCH_MAX)
   _lookYawT = Math.max(-yawMax, Math.min(yawMax, _lookYawT + e.movementX * k * LOOK_YAW_SIGN))
   _lookPitchT = Math.max(-pitchMax, Math.min(pitchMax, _lookPitchT - e.movementY * k * LOOK_PITCH_SIGN))
 })
-// 未锁定时点击画面重新锁定(K 面板上的点击除外); 进环视模式时 beginFocusClear 已自动试过一次
+// ===== 内容WIKI按钮点击: 黑边转白 + 整幅反相同起 → 白边合拢/镜头对字 → 纯白页留按钮字 =====
+// 反相是画布级 CSS filter(连同首页卡/字幕/准心), 按钮的 3D 精灵会被一起反掉, 所以点击瞬间
+// 换成同一张源画布做的不反相 DOM 复刻(逐帧按精灵屏幕矩形贴合), 最后随白幕一起留成页面标题。
+let _contentInvT = -1        // -1 = 未触发; >=0 = 点击后累计秒(收尾后保持, 由 _released 挡住后续)
+let _contentCloseT = -1      // -1 = 未进入合拢; >=0 = 合拢阶段累计秒
+let _contentAimT = -1        // 镜头对位累计秒(-1 = 不接管环视)
+let _contentAimFromYaw = 0, _contentAimFromPitch = 0
+let _contentAimToYaw = 0, _contentAimToPitch = 0
+let _contentBarH0 = 0        // 合拢起始条高(白边内侧当前位置)
+let _contentInvLabel = null
+let _exemptEl = null
+let _released = false        // 收尾后停帧并释放 wiki 渲染器
+let _exemptW = 0, _exemptH = 0 // 按钮字复刻的基准尺寸(收尾时量一次, header 定位按它换算)
+let _hline3 = null           // header 横线的迷你 3D 场景(独立 GL 上下文, 只管这一根管子)
+const _hitV = new THREE.Vector3(), _hitF = new THREE.Vector3()
+const _exV = new THREE.Vector3(), _exF = new THREE.Vector3()
+
+// 屏幕点命中的四角按钮(精灵永远正对相机 ⇒ 屏幕上是轴对齐矩形); 未命中返回 -1
+function hitLabelAt(px, py) {
+  if (!labelSprites.length) return -1
+  camera.updateMatrixWorld()
+  camera.matrixWorldInverse.copy(camera.matrixWorld).invert()
+  _hitF.set(0, 0, -1).applyQuaternion(camera.quaternion)
+  const tanHalfV = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)
+  const winW = window.innerWidth, winH = window.innerHeight
+  for (let i = 0; i < labelSprites.length; i++) {
+    const L = labelSprites[i]
+    if (!L.sp.visible || L.sp.material.opacity < 0.3) continue
+    const d = _hitV.copy(L.pos).sub(camera.position).dot(_hitF) // 精灵面到相机的视深
+    if (d <= 0.01) continue
+    const halfH = 0.5 * L.sp.scale.y * winH / (2 * d * tanHalfV)
+    const halfW = 0.5 * L.sp.scale.x * winH / (2 * d * tanHalfV)
+    _hitV.copy(L.pos).project(camera)
+    if (_hitV.z > 1) continue
+    const sx = (_hitV.x * 0.5 + 0.5) * winW
+    const sy = (-_hitV.y * 0.5 + 0.5) * winH
+    if (Math.abs(px - sx) <= halfW && Math.abs(py - sy) <= halfH) return i
+  }
+  return -1
+}
+
+function makeExemptOverlay(L) {
+  const el = document.createElement('div')
+  el.className = 'wiki-exempt'
+  const cv = document.createElement('canvas')
+  cv.width = L.canvas.width
+  cv.height = L.canvas.height
+  cv.getContext('2d').drawImage(L.canvas, 0, 0)
+  const scan = document.createElement('div')
+  scan.className = 'scan'
+  // 扫描条纹只压在字形上(用同一张字形画布的 alpha 当遮罩), 否则透明区会浮出一个条纹方块
+  const maskUrl = 'url(' + cv.toDataURL() + ')'
+  scan.style.webkitMaskImage = maskUrl
+  scan.style.maskImage = maskUrl
+  scan.style.maskSize = '100% 100%'
+  scan.style.webkitMaskSize = '100% 100%'
+  scan.style.maskRepeat = 'no-repeat'
+  scan.style.webkitMaskRepeat = 'no-repeat'
+  el.appendChild(cv)
+  el.appendChild(scan)
+  if (L && L.paintLogo) { // 无描边纯黑字身: 收成 logo 时叠在上面淡入(带描边的 HUD 字身同时淡出)
+    const ink = document.createElement('canvas')
+    ink.className = 'logo-ink'
+    ink.width = cv.width
+    ink.height = cv.height
+    L.paintLogo(ink)
+    el.appendChild(ink)
+  }
+  layer.appendChild(el)
+  return el
+}
+
+function startContentInvite() {
+  if (_contentInvT >= 0 || focusT < 0) return
+  _contentInvT = 0
+  // 链接写上 #content: 保存/分享的链接再次打开时直达这一页(见 CONTENT_DEEPLINK)
+  try { history.replaceState(null, '', location.pathname + location.search + CONTENT_HASH) } catch (e) { location.hash = 'content' }
+  _contentInvLabel = labelSprites[CONTENT_LABEL_I]
+  // 黑边转白与整幅反相同起: 一边加 to-white(CSS 过渡 0.75s), 一边点 wiki-invert(1.6s 渐变)
+  document.documentElement.classList.add('wiki-invert')
+  barTop.classList.add('to-white')
+  barBottom.classList.add('to-white')
+  // 该按钮的 3D 精灵会在画布反相里被一起反掉: 立即换成同一张源画布的不反相 DOM 复刻
+  if (_contentInvLabel) {
+    _contentInvLabel.sp.visible = false
+    _contentInvLabel.invOff = true
+    _contentInvLabel.ghost.root.visible = false
+  }
+  _exemptEl = makeExemptOverlay(_contentInvLabel)
+  updateExemptRect() // 先量好矩形再亮起, 避免第一帧从左上角闪过来
+  _exemptEl.classList.add('on')
+  // 环视 HUD 退场(准心/提示/字幕/Skip/K 面板); 鼠标锁定保持到收尾再交还(期间视角由脚本接管)
+  xhCanvas.classList.remove('on')
+  hintEl.classList.remove('on')
+  subtitleEl.classList.remove('on')
+  skipBtnEl.classList.remove('on')
+  kPanelEl.style.display = 'none'
+}
+
+function resetContentInvite() {
+  if (_contentInvT < 0 || _released) return
+  _contentInvT = -1
+  _contentCloseT = -1
+  _contentAimT = -1
+  _contentBarH0 = 0
+  document.documentElement.classList.remove('wiki-invert')
+  barTop.classList.remove('to-white')
+  barBottom.classList.remove('to-white')
+  barTop.style.height = ''
+  barBottom.style.height = ''
+  if (_exemptEl) { _exemptEl.remove(); _exemptEl = null }
+  if (_contentInvLabel) {
+    _contentInvLabel.sp.visible = true
+    _contentInvLabel.invOff = false
+    _contentInvLabel = null
+  }
+  layoutLetterbox() // 恢复按 LETTERBOX_ASPECT 算出的条高(合拢期由逐帧驱动)
+}
+
+// 反相期间: DOM 复刻逐帧贴住原精灵的屏幕矩形(精灵正对相机 ⇒ 直接投影中心 + 视深换算尺寸)
+function updateExemptRect() {
+  const L = _contentInvLabel
+  if (!_exemptEl || !L) return
+  camera.updateMatrixWorld()
+  camera.matrixWorldInverse.copy(camera.matrixWorld).invert()
+  _exF.set(0, 0, -1).applyQuaternion(camera.quaternion)
+  const d = _exV.copy(L.pos).sub(camera.position).dot(_exF)
+  if (d <= 0.01) return
+  const tanHalfV = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)
+  const winW = window.innerWidth, winH = window.innerHeight
+  _exV.copy(L.pos).project(camera)
+  const sx = (_exV.x * 0.5 + 0.5) * winW
+  const sy = (-_exV.y * 0.5 + 0.5) * winH
+  const hPx = L.sp.scale.y * winH / (2 * d * tanHalfV)
+  const wPx = L.sp.scale.x * winH / (2 * d * tanHalfV)
+  _exemptEl.style.left = sx + 'px'
+  _exemptEl.style.top = sy + 'px'
+  _exemptEl.style.width = wPx + 'px'
+  _exemptEl.style.height = hPx + 'px'
+}
+
+// 反相渐变走完(1.6s)即进入合拢: 上下白边向中线长, 镜头同时转到按钮文字正中(见 updateMouseLook)
+function beginContentClose() {
+  if (_contentCloseT >= 0) return
+  _contentCloseT = 0
+  _contentAimT = 0
+  _contentAimFromYaw = _lookYaw
+  _contentAimFromPitch = _lookPitch
+  const L = _contentInvLabel
+  if (L && L.tx != null && L.ty != null) {
+    // 文字中心在基准相机局部空间的方向 (tx, ty, -1): yaw = atan(tx), pitch = atan(ty / √(1+tx²))
+    _contentAimToYaw = Math.atan(L.tx)
+    _contentAimToPitch = Math.atan(L.ty / Math.sqrt(1 + L.tx * L.tx))
+  } else {
+    _contentAimToYaw = _contentAimFromYaw
+    _contentAimToPitch = _contentAimFromPitch
+  }
+  _contentBarH0 = parseFloat(barTop.style.height) || 0
+  if (_exemptEl) _exemptEl.classList.add('top') // 白边合拢过来时文字要留在最上面
+}
+
+function stepContentClose() {
+  const u = Math.min(1, _contentCloseT / INV_CLOSE_SEC)
+  const e = u * u * (3 - 2 * u)
+  const target = window.innerHeight / 2 + 2 // 多 2px: 两条恰好在中线重叠, 不留发丝缝
+  const h = _contentBarH0 + (target - _contentBarH0) * e
+  barTop.style.height = h + 'px'
+  barBottom.style.height = h + 'px'
+  if (u >= 1) finalizeContentInvite()
+}
+
+// 白幕合拢: 页面只剩纸色底 + 按钮文字。其余全部摘除并交还 GPU/CPU 资源。
+// 逐材质释放贴图(材质自带的 map/envMap 等 + ShaderMaterial 的 uniforms 贴图), 最后连 GL 上下文一起丢
+const _freedTex = new Set()
+function freeMaterial(m) {
+  if (!m || m.__freed) return
+  m.__freed = true
+  const keys = Object.keys(m)
+  for (let i = 0; i < keys.length; i++) {
+    const v = m[keys[i]]
+    if (v && v.isTexture && !_freedTex.has(v)) { _freedTex.add(v); v.dispose() }
+  }
+  if (m.uniforms) {
+    for (const k in m.uniforms) {
+      const v = m.uniforms[k] && m.uniforms[k].value
+      if (v && v.isTexture && !_freedTex.has(v)) { _freedTex.add(v); v.dispose() }
+    }
+  }
+  m.dispose()
+}
+function freeScene() {
+  scene.traverse(function (o) {
+    if (o.geometry) o.geometry.dispose()
+    if (o.isSkinnedMesh && o.skeleton) {
+      if (o.skeleton.boneTexture) o.skeleton.boneTexture.dispose()
+      if (typeof o.skeleton.dispose === 'function') o.skeleton.dispose()
+    }
+    if (Array.isArray(o.material)) {
+      for (let i = 0; i < o.material.length; i++) freeMaterial(o.material[i])
+    } else {
+      freeMaterial(o.material)
+    }
+  })
+  scene.clear()
+}
+
+function finalizeContentInvite() {
+  if (_released) return
+  _released = true
+  if (_exemptEl) {
+    const r = _exemptEl.getBoundingClientRect()
+    _exemptW = r.width; _exemptH = r.height // 基准尺寸: 飞成 logo 的缩放与 header 定位都按它换算
+    document.body.appendChild(_exemptEl) // 离开 wiki 层: 最终页面只留它与纸色底
+    _exemptEl.style.left = '50%'
+    _exemptEl.style.top = '50%'
+    _exemptEl.style.width = r.width + 'px'
+    _exemptEl.style.height = r.height + 'px'
+  }
+  releaseGL() // 先把首页画布引用取出来, 随后再清 DOM
+  // 除按钮文字复刻外, body 里的一切(首页整页卡/调试面板/各脚本 UI/wiki 层)全部移除
+  Array.prototype.slice.call(document.body.children).forEach(function (el) {
+    if (el !== _exemptEl) el.remove()
+  })
+  startHeaderFormation() // 白底 + 居中标题 → 字飞左上变黑 logo, 3D 曲线飞入压平成 header 横线
+}
+
+// 释放首页与 wiki 的全部 GPU/循环资源(白幕收尾与 #content 直达共用)
+function releaseGL() {
+  // 首页那几张画布(体积光/雪/唱片/光斑/色散)随 wrap 一起摘除; 先留引用, 下面连上下文一起释放
+  const homeCanvases = Array.prototype.slice.call(document.body.querySelectorAll('canvas')).filter(function (c) {
+    return c !== renderer.domElement && !(_exemptEl && _exemptEl.contains(c)) // 渲染器自己的下面单独释放; 按钮复刻是 2D 要留
+  })
+  if (window.HomeGate) window.HomeGate.pause() // 首页循环保持停机(不再有空转的 rAF)
+  freeScene() // 3D 场景: 几何/材质/贴图
+  // 本模块持有的离屏缓冲: 踩卡水波模拟 + 光斑/色散中继
+  if (rippleFboA) { rippleFboA.dispose(); rippleFboA = null }
+  if (rippleFboB) { rippleFboB.dispose(); rippleFboB = null }
+  if (glowRT) { glowRT.dispose(); glowRT = null }
+  if (chainRT) { chainRT.dispose(); chainRT = null }
+  pmrem.dispose()
+  renderer.dispose()
+  try { renderer.forceContextLoss() } catch (e) {} // 着色器程序/纹理/缓冲随上下文一起销毁
+  // 首页画布的 GL/2D 上下文一并交还(渲染循环早已停机, 不会再有恢复入口)
+  for (let i = 0; i < homeCanvases.length; i++) {
+    const c = homeCanvases[i]
+    try {
+      const g = c.getContext('webgl2') || c.getContext('webgl') || c.getContext('experimental-webgl')
+      const ext = g && g.getExtension('WEBGL_lose_context')
+      if (ext) ext.loseContext()
+    } catch (e) {}
+  }
+  if (_lookLocked && document.exitPointerLock) document.exitPointerLock()
+}
+
+// #content 直达: 页面直接就是终态(纸色底 + 左上黑字 logo + header 横线), 不播任何过渡动画
+function bootContentPage() {
+  _released = true // 停掉 wiki 帧循环与迟到的加载回调
+  document.documentElement.classList.add('wiki-invert') // 纸色底(与正常收尾同一套 CSS)
+  const hud = makeLabelCanvas(LABEL_TR_EN, LABEL_TR, false)
+  const ink = makeLabelCanvas(LABEL_TR_EN, LABEL_TR, true)
+  ink.className = 'logo-ink' // 只有纯黑字身可见; 带描边的 hud 画布在 .logo 态下透明(与正常收尾一致)
+  const el = document.createElement('div')
+  el.className = 'wiki-exempt logo on'
+  el.appendChild(hud)
+  el.appendChild(ink)
+  el.style.left = '50%'
+  el.style.top = '50%'
+  el.style.width = hud.width + 'px'
+  el.style.height = hud.height + 'px'
+  _exemptEl = el
+  _exemptW = hud.width; _exemptH = hud.height
+  const m = headerMetrics()
+  el.style.setProperty('--logo-tx', m.tx.toFixed(2) + 'px')
+  el.style.setProperty('--logo-ty', m.ty.toFixed(2) + 'px')
+  el.style.setProperty('--logo-s', m.s.toFixed(4))
+  document.body.appendChild(el) // 先挂 .logo 终态再插入: 首帧即落位, 不跑飞行动画
+  releaseGL()
+  Array.prototype.slice.call(document.body.children).forEach(function (c) {
+    if (c !== el) c.remove()
+  })
+  startHeaderLine(true)
+}
+
+// ===== header 成形: 字飞向左上变纯黑 logo, 下方一条 3D 曲线飞入并压平成横线 =====
+// 白幕后页面上只剩按钮字这一张 2D 画布: 字的位移/缩小走 CSS transform;
+// 横线是独立的迷你 GL 上下文里一根真 3D 圆管, 从镜头左前方贴着画面外游入并逐渐压平。
+function headerMetrics() {
+  const vw = window.innerWidth, vh = window.innerHeight
+  const logoH = Math.max(40, Math.min(76, vh * 0.058)) // logo 高度随窗口走(1080p ≈ 63px)
+  const s = logoH / Math.max(1, _exemptH)
+  const w = _exemptW * s
+  return {
+    vw: vw, vh: vh, s: s,
+    tx: HEADER_MARGIN_X + w / 2 - vw / 2, // 元素钉在视口中心: 位移量 = 目标中心 - 视口中心
+    ty: HEADER_MARGIN_Y + logoH / 2 - vh / 2,
+    y: HEADER_MARGIN_Y + logoH + HEADER_GAP // 横线基线(logo 底缘下 HEADER_GAP)
+  }
+}
+
+function startHeaderFormation() {
+  if (!_exemptEl) return
+  setTimeout(function () {
+    if (!_exemptEl) return
+    const m = headerMetrics()
+    _exemptEl.style.setProperty('--logo-tx', m.tx.toFixed(2) + 'px')
+    _exemptEl.style.setProperty('--logo-ty', m.ty.toFixed(2) + 'px')
+    _exemptEl.style.setProperty('--logo-s', m.s.toFixed(4))
+    void _exemptEl.offsetWidth // 先让"居中"这一帧落定, 再挂 .logo 才会从居中位置起飞
+    _exemptEl.classList.add('logo')
+    setTimeout(startHeaderLine, HLINE_DELAY_SEC * 1000)
+  }, LOGO_HOLD_SEC * 1000)
+}
+
+function startHeaderLine(instant) {
+  if (!_exemptEl || _hline3) return
+  const m = headerMetrics()
+  const wrap = document.createElement('div')
+  wrap.className = 'wiki-hline'
+  const canvas = document.createElement('canvas')
+  wrap.appendChild(canvas)
+  document.body.appendChild(wrap)
+
+  // 白幕后单独起一个极小的 GL 上下文, 只画这一根圆管
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, preserveDrawingBuffer: true, powerPreference: 'low-power' })
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+  renderer.setSize(m.vw, m.vh, false)
+  renderer.setClearAlpha(0)
+  const scene = new THREE.Scene()
+  const D = 10 // 最终线所在平面(z=0)到相机的距离
+  const cam = new THREE.PerspectiveCamera(30, m.vw / m.vh, 0.05, 200)
+  cam.position.set(0, 0, D) // 正对 header 平面, 只靠线的自身纵深出透视
+  // 圆管的自着色: 法线朝上的那一侧提亮一点, 读起来是一根圆柱墨线
+  const mat = new THREE.ShaderMaterial({
+    vertexShader: 'varying vec3 vN; void main() { vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: 'varying vec3 vN; void main() { float l = clamp(dot(vN, normalize(vec3(-0.5, 0.75, 0.85))), 0.0, 1.0); gl_FragColor = vec4(mix(vec3(0.07, 0.07, 0.08), vec3(0.30, 0.30, 0.33), smoothstep(0.15, 0.95, l)), 1.0); }'
+  })
+  const mesh = new THREE.Mesh(new THREE.BufferGeometry(), mat)
+  scene.add(mesh)
+  const st = { renderer: renderer, scene: scene, cam: cam, done: false }
+  st.layout = straight
+  _hline3 = st
+
+  function unitPx(metrics) { return 2 * D * Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2) / metrics.vh }
+  function setTube(points, metrics) {
+    const g = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points, false, 'catmullrom', 0.5), 140, 0.9 * unitPx(metrics), 6, false)
+    mesh.geometry.dispose()
+    mesh.geometry = g
+  }
+  // 落位态: 严格压在 header 基线上, z=0, 与像素坐标一一对应
+  function straight(metrics) {
+    const u = unitPx(metrics)
+    const y = (metrics.vh / 2 - metrics.y) * u
+    const xa = (HEADER_MARGIN_X - metrics.vw / 2) * u
+    const xb = ((metrics.vw - HEADER_MARGIN_X) - metrics.vw / 2) * u
+    setTube([new THREE.Vector3(xa, y, 0), new THREE.Vector3((xa + xb) / 2, y, 0), new THREE.Vector3(xb, y, 0)], metrics)
+  }
+
+  const SEG = 48
+  const tanV = Math.tan(THREE.MathUtils.degToRad(cam.fov) / 2)
+  const tanH = tanV * m.vw / m.vh
+  const um = unitPx(m)
+  const xEnd = (m.vw / 2 - HEADER_MARGIN_X) * um // 落位直线两端(右端是"线头")
+  const yEnd = (m.vh / 2 - m.y) * um
+  // 起手两端的相机空间位置: 线头贴到镜头左前方 2.6m 处(整条线在画面外), 尾巴甩到 7m 外 ⇒
+  // 进画那一瞬近端放大约 3.8 倍、远端只有 0.6 倍, 透视拉满; 相机不动, 落位映射始终精确。
+  const hx = -2.6 * tanH * 1.33, hy = -2.6 * tanV * 0.5, hz = D - 2.6
+  const tx = -7.0 * tanH * 1.18, ty = -7.0 * tanV * 0.45, tz = D - 7.0
+  const t0 = performance.now()
+
+  function tick(now) {
+    let uu = (now - t0) / (HLINE_FLY_SEC * 1000)
+    if (uu > 1) uu = 1
+    const e = uu < 0.5 ? 4 * uu * uu * uu : 1 - Math.pow(-2 * uu + 2, 3) / 2 // easeInOutCubic
+    if (uu >= 1) {
+      straight(m)
+      renderer.render(scene, cam)
+      st.done = true
+      return
+    }
+    const spread = 1 - e
+    // 蛇形行波: 纵向摇摆 + z 方向纵深摇摆; 摆幅随落位平方衰减、相位回卷 ⇒ 一边游进一边松开压平
+    const ampY = 0.35, ampZ = 0.55
+    const phase = spread * Math.PI * 3.4
+    const pts = []
+    for (let i = 0; i <= SEG; i++) {
+      const t = i / SEG
+      const env = Math.sin(Math.PI * t)
+      // 起手曲线(t=0 尾 / t=1 线头) 与 落位直线 逐点插值
+      const sx = tx + (hx - tx) * t, sy = ty + (hy - ty) * t, sz = tz + (hz - tz) * t
+      const ex = -xEnd + 2 * xEnd * t, ey = yEnd, ez = 0
+      const w = env * spread * spread
+      pts.push(new THREE.Vector3(
+        sx + (ex - sx) * e,
+        sy + (ey - sy) * e + w * ampY * Math.sin(t * Math.PI * 4.2 + phase),
+        sz + (ez - sz) * e + w * ampZ * Math.sin(t * Math.PI * 2.8 + phase + 1.3)
+      ))
+    }
+    setTube(pts, m)
+    renderer.render(scene, cam)
+    requestAnimationFrame(tick)
+  }
+  if (instant) { // 直达: 不飞入, 直接出落位后的横线并停帧
+    straight(m)
+    renderer.render(scene, cam)
+    st.done = true
+    return
+  }
+  requestAnimationFrame(tick)
+}
+
+// 落位后的 header 跟随窗口重排(logo 位置/缩放与横线端点)
+function relayoutHeader() {
+  if (!_exemptEl) return
+  const m = headerMetrics()
+  _exemptEl.style.setProperty('--logo-tx', m.tx.toFixed(2) + 'px')
+  _exemptEl.style.setProperty('--logo-ty', m.ty.toFixed(2) + 'px')
+  _exemptEl.style.setProperty('--logo-s', m.s.toFixed(4))
+  const st = _hline3
+  if (!st || !st.done) return
+  st.cam.aspect = m.vw / m.vh
+  st.cam.updateProjectionMatrix()
+  st.renderer.setSize(m.vw, m.vh, false)
+  st.layout(m)
+  st.renderer.render(st.scene, st.cam)
+}
+
+function updateContentInvite(delta) {
+  if (_contentInvT < 0 || _released) return
+  _contentInvT += delta
+  if (_contentCloseT < 0 && _contentInvT >= INV_FADE_SEC) beginContentClose()
+  if (_contentCloseT >= 0) {
+    _contentCloseT += delta
+    stepContentClose()
+  }
+  if (!_released) updateExemptRect() // 对位/合拢期间逐帧贴住(转向时文字随场景一起被"推"到中心)
+}
+
+// 未锁定时点击画面重新锁定(K 面板上的点击除外); 锁定后准心即指针: 点中右上内容WIKI按钮触发反相动画
 window.addEventListener('click', function (e) {
-  if (!visible || focusT < 0 || _lookLocked) return
+  if (!visible || focusT < 0 || _contentInvT >= 0) return
   if (e.target && e.target.closest && e.target.closest('.wiki-kpanel')) return
-  requestLookLock()
+  const px = _lookLocked ? window.innerWidth / 2 : e.clientX
+  const py = _lookLocked ? window.innerHeight / 2 : e.clientY
+  if (hitLabelAt(px, py) === CONTENT_LABEL_I) { startContentInvite(); return }
+  if (!_lookLocked) requestLookLock()
 })
 
 // 每帧在 poseAt 摆完位姿后调用: 实际转角指数追赶目标(帧率无关), 再叠加到末机位基准朝向(只转朝向, 不动机位)
 function updateMouseLook(delta) {
   if (focusT < 0) return
+  if (_contentAimT >= 0) {
+    // 合拢阶段: 镜头沿同一条 smoothstep 转到按钮文字中心(白边合拢与对位同步收口)
+    _contentAimT += delta
+    const u = Math.min(1, _contentAimT / INV_CLOSE_SEC)
+    const e = u * u * (3 - 2 * u)
+    _lookYaw = _contentAimFromYaw + (_contentAimToYaw - _contentAimFromYaw) * e
+    _lookPitch = _contentAimFromPitch + (_contentAimToPitch - _contentAimFromPitch) * e
+    _lookYawT = _lookYaw; _lookPitchT = _lookPitch
+    camera.rotateY(-_lookYaw)
+    camera.rotateX(_lookPitch)
+    return
+  }
   const k = 1 - Math.exp(-delta / LOOK_TAU) // 一阶低通: 快甩后拖着滑到位, 就是"速度余量"
   _lookYaw += (_lookYawT - _lookYaw) * k
   _lookPitch += (_lookPitchT - _lookPitch) * k
@@ -2140,7 +2646,8 @@ function injectScan(mat) {
       shader.fragmentShader.replace('#include <map_fragment>', '#include <map_fragment>\n' + LABEL_SCAN_GLSL)
   }
 }
-function makeLabelSprite(enText, zhText) {
+// 双行标签画布(英文放大在上 / 中文在下); ink = 不描边、只填纯黑(收成 logo 用)
+function makeLabelCanvas(enText, zhText, ink) {
   const F = 96, PAD = 18 // 中文行画布字号/留白: 只决定贴图清晰度, 屏上大小由 LABEL_PX 换算
   const FEN = Math.round(F * LABEL_EN_BIG) // 英文行字号 = 中文行 × 放大倍数
   const lineHen = Math.round(FEN * 1.3), lineHz = Math.round(F * 1.4), gap = Math.round(F * 0.18)
@@ -2161,15 +2668,28 @@ function makeLabelSprite(enText, zhText) {
     cx.font = '700 ' + size + 'px ' + serif
     cx.textAlign = 'center'
     cx.textBaseline = 'middle'
-    cx.lineJoin = 'round'
-    cx.lineWidth = Math.round(size * LABEL_STROKE)
-    cx.strokeStyle = '#000'
-    cx.strokeText(text, cv.width / 2, cyCenter) // 先描黑边再填字身(描边被字身盖掉内半, 外面留厚黑边)
-    cx.fillStyle = 'rgba(228, 233, 240, 0.92)'
+    if (ink) {
+      cx.fillStyle = '#000'
+    } else {
+      cx.lineJoin = 'round'
+      cx.lineWidth = Math.round(size * LABEL_STROKE)
+      cx.strokeStyle = '#000'
+      cx.strokeText(text, cv.width / 2, cyCenter) // 先描黑边再填字身(描边被字身盖掉内半, 外面留厚黑边)
+      cx.fillStyle = 'rgba(228, 233, 240, 0.92)'
+    }
     cx.fillText(text, cv.width / 2, cyCenter)
   }
   draw(enText, FEN, spEn, lineHen / 2)              // 第一行: 英文(放大)
   draw(zhText, F, spZh, lineHen + gap + lineHz / 2) // 第二行: 中文(现尺寸)
+  return cv
+}
+function makeLabelSprite(enText, zhText) {
+  const cv = makeLabelCanvas(enText, zhText, false)
+  // 无描边的纯黑字身(同排版): 收成 logo 时叠上去交叉淡入, 把 HUD 的厚黑描边一起去掉
+  function paintLogo(out) {
+    out.getContext('2d').drawImage(makeLabelCanvas(enText, zhText, true), 0, 0)
+    return out
+  }
   const tex = new THREE.CanvasTexture(cv)
   tex.colorSpace = THREE.SRGBColorSpace
   const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, toneMapped: false, opacity: 0 })
@@ -2179,8 +2699,10 @@ function makeLabelSprite(enText, zhText) {
   scene.add(sp)
   return {
     sp: sp,
+    canvas: cv, // 反相时用同一张源画布做不反相的 DOM 复刻
+    paintLogo: paintLogo, // 同一排版的无描边纯黑字身
     asp: cv.width / cv.height,
-    hunit: cv.height / Math.ceil(F * 1.4) // 全块高/旧单行画布高: 中文行屏上大小与旧版逐像素一致
+    hunit: cv.height / Math.ceil(96 * 1.4) // 全块高/旧单行画布高: 中文行屏上大小与旧版逐像素一致
   }
 }
 function buildLabels() {
@@ -2194,7 +2716,7 @@ function buildLabels() {
   ]
   for (let i = 0; i < defs.length; i++) {
     const r = makeLabelSprite(defs[i][0], defs[i][1])
-    labelSprites.push({ sp: r.sp, sideX: defs[i][2], sideY: defs[i][3], asp: r.asp, hunit: r.hunit, pos: new THREE.Vector3(), ghost: makeLabelGhost(defs[i][4]) })
+    labelSprites.push({ sp: r.sp, canvas: r.canvas, paintLogo: r.paintLogo, sideX: defs[i][2], sideY: defs[i][3], asp: r.asp, hunit: r.hunit, pos: new THREE.Vector3(), ghost: makeLabelGhost(defs[i][4]) })
   }
 }
 // 按当前窗口的"可见半角"摆四角(锚点 = 快照的末机位): 横向中心放到画面外, 只露 LABEL_PEEK 比例;
@@ -2214,6 +2736,7 @@ function layoutLabels() {
     const tx = L.sideX * (tanHalfH + hw * (1 - 2 * LABEL_PEEK))
     const ty = L.sideY * (tanHalfVv - hh - tanHalfVv * LABEL_EDGE_INSET) // 外侧一行(顶标签=英文, 底标签=中文)贴黑条内沿
     const hWorld = 2 * LABEL_DIST * hh                 // 全块世界高: 中文行屏上大小 = LABEL_PX(与旧版一致)
+    L.tx = tx; L.ty = ty // 基准相机坐标下的 tan 偏移: 收拢阶段据此把镜头对准文字中心
     _v.set(tx * LABEL_DIST, ty * LABEL_DIST, -LABEL_DIST).applyQuaternion(_lookBaseQuat)
     L.pos.copy(_lookBasePos).add(_v) // 世界锚点(扫描闪动在屏幕空间着色, 锚点本身不动)
     L.sp.position.copy(L.pos)
@@ -2243,6 +2766,7 @@ function makeLabelGhost(file) {
   scene.add(root)
   const G = { root: root, chans: null, pos: new THREE.Vector3(), qInv: new THREE.Quaternion(), scale: 1, dist: LABEL_DIST + LABEL_GHOST_DEPTH }
   WIKI_UI_LOADER.load(WIKI_UI_DIR + file, function (gltf) {
+    if (_released) return // 白幕已收尾: 场景已释放, 迟到的模型不再挂回去
     const norm = new THREE.Group() // 归一化层: 原模型塞进去整体缩/移, 最长边=1 且中心在原点
     norm.add(gltf.scene)
     norm.updateMatrixWorld(true)
@@ -2289,6 +2813,7 @@ function updateLabelGhosts(now, fade) {
   _ghUp.set(0, 1, 0).applyQuaternion(camera.quaternion)
   for (let i = 0; i < labelSprites.length; i++) {
     const G = labelSprites[i].ghost
+    if (labelSprites[i].invOff) { if (G.root.visible) G.root.visible = false; continue } // 反相期间: 按钮文字不反相, 虚影一起收
     if (!G.chans) continue // 模型还没加载完
     _ghDir.copy(G.pos).sub(camera.position)
     const ang = Math.acos(Math.min(1, Math.max(-1, _ghDir.normalize().dot(_ghFwd)))) * 180 / Math.PI
@@ -2397,6 +2922,7 @@ function wikiProfFlush() {
 }
 
 function frame() {
+  if (_released) return // 白幕收尾完成: 渲染器已释放, 不再调度下一帧
   requestAnimationFrame(frame)
   const delta = clock.getDelta() // 始终取走(隐藏期丢弃), 避免登场首帧累计大跳
   if (!visible) return
@@ -2486,6 +3012,7 @@ function frame() {
   applyHomeLod() // 按卡片屏幕占比分级削减首页开销(镜头远 → 降分辨率 → 冻结)
   if (profOn) { profAdd('card', performance.now() - _pt); _pt = performance.now() }
   updateLookUi(nowS) // 准心逐帧故障动画 + 四角字幕淡入(仅环视模式)
+  updateContentInvite(delta) // 内容WIKI按钮: 黑边转白 → 全画面反相(按钮文字除外)
   updateKPanelHud()
   if (profOn) profAdd('hud', performance.now() - _pt)
 }
@@ -2961,6 +3488,7 @@ renderTrack()
 syncPlayLabel()
 
 window.addEventListener('resize', function () {
+  if (_released) { relayoutHeader(); return } // 白幕收尾后只让 header 跟随窗口重排
   camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
   renderer.setSize(window.innerWidth, window.innerHeight)
@@ -2968,7 +3496,10 @@ window.addEventListener('resize', function () {
   if (focusT >= 0) layoutLabels() // 环视模式: 四角字幕按新窗口比例重排
 })
 
-frame()
-
-// 直达 wiki 链接(URL 带 #wiki): 模块就绪即自动进入, 不经过首页菜单(开场已由 tyndall.js 跳过)
-if (WIKI_DEEPLINK) WikiModel.enter()
+// 直达内容 wiki(URL 带 #content): 起始页直接就是终态, 首页与 wiki 的一切都不需要创建
+if (CONTENT_DEEPLINK) bootContentPage()
+else {
+  frame()
+  // 直达 wiki 链接(URL 带 #wiki): 模块就绪即自动进入, 不经过首页菜单(开场已由 tyndall.js 跳过)
+  if (WIKI_DEEPLINK) WikiModel.enter()
+}
