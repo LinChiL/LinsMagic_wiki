@@ -1,4 +1,4 @@
-// wikimodel.js
+﻿// wikimodel.js
 // Wiki 页模型: 点击菜单「Wiki」→ 整个网页"变成"3D 场景地面上的一张实体卡, diver 落卡登场。
 // 卡面不是烘焙贴图, 而是页面本身: 页面整体收进一层载体, 每帧把"视口矩形 → 这块平面在屏幕上的
 // 投影"的单应矩阵写进载体 transform —— 等价于页面这块平面被同一台相机投影。任何窗口比例下,
@@ -20,7 +20,8 @@ const WIKI_DEEPLINK = location.hash === '#wiki'
 // 内容 wiki 终态(纸色底 + 黑字 logo + header 横线)也有自己的直达标签:
 // 点击内容WIKI按钮时写入, 之后带 #content 打开就直接落到这一页(不再播反相/合拢/飞出那几段)。
 const CONTENT_HASH = '#content'
-const CONTENT_DEEPLINK = location.hash === CONTENT_HASH
+// 带子路径的 #content/xxx（wiki 内部路由）也算直达，刷新才能停在当前条目
+const CONTENT_DEEPLINK = location.hash === CONTENT_HASH || location.hash.indexOf(CONTENT_HASH + '/') === 0
 
 // ===== 覆盖层(自注入 DOM/CSS) =====
 // 电影遮幅(letterbox): 点击 Wiki 后上下滑入两条黑条, 把整幅屏幕画面裁成 LETTERBOX_ASPECT:1。
@@ -2351,6 +2352,23 @@ function releaseGL() {
   if (_lookLocked && document.exitPointerLock) document.exitPointerLock()
 }
 
+// 内容 wiki 只挂一次: 直达时立即挂, 正常收尾时等 header 横线落位后再挂(避免被入场动画抢帧)
+let _contentWikiMounted = false
+function mountContentWiki(delayMs) {
+  const run = function () {
+    if (_contentWikiMounted) return
+    _contentWikiMounted = true
+    import('../linsmagic/linsmagic.js?v=11').then(function (mod) {
+      if (!document.querySelector('.lm-root')) mod.mountLinsmagic()
+    }).catch(function (e) {
+      _contentWikiMounted = false
+      console.warn('[wiki] linsmagic mount failed:', e)
+    })
+  }
+  if (delayMs) setTimeout(run, delayMs)
+  else run()
+}
+
 // #content 直达: 页面直接就是终态(纸色底 + 左上黑字 logo + header 横线), 不播任何过渡动画
 function bootContentPage() {
   _released = true // 停掉 wiki 帧循环与迟到的加载回调
@@ -2377,7 +2395,11 @@ function bootContentPage() {
   Array.prototype.slice.call(document.body.children).forEach(function (c) {
     if (c !== el) c.remove()
   })
-  startHeaderLine(true)
+  // startHeaderLine 内部会再起一个小型 GL 上下文来画横线; 如果失败(Three.js 某些版本 API 变动)
+  // 不阻断后续的 linsmagic 挂载
+  try { startHeaderLine(true) } catch (e) { console.warn('[wiki] header line failed:', e) }
+  // 挂载 linsmagic wiki 内容（带版本号避免浏览器沿用旧模块缓存）
+  mountContentWiki()
 }
 
 // ===== header 成形: 字飞向左上变纯黑 logo, 下方一条 3D 曲线飞入并压平成横线 =====
@@ -2407,6 +2429,8 @@ function startHeaderFormation() {
     void _exemptEl.offsetWidth // 先让"居中"这一帧落定, 再挂 .logo 才会从居中位置起飞
     _exemptEl.classList.add('logo')
     setTimeout(startHeaderLine, HLINE_DELAY_SEC * 1000)
+    // 横线飞完并压平的同一时刻再挂 wiki, 让新壳直接出现在终态 header 下方
+    mountContentWiki((HLINE_DELAY_SEC + HLINE_FLY_SEC) * 1000)
   }, LOGO_HOLD_SEC * 1000)
 }
 
