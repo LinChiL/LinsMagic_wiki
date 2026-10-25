@@ -114,8 +114,10 @@ function convert(md) {
     if (line.startsWith('<figure')) {
       const buf = [line]
       i++
-      while (i < lines.length && !lines[i].includes('</figure>')) { buf.push(lines[i]); i++ }
-      if (i < lines.length) { buf.push(lines[i]); i++ }
+      if (!line.includes('</figure>')) {
+        while (i < lines.length && !lines[i].includes('</figure>')) { buf.push(lines[i]); i++ }
+        if (i < lines.length) { buf.push(lines[i]); i++ }
+      }
       out.push(inline(buf.join('\n')))
       continue
     }
@@ -209,6 +211,8 @@ function convert(md) {
   return out.join('\n')
     // 块级自定义元素不放在 <p> 内（否则浏览器会提前闭合段落导致 DOM 错乱）
     .replace(/<p>\s*(<lm-(?:roadmap|guide|recipe|structure|scene)[\s\S]*?<\/lm-\w+>)\s*<\/p>/g, '$1')
+    // 原文里的 <figure><img src="/linsmagic/..."> 同样改写为相对页面的 ../
+    .replace(/(src|poster)="\/linsmagic\//g, '$1="../linsmagic/')
 }
 
 function splitRow(line) {

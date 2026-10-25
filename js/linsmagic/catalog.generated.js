@@ -2845,11 +2845,11 @@
       "details": [
         "以末影低语之鳞与骷髅军徽淬炼的终焉之刃",
         "└ 命中时：使目标 凋零 II（4 秒）+ 虚弱 III（3 秒）",
-        "└ 30% 追加 4❤ 噬魂伤害并吸取 1❤"
+        "└ 30% 追加 1 点真实伤害并吸取 1❤"
       ],
       "obtain": "配方合成",
       "enchantments": [
-        "锋利 VI",
+        "锋利 V",
         "火焰附加 II",
         "耐久 IV"
       ],
@@ -5775,6 +5775,23 @@
       "href": "/linsmagic/atlas/materials/advanced/i-483b90b7997a"
     },
     {
+      "id": "远古碎块",
+      "name": "远古碎块",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/netherite_scrap",
+      "description": "残骸发生仪碾出来的远古残骸碎块，断面还带着地狱的余温",
+      "details": [
+        "残骸发生仪碾出来的远古残骸碎块，断面还带着地狱的余温",
+        "└ 在水压聚合仪里 9 个压回 1 个远古残骸"
+      ],
+      "obtain": "恢弘残骸发生仪产出",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-30ae5bc874e8"
+    },
+    {
       "id": "恢弘残骸发生仪核心",
       "name": "恢弘残骸发生仪核心",
       "kind": "machine",
@@ -5789,13 +5806,36 @@
         "├ 上下(相对容器轴): [哭泣的黑曜石]",
         "├ 一侧: [箱子] (放入材料)",
         "└ 相对侧: [木桶] (收取产物)",
-        "└ 每次触发按比例消耗：63圆石+4金锭+4骨块+1远古残骸 → 2远古残骸+3金锭+8金粒+5煤炭+12石头"
+        "└ 每次触发按比例消耗：63圆石+4金锭+4骨块+1远古残骸 → 10远古碎块+3金锭+8金粒+5煤炭+12石头"
       ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/machines/machines/i-f44dd7c38ab4",
       "structureId": "diagram_f44dd7c38ab4"
+    },
+    {
+      "id": "水压聚合仪",
+      "name": "水压聚合仪",
+      "kind": "machine",
+      "category": "功能性机器方块",
+      "group": "machines",
+      "icon": "item/cracked_stone_bricks",
+      "description": "用头顶水柱的压力把远古碎块重新压成整块残骸",
+      "details": [
+        "用头顶水柱的压力把远古碎块重新压成整块残骸",
+        "└ 机器方块上方要有水：每格水每秒 +2 积压值，本身每秒 -16",
+        "├ 一侧: [箱子] (放入 9 远古碎块，水平四向任一，多个只认一个)",
+        "├ 另一侧: [木桶] (收取远古残骸，水平四向任一，多个只认一个)",
+        "├ 积压值到 202: 每 2 秒压合一次，消耗 4 点 + 箱内物品每多 320 件翻一倍的附加",
+        "├ 水柱不足 8 格积压值会掉成负数: 停机，每分钟回补 1 点，补到 0 才复工",
+        "├ 积压值到 256 或掉破 -10: 直接爆炸，破坏周围方块，机器随之消失",
+        "└ 机器头顶悬浮字实时显示积压值"
+      ],
+      "obtain": "配方合成",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/machines/machines/i-1f691a9a46af"
     },
     {
       "id": "红石充能模块",
@@ -6519,11 +6559,11 @@
       "details": [
         "以蚀月翼膜与噬梦血喙淬炼、吞尽生机的湮灭之刃",
         "└ 命中时：使目标 凋零 III（5 秒）+ 虚弱 IV（4 秒）",
-        "└ 40% 追加 6❤ 噬魂伤害并吸取 2❤"
+        "└ 40% 追加 2 点真实伤害并吸取 2❤"
       ],
       "obtain": "配方合成",
       "enchantments": [
-        "锋利 VII",
+        "锋利 V",
         "火焰附加 III",
         "耐久 V"
       ],
@@ -6541,12 +6581,12 @@
       "details": [
         "以湮灭之刃为心、五种血月稀有掉落围铸的寂灭之刃",
         "└ 命中时：使目标 凋零 IV（9 秒）+ 虚弱 V（7 秒）",
-        "└ 55% 追加 18 点真实伤害并吸取 6 点生命",
+        "└ 55% 追加 9 点真实伤害并吸取 6 点生命",
         "└ 目标血量不足三成时必定触发，吸取翻倍到 12 点"
       ],
       "obtain": "配方合成",
       "enchantments": [
-        "锋利 VIII",
+        "锋利 VI",
         "火焰附加 IV",
         "耐久 VI"
       ],
@@ -11906,12 +11946,16 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/fishing_rod",
+      "description": "竿身缠满虚空丝绸，鱼线垂下去能勾住虚空深处的窥视",
+      "details": [
+        "竿身缠满虚空丝绸，鱼线垂下去能勾住虚空深处的窥视",
+        "把浮漂甩进深处，沉到 y=-70 以下时会自动开始垂钓",
+        "咬钩的东西会从暗处慢慢贴上来，吸附的那一瞬收杆"
+      ],
       "obtain": "配方合成：7 个虚空丝绸包住 1 根钓鱼竿，配 2 块虚质",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-a056e0237649"
     },
     {
@@ -11920,12 +11964,16 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/fishing_rod",
+      "description": "竿身缠满虚空丝绸，鱼线垂下去能勾住虚空深处的窥视",
+      "details": [
+        "竿身缠满虚空丝绸，鱼线垂下去能勾住虚空深处的窥视",
+        "把浮漂甩进深处，沉到 y=-70 以下时会自动开始垂钓",
+        "上钩更急，收杆的窗口也更宽"
+      ],
       "obtain": "配方合成：虚质×4 + 不灭虚空烬×2 + 虚空垂钓者×2 + 梦魇×1",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-537b4ba859a9"
     },
     {
@@ -11934,12 +11982,16 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/fishing_rod",
+      "description": "竿身缠满虚空丝绸，鱼线垂下去能勾住虚空深处的窥视",
+      "details": [
+        "竿身缠满虚空丝绸，鱼线垂下去能勾住虚空深处的窥视",
+        "把浮漂甩进深处，沉到 y=-70 以下时会自动开始垂钓",
+        "上钩最急、窗口最宽的"
+      ],
       "obtain": "配方合成：梦魇×5 + 不灭虚空烬×2 + 虚空猎手×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-d34755f87f06"
     },
     {
@@ -12424,12 +12476,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，封皮还湿着",
+      "details": [
+        "从虚空里钓上来的附魔书，封皮还湿着"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-42cdd1ba434c"
     },
     {
@@ -12438,12 +12492,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，边角微微发虚",
+      "details": [
+        "从虚空里钓上来的附魔书，边角微微发虚"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-ab5aa8a2efc0"
     },
     {
@@ -12452,12 +12508,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，拿在手里压手",
+      "details": [
+        "从虚空里钓上来的附魔书，拿在手里压手"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-06bea49be5e9"
     },
     {
@@ -12466,12 +12524,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，书脊上有一道裂纹",
+      "details": [
+        "从虚空里钓上来的附魔书，书脊上有一道裂纹"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-44400d48aa21"
     },
     {
@@ -12480,12 +12540,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，页脚在往回卷",
+      "details": [
+        "从虚空里钓上来的附魔书，页脚在往回卷"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-048a0d5645f0"
     },
     {
@@ -13019,12 +13081,15 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，封皮上印着星点",
+      "details": [
+        "从虚空里钓上来的附魔书，封皮上印着星点",
+        "翻页时，页边像有浮游的东西掠过"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-250482897043"
     },
     {
@@ -13033,12 +13098,15 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，轻得压不住纸角",
+      "details": [
+        "从虚空里钓上来的附魔书，轻得压不住纸角",
+        "合上书，它还有往上飘的意思"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-0597927b5591"
     },
     {
@@ -13047,12 +13115,15 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，字都往页心陷",
+      "details": [
+        "从虚空里钓上来的附魔书，字都往页心陷",
+        "翻到最后一页，什么也读不出来"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-26da046115f5"
     },
     {
@@ -13061,12 +13132,15 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，黑皮压着金纹",
+      "details": [
+        "从虚空里钓上来的附魔书，黑皮压着金纹",
+        "放在桌上，桌面像暗了一块"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-3b802f73cf3e"
     },
     {
@@ -13075,12 +13149,15 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/enchanted_book",
+      "description": "从虚空里钓上来的附魔书，封面没有题字",
+      "details": [
+        "从虚空里钓上来的附魔书，封面没有题字",
+        "翻开全是空白，翻页声却停不下来"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-d9de64361b9d"
     },
     {
@@ -27792,8 +27869,7 @@
       "details": [
         "从天而降的陨石上凿下的碎块，带着异界的余温",
         "├ 挖掘失落废墟都市里的陨石获得",
-        "├ 放进原石粉碎机的箱子：1 碎块 → 2 赛特斯石英粉",
-        "└ 或放进压印器中格（不放模板）：1 碎块 → 1 赛特斯石英粉"
+        "└ 放进石磨的中格：1 碎块 → 1 陨石碎粉"
       ],
       "obtain": "挖掘失落废墟都市中的陨石（陨石石块）获得，陨石罗盘可指引方向",
       "enchantments": [],
@@ -27801,127 +27877,150 @@
       "href": "/linsmagic/atlas/ae/items/i-345aee65ce6f"
     },
     {
-      "id": "赛特斯石英粉",
-      "name": "赛特斯石英粉",
+      "id": "陨石碎粉",
+      "name": "陨石碎粉",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/sugar",
-      "description": "研磨成粉的赛特斯石英",
+      "description": "研磨成粉的陨石",
       "details": [
-        "研磨成粉的赛特斯石英",
-        "├ 与沙子合成赛特斯石英种子",
+        "研磨成粉的陨石",
+        "├ 与硅、紫水晶合成陨晶晶核",
         "└ 硅、石英玻璃等材料的原料"
       ],
-      "obtain": "原石粉碎机粉碎陨石碎块（1→2），或压印器、ME石磨 研磨陨石碎块 / 赛特斯石英水晶",
+      "obtain": "石磨研磨陨石碎块 / 陨晶体（中格）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-6466d0e3dedf"
+      "href": "/linsmagic/atlas/ae/items/i-fa6a35fa923a"
     },
     {
-      "id": "赛特斯石英种子",
-      "name": "赛特斯石英种子",
+      "id": "陨晶晶核",
+      "name": "陨晶晶核",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
-      "icon": "item/prismarine_shard",
-      "description": "一粒会缓慢结晶的石英种子",
+      "icon": "item/amethyst_block",
+      "description": "一颗能继续长大的陨晶核",
       "details": [
-        "一粒会缓慢结晶的石英种子",
-        "├ 放进晶体催化器中格，长成赛特斯石英水晶",
-        "└ 每批 8 个，通电 20 秒一批（加速卡更快），不通电 60 秒一批"
+        "一颗能继续长大的陨晶核",
+        "├ 放到陨晶母体槽正上方那一格开始成长",
+        "├ 8～16 分钟长成陨晶体，随机在四周结出 3 缕陨晶碎丝",
+        "└ 配方合成：陨石碎粉 + 硅 + 紫水晶"
       ],
-      "obtain": "配方合成：赛特斯石英粉 + 沙子 → 2 个",
+      "obtain": "工作台合成：陨石碎粉 + 硅 + 紫水晶；放到陨晶母体槽正上方那一格开始成长",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-8d96fd1fccfa"
+      "href": "/linsmagic/atlas/ae/items/i-13b926d82282"
     },
     {
-      "id": "赛特斯石英水晶",
-      "name": "赛特斯石英水晶",
+      "id": "陨晶体",
+      "name": "陨晶体",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
-      "icon": "item/quartz",
-      "description": "澄澈的赛特斯石英水晶",
+      "icon": "item/crying_obsidian",
+      "description": "在母体槽里养足了的陨晶",
       "details": [
-        "澄澈的赛特斯石英水晶",
-        "├ 放进红石充能桩或充能器充能 → 充能赛特斯石英",
+        "在母体槽里养足了的陨晶",
+        "├ 放在 300 格以上的高空，5～12 分钟吸满宇宙能量 → 具能陨晶体",
         "└ 大量 AE 部件的基础材料"
       ],
-      "obtain": "赛特斯石英种子放进晶体催化器培育，或开启陨石神秘方块获得",
+      "obtain": "陨晶晶核放到陨晶母体槽正上方，8～16 分钟后长成；或开启陨石神秘方块获得",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-e82d2d96f221"
+      "href": "/linsmagic/atlas/ae/items/i-0855b2192f9d"
     },
     {
-      "id": "充能赛特斯石英",
-      "name": "充能赛特斯石英",
+      "id": "陨晶碎丝",
+      "name": "陨晶碎丝",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
-      "icon": "item/amethyst_shard",
-      "description": "内部噼啪作响、储满能量的赛特斯石英",
+      "icon": "item/cobweb",
+      "description": "陨晶成长时从缝隙抽出的丝",
       "details": [
-        "内部噼啪作响、储满能量的赛特斯石英",
-        "├ 晶体催化器：上 红石粉 + 中 本物品 + 下 下界石英 → 2 个福鲁伊克斯水晶",
-        "└ 也可以在工作台合成（只得 1 个）"
+        "陨晶成长时从缝隙抽出的丝",
+        "└ 母体槽养晶的副产物，暂时没有用途"
       ],
-      "obtain": "赛特斯石英水晶放进红石充能桩（放进去慢慢充）或充能器",
+      "obtain": "陨晶体成长时在四周随机结出 3 缕",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-a5fc5e71c32f"
+      "href": "/linsmagic/atlas/ae/items/i-ce8241adc2f2"
     },
     {
-      "id": "福鲁伊克斯水晶",
-      "name": "福鲁伊克斯水晶",
+      "id": "具能陨晶体",
+      "name": "具能陨晶体",
+      "kind": "material",
+      "category": "应用能源",
+      "group": "items",
+      "icon": "item/budding_amethyst",
+      "description": "在高空吸满了宇宙能量的陨晶",
+      "details": [
+        "在高空吸满了宇宙能量的陨晶",
+        "├ 工作台：本物品 + 下界合金块 + 紫珀块 + 空灵结晶 → 1 个三相水晶导体",
+        "└ 压印器 + 运算压印模板 → 运算电路板"
+      ],
+      "obtain": "把陨晶体放在 300 格以上，5～12 分钟自动吸满宇宙能量",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/ae/items/i-0053dac155b0"
+    },
+    {
+      "id": "三相水晶导体",
+      "name": "三相水晶导体",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/prismarine_crystals",
-      "description": "流光溢彩的福鲁伊克斯水晶，ME 网络的血脉",
+      "description": "具能陨晶体与三相介质合出来的导体，AE 网络的核心料",
       "details": [
-        "流光溢彩的福鲁伊克斯水晶，ME 网络的血脉",
-        "└ 线缆、控制器、驱动器等的核心材料"
+        "具能陨晶体与三相介质合出来的导体，AE 网络的核心料",
+        "├ 无序合成：具能陨晶体 + 下界合金块 + 紫珀块 + 空灵结晶",
+        "├ 石磨研磨 → 三相导体砂粉",
+        "└ 线缆、控制器、终端、压印器等的材料"
       ],
-      "obtain": "晶体催化器：红石粉 + 充能赛特斯石英 + 下界石英得 2 个；或工作台合成得 1 个",
+      "obtain": "工作台合成：具能陨晶体 + 下界合金块 + 紫珀块 + 空灵结晶 → 1 个",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-8b002adc99f8"
+      "href": "/linsmagic/atlas/ae/items/i-457252d436ef"
     },
     {
-      "id": "福鲁伊克斯粉",
-      "name": "福鲁伊克斯粉",
+      "id": "三相导体砂粉",
+      "name": "三相导体砂粉",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/magenta_dye",
-      "description": "研磨后的福鲁伊克斯水晶",
+      "description": "石磨磨出来的三相导体粉",
       "details": [
-        "研磨后的福鲁伊克斯水晶",
-        "└ 压印器中格（不放模板）：1 水晶 → 1 粉"
+        "石磨磨出来的三相导体粉",
+        "├ 只有石磨能磨：1 导体 → 1 粉",
+        "├ 成型核心、破坏核心、能源元件的材料",
+        "└ 工作台：本物品 + 末影珍珠 + 黯魂晶 + 下界合金块 → 三相导体珍珠"
       ],
-      "obtain": "压印器或 ME石磨 研磨福鲁伊克斯水晶（中格，不放模板）",
+      "obtain": "石磨研磨三相水晶导体（中格）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-05e0ae6ddd39"
+      "href": "/linsmagic/atlas/ae/items/i-646254f0d1ba"
     },
     {
-      "id": "福鲁伊克斯珍珠",
-      "name": "福鲁伊克斯珍珠",
+      "id": "三相导体珍珠",
+      "name": "三相导体珍珠",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/ender_eye",
-      "description": "包裹了福鲁伊克斯的末影珍珠，能在空间中传递信号",
+      "description": "裹了三相导体粉与黯魂晶的末影珍珠，能在空间中传递信号",
       "details": [
-        "包裹了福鲁伊克斯的末影珍珠，能在空间中传递信号",
-        "└ 无线访问点、无线终端的材料"
+        "裹了三相导体粉与黯魂晶的末影珍珠，能在空间中传递信号",
+        "├ 无序合成：三相导体砂粉 + 末影珍珠 + 黯魂晶 + 下界合金块",
+        "└ 无线终端、无线访问点、256k 以上存储组件的材料"
       ],
-      "obtain": "配方合成（应用能源）",
+      "obtain": "工作台合成：三相导体砂粉 + 末影珍珠 + 黯魂晶 + 下界合金块 → 1 个",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-9a20fcc88a7b"
+      "href": "/linsmagic/atlas/ae/items/i-1d65a59da3c9"
     },
     {
       "id": "硅",
@@ -27947,9 +28046,9 @@
       "category": "应用能源",
       "group": "items",
       "icon": "item/light_blue_stained_glass",
-      "description": "掺入赛特斯石英粉的高透玻璃",
+      "description": "掺入陨石碎粉的高透玻璃",
       "details": [
-        "掺入赛特斯石英粉的高透玻璃",
+        "掺入陨石碎粉的高透玻璃",
         "└ 终端、存储元件外壳等的材料"
       ],
       "obtain": "配方合成（应用能源），一次合成 5 个",
@@ -27968,7 +28067,7 @@
       "details": [
         "陨石神秘方块里找到的压印模板",
         "├ 放进压印器上格（不会消耗）",
-        "├ 中格放 充能赛特斯石英 → 运算电路板",
+        "├ 中格放 具能陨晶体 → 运算电路板",
         "└ 上格模板 + 中格铁块 → 复制一个模板"
       ],
       "obtain": "开启陨石中心的神秘方块获得（优先给你还没有的模板）；压印器上格模板 + 中格铁块可复制",
@@ -28045,7 +28144,7 @@
         "压印出回路的电路板",
         "└ 压印器：上格本电路板 + 中格魔力粉末 + 下格印刷硅板 → 运算处理器"
       ],
-      "obtain": "压印器：运算压印模板 + 充能赛特斯石英",
+      "obtain": "压印器：运算压印模板 + 具能陨晶体",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/ae/items/i-6ad04ea7ea0a"
@@ -28108,9 +28207,9 @@
       "category": "应用能源",
       "group": "items",
       "icon": "item/globe_banner_pattern",
-      "description": "ME 设备的运算核心",
+      "description": "AE 设备的运算核心",
       "details": [
-        "ME 设备的运算核心",
+        "AE 设备的运算核心",
         "├ 压印器组装：运算电路板 + 魔力粉末 + 印刷硅板",
         "└ 用于：存储组件、合成终端、电平发射器"
       ],
@@ -28126,9 +28225,9 @@
       "category": "应用能源",
       "group": "items",
       "icon": "item/piglin_banner_pattern",
-      "description": "ME 设备的运算核心",
+      "description": "AE 设备的运算核心",
       "details": [
-        "ME 设备的运算核心",
+        "AE 设备的运算核心",
         "├ 压印器组装：工程电路板 + 魔力粉末 + 印刷硅板",
         "└ 用于：控制器、驱动器、样板编码终端"
       ],
@@ -28144,9 +28243,9 @@
       "category": "应用能源",
       "group": "items",
       "icon": "item/mojang_banner_pattern",
-      "description": "ME 设备的运算核心",
+      "description": "AE 设备的运算核心",
       "details": [
-        "ME 设备的运算核心",
+        "AE 设备的运算核心",
         "├ 压印器组装：逻辑电路板 + 魔力粉末 + 印刷硅板",
         "└ 用于：终端、核心、1k 存储组件"
       ],
@@ -28165,7 +28264,7 @@
       "description": "把网络中的物质重新塑形的核心",
       "details": [
         "把网络中的物质重新塑形的核心",
-        "└ 输出总线、ME 接口等的材料"
+        "└ 输出总线、接口等的材料"
       ],
       "obtain": "配方合成（应用能源），一次合成 2 个",
       "enchantments": [],
@@ -28182,7 +28281,7 @@
       "description": "把物质拆解成数据的核心",
       "details": [
         "把物质拆解成数据的核心",
-        "└ 输入总线、ME 接口等的材料"
+        "└ 输入总线、接口等的材料"
       ],
       "obtain": "配方合成（应用能源），一次合成 2 个",
       "enchantments": [],
@@ -28190,8 +28289,8 @@
       "href": "/linsmagic/atlas/ae/items/i-939320e98a68"
     },
     {
-      "id": "ME存储外壳",
-      "name": "ME存储外壳",
+      "id": "存储外壳",
+      "name": "存储外壳",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
@@ -28199,12 +28298,12 @@
       "description": "存储元件的空外壳",
       "details": [
         "存储元件的空外壳",
-        "└ 与任意存储组件合成对应容量的 ME 存储元件"
+        "└ 与任意存储组件合成对应容量的存储元件"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-ac7907d3bd35"
+      "href": "/linsmagic/atlas/ae/items/i-77c5eed2b0d6"
     },
     {
       "id": "空白样板",
@@ -28216,7 +28315,7 @@
       "description": "尚未写入配方的样板",
       "details": [
         "尚未写入配方的样板",
-        "└ 在 ME 样板编码终端里写入配方"
+        "└ 在样板编码终端里写入配方"
       ],
       "obtain": "配方合成（应用能源），一次合成 2 个",
       "enchantments": [],
@@ -28233,7 +28332,7 @@
       "description": "记录了一条配方的样板",
       "details": [
         "记录了一条配方的样板",
-        "├ 放进 ME 样板供应器后，网络即可自动合成其产物",
+        "├ 放进样板供应器后，网络即可自动合成其产物",
         "└ 手持潜行右键空气：清空为空白样板"
       ],
       "obtain": "配方合成（应用能源）",
@@ -28286,7 +28385,7 @@
       "details": [
         "让机器运转得更快",
         "├ 输入 / 输出总线：每张使搬运量翻倍、间隔减半（最多 4 张）",
-        "├ 分子装配室、压印器、充能器、晶体催化器：每张提速（最多 4 张）",
+        "├ 分子装配室、压印器、充能器：每张提速（最多 4 张）",
         "└ 在对应方块的界面里放入升级槽"
       ],
       "obtain": "配方合成（应用能源）",
@@ -28339,7 +28438,7 @@
       "details": [
         "库存不足时自动下单合成",
         "├ 输出总线：要导出的物品没有库存时自动请求合成",
-        "└ ME 接口：备货不足时自动请求合成"
+        "└ 接口：备货不足时自动请求合成"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
@@ -28353,9 +28452,9 @@
       "category": "应用能源",
       "group": "items",
       "icon": "item/clock",
-      "description": "查看 ME 网络状态的分析仪",
+      "description": "查看 AE 网络状态的分析仪",
       "details": [
-        "查看 ME 网络状态的分析仪",
+        "查看 AE 网络状态的分析仪",
         "├ 右键 AE 方块：显示所在网络的能量、设备、存储、合成 CPU",
         "├ 潜行右键总线：切换朝向（对着的容器）",
         "└ 手持时可看到附近 AE 方块的连接状态粒子"
@@ -28366,15 +28465,15 @@
       "href": "/linsmagic/atlas/ae/items/i-ddeb786f8461"
     },
     {
-      "id": "ME扳手",
-      "name": "ME扳手",
+      "id": "扳手",
+      "name": "扳手",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/warped_fungus_on_a_stick",
-      "description": "整理 ME 线缆用的扳手",
+      "description": "整理线缆用的扳手",
       "details": [
-        "整理 ME 线缆用的扳手",
+        "整理线缆用的扳手",
         "├ 右键线缆的某一侧：剪断 / 接回这一侧",
         "│  剪断的一侧不显示连接、也不连通网络，可隔开相邻的两个网络",
         "├ 右键总线：切换朝向",
@@ -28384,7 +28483,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-6766cbd66e80"
+      "href": "/linsmagic/atlas/ae/items/i-da04d5fe18f9"
     },
     {
       "id": "陨石罗盘",
@@ -28405,16 +28504,16 @@
       "href": "/linsmagic/atlas/ae/items/i-1501183bfabc"
     },
     {
-      "id": "ME无线终端",
-      "name": "ME无线终端",
+      "id": "无线终端",
+      "name": "无线终端",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/recovery_compass",
-      "description": "随身携带的 ME 终端",
+      "description": "随身携带的终端",
       "details": [
-        "随身携带的 ME 终端",
-        "├ 右键 ME 无线访问点完成绑定",
+        "随身携带的终端",
+        "├ 右键无线访问点完成绑定",
         "├ 在访问点信号范围内右键空气打开终端",
         "├ 潜行右键空气：切换普通 / 合成模式",
         "└ 用红石充能桩或充能器充能"
@@ -28422,36 +28521,36 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-1976253acb30"
+      "href": "/linsmagic/atlas/ae/items/i-8e25226fd6b1"
     },
     {
-      "id": "ME线缆",
-      "name": "ME线缆",
+      "id": "线缆",
+      "name": "线缆",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
       "icon": "item/waxed_copper_bars",
-      "description": "连接 ME 网络中的各个设备",
+      "description": "连接 AE 网络中的各个设备",
       "details": [
-        "连接 ME 网络中的各个设备",
+        "连接 AE 网络中的各个设备",
         "相邻的 AE 方块自动连成一个网络",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源），一次合成 4 个",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-10f89906ef0c"
+      "href": "/linsmagic/atlas/ae/blocks/i-b7810bc034cf"
     },
     {
-      "id": "ME控制器",
-      "name": "ME控制器",
+      "id": "控制器",
+      "name": "控制器",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
       "icon": "item/waxed_exposed_copper_bulb",
-      "description": "ME 网络的中枢",
+      "description": "AE 网络的中枢",
       "details": [
-        "ME 网络的中枢",
+        "AE 网络的中枢",
         "没有控制器的网络最多接 8 台设备",
         "每个控制器方块 +32 台上限（最多计 7 个）",
         "网络通电时控制器会亮起，自带 8,000 AE 缓存",
@@ -28460,11 +28559,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-110860aa212b"
+      "href": "/linsmagic/atlas/ae/blocks/i-a1e3b44f8513"
     },
     {
-      "id": "ME能源接收器",
-      "name": "ME能源接收器",
+      "id": "能源接收器",
+      "name": "能源接收器",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28474,17 +28573,18 @@
         "只收电、不发电：给网络加 4,000 AE 储能，当电池用",
         "发电方块多出来的电先存进来，不够用时再放出来",
         "拆下时这块分到的电写进物品，装回去接着用",
-        "要发电请用 魔素反应堆 / 核反应堆 / 风车·太阳能透平机·蒸汽机（接切削发电机）",
+        "熵增：网络每秒漏掉当前存量的 0.05%，满仓 2 AE/秒",
+        "要发电请用 魔素反应堆 / 风车·太阳能透平机·蒸汽机（接切削发电机）",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-f27528d9a82e"
+      "href": "/linsmagic/atlas/ae/blocks/i-24ae5b16caba"
     },
     {
-      "id": "ME魔素反应堆",
-      "name": "ME魔素反应堆",
+      "id": "魔素反应堆",
+      "name": "魔素反应堆",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28492,18 +28592,18 @@
       "description": "缓慢燃烧积聚的魔素，稳定供电",
       "details": [
         "缓慢燃烧积聚的魔素，稳定供电",
-        "右键放入积聚的魔素（八种都可以）：10 AE/秒，一个烧 90 分钟",
+        "右键放入积聚的魔素（八种都可以）：10 AE/秒，一个烧 75 分钟",
         "网络电满时暂停燃烧，不浪费；不占设备名额",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-845a8d15b8f6"
+      "href": "/linsmagic/atlas/ae/blocks/i-02d9814f2ae4"
     },
     {
-      "id": "ME风车",
-      "name": "ME风车",
+      "id": "风车",
+      "name": "风车",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28522,21 +28622,21 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-add437759533"
+      "href": "/linsmagic/atlas/ae/blocks/i-dc7998265975"
     },
     {
-      "id": "ME巨型风车",
-      "name": "ME巨型风车",
+      "id": "巨型风车",
+      "name": "巨型风车",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
       "icon": "item/light_gray_concrete",
-      "description": "高处的巨型风车：整台是 ME风车 的三倍大，出力也大一档",
+      "description": "高处的巨型风车：整台是风车的三倍大，出力也大一档",
       "details": [
-        "高处的巨型风车：整台是 ME风车 的三倍大，出力也大一档",
+        "高处的巨型风车：整台是风车的三倍大，出力也大一档",
         "转动时产生机械动力：离地 8 格起 10，离地 32 格及以上 40（默认值，config/ae.yml 可调）",
-        "规则和 ME风车 完全一样：风向风力、迎风、挡风、离地高度都照算，把扇叶转向风来的一边出力最高",
-        "扇叶半径 15 格（ME风车 3 格），扫过的圆面里有方块就停转；轮盘 30 格宽，塔要架够高",
+        "规则和风车完全一样：风向风力、迎风、挡风、离地高度都照算，把扇叶转向风来的一边出力最高",
+        "扇叶半径 15 格（风车 3 格），扫过的圆面里有方块就停转；轮盘 30 格宽，塔要架够高",
         "32 格内有别的风车 / 巨型风车动力减半；不占设备名额",
         "不产 AE 电；动力用机械传动器 接走",
         "放置后与相邻 AE 方块自动组网"
@@ -28544,11 +28644,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-82f070ee42fd"
+      "href": "/linsmagic/atlas/ae/blocks/i-06aaf56b462f"
     },
     {
-      "id": "ME切削发电机",
-      "name": "ME切削发电机",
+      "id": "切削发电机",
+      "name": "切削发电机",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28559,27 +28659,34 @@
         "正下方放红石块：刀头随动力来回磨，红石块一点点被磨平（1.0 → 0.7 → 0.4 → 0.1）",
         "磨完一块碎裂消失，要再放一块；动力越大磨得越快，每块的总发电量不变",
         "除下方外的五个方向都能接入动力（机械传动器 / 风车）",
-        "发出的电经 ME线缆 送进网络，给别的机器用；不占设备名额",
+        "发出的电经线缆送进网络，给别的机器用；不占设备名额",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-0404130820dd"
+      "href": "/linsmagic/atlas/ae/blocks/i-47015403ac1a"
     },
     {
       "id": "机械传动器",
       "name": "机械传动器",
-      "kind": "tool",
+      "kind": "material",
       "category": "应用能源",
-      "group": "other",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "group": "items",
+      "icon": "item/grindstone",
+      "description": "[机械动力] 把风车产生的机械动力汇到一起",
+      "details": [
+        "[机械动力] 把风车产生的机械动力汇到一起",
+        "├ 放下时传动轴按你的视线方向（抬头 / 低头 = 朝上 / 朝下）",
+        "├ 扳手右键 / 网络分析仪潜行右键 可调朝向",
+        "├ 相邻的传动器：至少有一方的轴对着连线就连上，拐弯、合流、分流都行",
+        "├ 并排的两条平行传动线互不干扰；风车贴哪一面都算连上",
+        "└ 只传机械动力，不导通 AE；切削发电机能把动力变成 AE 电"
+      ],
+      "obtain": "配方合成（应用能源），一次合成 8 个",
       "enchantments": [],
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-83b2018b622e"
+      "glint": true,
+      "href": "/linsmagic/atlas/ae/items/i-83b2018b622e"
     },
     {
       "id": "太阳能聚光镜",
@@ -28614,7 +28721,7 @@
         "被聚光镜烤热后转动，输出机械动力",
         "温度升到 150 °C 才转起来，越高转得越快（最多 16 动力）",
         "没有光就靠自身散热慢慢降温；过热（800 °C）会排气暂停吸热",
-        "动力用 机械传动器 接走，接到 ME切削发电机 就变成 AE 电",
+        "动力用机械传动器接走，接到切削发电机就变成 AE 电",
         "不占设备名额",
         "放置后与相邻 AE 方块自动组网"
       ],
@@ -28624,8 +28731,8 @@
       "href": "/linsmagic/atlas/ae/blocks/i-93fd6e89898c"
     },
     {
-      "id": "ME蒸汽机",
-      "name": "ME蒸汽机",
+      "id": "蒸汽机",
+      "name": "蒸汽机",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28633,20 +28740,20 @@
       "description": "烧煤把锅炉里的水蒸成汽，游梁一上一下带着飞轮转，输出机械动力",
       "details": [
         "烧煤把锅炉里的水蒸成汽，游梁一上一下带着飞轮转，输出机械动力",
-        "右键打开界面放燃料：煤炭 / 木炭 / 煤炭块，也能用管道、ME 输出总线投喂",
+        "右键打开界面放燃料：煤炭 / 木炭 / 煤炭块，也能用管道、输出总线投喂",
         "贴着水才烧得动（水方块 / 装满水的炼药锅 / 含水方块）：没水就停下不烧，也不费煤",
         "出力恒定 12 动力（比风车稳、比烤热的透平机低）",
-        "动力用 机械传动器 接走，接到 ME切削发电机 就变成 AE 电；不占设备名额",
+        "动力用机械传动器接走，接到切削发电机就变成 AE 电；不占设备名额",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-54281aae11b1"
+      "href": "/linsmagic/atlas/ae/blocks/i-c02a8a2d6e2c"
     },
     {
-      "id": "ME水车",
-      "name": "ME水车",
+      "id": "水车",
+      "name": "水车",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28659,17 +28766,17 @@
         "叶轮顺着水流的方向转：水往哪边流，桨板下半圈就往哪边扫",
         "水越深出力越大：下缘刚好泡满 4、整个叶轮泡在水里 8",
         "叶轮被方块挡住、或和别的叶轮交叉，都不转；叶轮装在放置时面对你的一侧",
-        "动力用 机械传动器 接走，接到 ME切削发电机 就变成 AE 电",
+        "动力用机械传动器接走，接到切削发电机就变成 AE 电",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-8305e37c326d"
+      "href": "/linsmagic/atlas/ae/blocks/i-f9f94f969d3f"
     },
     {
-      "id": "ME手摇曲柄",
-      "name": "ME手摇曲柄",
+      "id": "手摇曲柄",
+      "name": "手摇曲柄",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28680,17 +28787,17 @@
         "一秒最多摇 6 下；摇着的时候才有 6 动力，手一停就断（不烧燃料、不看天气）",
         "是几个动力源里最不挑地方的：池塘边、矿洞里、屋里都能摇",
         "摇臂装在放置时面对你的一侧，动力从六个面都能接出去",
-        "动力用 机械传动器 接走，接到 ME切削发电机 就变成 AE 电",
+        "动力用机械传动器接走，接到切削发电机就变成 AE 电",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-d5658c4430e4"
+      "href": "/linsmagic/atlas/ae/blocks/i-80343bfc2f67"
     },
     {
-      "id": "ME撞击发电机",
-      "name": "ME撞击发电机",
+      "id": "撞击发电机",
+      "name": "撞击发电机",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28708,11 +28815,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-745bdfd1bcca"
+      "href": "/linsmagic/atlas/ae/blocks/i-13db9c7b8585"
     },
     {
-      "id": "ME石磨",
-      "name": "ME石磨",
+      "id": "石磨",
+      "name": "石磨",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -28720,7 +28827,7 @@
       "description": "石磨盘吃机械动力磨粉：唯一不用电的加工机器",
       "details": [
         "石磨盘吃机械动力磨粉：唯一不用电的加工机器",
-        "中格放原料：陨石碎块 / 赛特斯石英水晶 → 赛特斯石英粉，福鲁伊克斯水晶 → 福鲁伊克斯粉，铀矿碎块 → 浓缩铀",
+        "中格放原料：陨石碎块 / 陨晶体 → 陨石碎粉，三相水晶导体 → 三相导体砂粉，铀矿碎块 → 浓缩铀",
         "不接网络也能磨（磨出来的粉留在输出格，传出阀 / 单向运输器 能来抽走），接上网络就自动把粉送进网络",
         "满动力（16）2 秒磨一份（可装加速卡×4），动力越小越慢；磨盘那面（上面）接不了动力",
         "拆掉时会把中格和输出格里的东西一起掉出来；不占设备名额",
@@ -28729,7 +28836,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-47cd38459206"
+      "href": "/linsmagic/atlas/ae/blocks/i-4a63183ec97e"
     },
     {
       "id": "酒壶",
@@ -28741,7 +28848,7 @@
       "description": "狐狸不知从哪个酒窖顺来的小陶壶，壶口还留着酒香",
       "details": [
         "狐狸不知从哪个酒窖顺来的小陶壶，壶口还留着酒香",
-        "└ 摆在 ME手摇曲柄 正前方第二格，这台曲柄会自己转起来",
+        "└ 摆在手摇曲柄正前方第二格，这台曲柄会自己转起来",
         "-.-",
         "狗修金撒嘛！"
       ],
@@ -28751,42 +28858,24 @@
       "href": "/linsmagic/atlas/machines/machines/i-9acd9eed8134"
     },
     {
-      "id": "ME核反应堆",
-      "name": "ME核反应堆",
+      "id": "核反应堆",
+      "name": "核反应堆",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
       "icon": "item/deepslate_tiles",
-      "description": "放入燃料棒发电，同时产生大量热量",
+      "description": "玩法重做中：现在既不发电也不产热，只剩一具会发烫的堆壳",
       "details": [
-        "放入燃料棒发电，同时产生大量热量",
-        "右键打开 3×6 的元件格，每贴一个反应堆仓室多 1 列（最多 9 列）",
-        "有红石信号才运行；堆温过高会起火、辐射，100% 时堆芯熔毁并爆炸",
+        "玩法重做中：现在既不发电也不产热，只剩一具会发烫的堆壳",
+        "堆温 40% 起周边起火，50% 蒸干水，70% 向外辐射，85% 把方块烤成熔岩",
+        "堆温 100% 堆芯熔毁：反应堆被炸掉，周边按半径爆炸",
         "不占设备名额",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-4a3897c486ad"
-    },
-    {
-      "id": "反应堆仓室",
-      "name": "反应堆仓室",
-      "kind": "machine",
-      "category": "应用能源",
-      "group": "blocks",
-      "icon": "item/polished_deepslate",
-      "description": "贴着 ME核反应堆放置，为反应堆增加 1 列元件格",
-      "details": [
-        "贴着 ME核反应堆放置，为反应堆增加 1 列元件格",
-        "每个反应堆最多计 6 个仓室；给仓室红石信号也能启动反应堆",
-        "放置后与相邻 AE 方块自动组网"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-7902813fe34f"
+      "href": "/linsmagic/atlas/ae/blocks/i-c04f44380b22"
     },
     {
       "id": "铀矿碎块",
@@ -28798,7 +28887,7 @@
       "description": "深层岩石里罕见的放射性矿物",
       "details": [
         "深层岩石里罕见的放射性矿物",
-        "└ 压印器、ME石磨 研磨（上下格空着）→ 浓缩铀"
+        "└ 石磨研磨（中格）→ 浓缩铀"
       ],
       "obtain": "主世界 y<0 挖掘深板岩或深板岩矿石时有 0.5% 概率掉落",
       "enchantments": [],
@@ -28815,31 +28904,12 @@
       "description": "提纯后的核燃料",
       "details": [
         "提纯后的核燃料",
-        "└ 与铁皮合成铀燃料棒"
+        "└ 随身带着会被照射：每件 0.02 Sv/h"
       ],
-      "obtain": "压印器或 ME石磨 研磨铀矿碎块（上下格空着）",
+      "obtain": "石磨研磨铀矿碎块（中格）",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/ae/items/i-ed0dc301f5f0"
-    },
-    {
-      "id": "铀燃料棒",
-      "name": "铀燃料棒",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/breeze_rod",
-      "description": "单根铀燃料：50 AE/秒，产热 4/秒（单独放置时）",
-      "details": [
-        "单根铀燃料：50 AE/秒，产热 4/秒（单独放置时）",
-        "├ 相邻的燃料棒、中子反射板会激发它，发电和产热都更高",
-        "├ 热量平分给相邻的散热 / 储热元件，没有就进堆壳",
-        "└ 寿命 20,000 秒（约 5.5 小时），耐久条显示剩余寿命"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-d7ebbf394835"
     },
     {
       "id": "盖革辐射计",
@@ -28956,125 +29026,6 @@
       "href": "/linsmagic/atlas/ae/items/i-b649e3ffc361"
     },
     {
-      "id": "双联铀燃料棒",
-      "name": "双联铀燃料棒",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/echo_shard",
-      "description": "两根燃料并联：200 AE/秒，产热 24/秒（单独放置时）",
-      "details": [
-        "两根燃料并联：200 AE/秒，产热 24/秒（单独放置时）",
-        "└ 寿命 20,000 秒"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-12126a420557"
-    },
-    {
-      "id": "四联铀燃料棒",
-      "name": "四联铀燃料棒",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/nether_star",
-      "description": "四根燃料并联：600 AE/秒，产热 96/秒（单独放置时）",
-      "details": [
-        "四根燃料并联：600 AE/秒，产热 96/秒（单独放置时）",
-        "└ 寿命 20,000 秒；产热极高，必须配足散热"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-de5e380572f7"
-    },
-    {
-      "id": "散热片",
-      "name": "散热片",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/shulker_shell",
-      "description": "吸收相邻燃料棒的热量，每秒散掉自身 6 点热",
-      "details": [
-        "吸收相邻燃料棒的热量，每秒散掉自身 6 点热",
-        "└ 最多存 1,000 热，超过会烧毁；耐久条显示当前热量"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-cfe17e794954"
-    },
-    {
-      "id": "反应堆散热片",
-      "name": "反应堆散热片",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/turtle_scute",
-      "description": "每秒从堆壳抽 5 点热，再散掉自身 5 点热",
-      "details": [
-        "每秒从堆壳抽 5 点热，再散掉自身 5 点热",
-        "└ 最多存 1,000 热，超过会烧毁"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-b493224979a1"
-    },
-    {
-      "id": "热交换器",
-      "name": "热交换器",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/prismarine_shard",
-      "description": "在相邻元件之间（每个 12/秒）和堆壳之间（4/秒）平衡热量",
-      "details": [
-        "在相邻元件之间（每个 12/秒）和堆壳之间（4/秒）平衡热量",
-        "└ 最多存 2,500 热，超过会烧毁"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-407c48603507"
-    },
-    {
-      "id": "冷却单元",
-      "name": "冷却单元",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/heart_of_the_sea",
-      "description": "吸收相邻燃料棒的热量储存起来，自身不散热",
-      "details": [
-        "吸收相邻燃料棒的热量储存起来，自身不散热",
-        "└ 最多存 10,000 热，存满会烧毁"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-a2b2b50631cf"
-    },
-    {
-      "id": "中子反射板",
-      "name": "中子反射板",
-      "kind": "material",
-      "category": "应用能源",
-      "group": "items",
-      "icon": "item/disc_fragment_5",
-      "description": "把相邻燃料棒的中子反射回去，每根相邻燃料棒多发一份电",
-      "details": [
-        "把相邻燃料棒的中子反射回去，每根相邻燃料棒多发一份电",
-        "└ 可反射 30,000 次；不吸收热量"
-      ],
-      "obtain": "配方合成（应用能源）",
-      "enchantments": [],
-      "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-df189d5edd50"
-    },
-    {
       "id": "能源元件",
       "name": "能源元件",
       "kind": "machine",
@@ -29085,6 +29036,7 @@
       "details": [
         "储存 200,000 AE 能量",
         "拆下时保留储存的能量",
+        "熵增：网络每秒漏掉当前存量的 0.05%，满仓 100 AE/秒",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29103,6 +29055,7 @@
       "details": [
         "储存 1,600,000 AE 能量",
         "拆下时保留储存的能量",
+        "熵增：网络每秒漏掉当前存量的 0.05%，满仓 800 AE/秒",
         "放置后与相邻 AE 方块自动组网"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29128,15 +29081,15 @@
       "href": "/linsmagic/atlas/ae/blocks/i-175d07f3d40a"
     },
     {
-      "id": "ME驱动器",
-      "name": "ME驱动器",
+      "id": "驱动器",
+      "name": "驱动器",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
       "icon": "item/black_glazed_terracotta",
-      "description": "容纳 10 个 ME 存储元件",
+      "description": "容纳 10 个存储元件",
       "details": [
-        "容纳 10 个 ME 存储元件",
+        "容纳 10 个存储元件",
         "右键打开，放入 / 取出元件",
         "占用 1 台设备名额",
         "放置后与相邻 AE 方块自动组网"
@@ -29144,11 +29097,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-5dec524c1604"
+      "href": "/linsmagic/atlas/ae/blocks/i-b5f28c4c37de"
     },
     {
-      "id": "ME箱子",
-      "name": "ME箱子",
+      "id": "箱子",
+      "name": "箱子",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29164,11 +29117,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-e42b2335f247"
+      "href": "/linsmagic/atlas/ae/blocks/i-41a1632f0474"
     },
     {
-      "id": "ME终端",
-      "name": "ME终端",
+      "id": "终端",
+      "name": "终端",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29183,11 +29136,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-f5e4cdb23eab"
+      "href": "/linsmagic/atlas/ae/blocks/i-7f55a26d7dda"
     },
     {
-      "id": "ME合成终端",
-      "name": "ME合成终端",
+      "id": "合成终端",
+      "name": "合成终端",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29202,11 +29155,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-cd30fff9360c"
+      "href": "/linsmagic/atlas/ae/blocks/i-e1d4ced58f31"
     },
     {
-      "id": "ME样板编码终端",
-      "name": "ME样板编码终端",
+      "id": "样板编码终端",
+      "name": "样板编码终端",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29222,11 +29175,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-39f9250c67d6"
+      "href": "/linsmagic/atlas/ae/blocks/i-549926e5454f"
     },
     {
-      "id": "ME输入总线",
-      "name": "ME输入总线",
+      "id": "输入总线",
+      "name": "输入总线",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29234,7 +29187,7 @@
       "description": "从贴着的容器里把物品抽进网络",
       "details": [
         "从贴着的容器里把物品抽进网络",
-        "放置时朝向所贴的方块；ME扳手右键 / 网络分析仪潜行右键可调朝向",
+        "放置时朝向所贴的方块；扳手右键 / 网络分析仪潜行右键可调朝向",
         "可设过滤，装加速卡 / 容量卡 / 反相卡",
         "占用 1 台设备名额",
         "放置后与相邻 AE 方块自动组网"
@@ -29242,11 +29195,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-38325133e636"
+      "href": "/linsmagic/atlas/ae/blocks/i-bee1893cb794"
     },
     {
-      "id": "ME输出总线",
-      "name": "ME输出总线",
+      "id": "输出总线",
+      "name": "输出总线",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29261,11 +29214,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-6f5282b7c0a3"
+      "href": "/linsmagic/atlas/ae/blocks/i-b34a6dad46bf"
     },
     {
-      "id": "ME存储总线",
-      "name": "ME存储总线",
+      "id": "存储总线",
+      "name": "存储总线",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29280,11 +29233,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-7e4017e9dc74"
+      "href": "/linsmagic/atlas/ae/blocks/i-298d02a005ef"
     },
     {
-      "id": "ME接口",
-      "name": "ME接口",
+      "id": "接口",
+      "name": "接口",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29301,11 +29254,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-f2d2fd93cdae"
+      "href": "/linsmagic/atlas/ae/blocks/i-8b48ee255c03"
     },
     {
-      "id": "ME样板供应器",
-      "name": "ME样板供应器",
+      "id": "样板供应器",
+      "name": "样板供应器",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29321,7 +29274,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-19e3069eb97f"
+      "href": "/linsmagic/atlas/ae/blocks/i-94479330cc64"
     },
     {
       "id": "分子装配室",
@@ -29344,8 +29297,8 @@
       "href": "/linsmagic/atlas/ae/blocks/i-97cc0dbe0d33"
     },
     {
-      "id": "ME电平发射器",
-      "name": "ME电平发射器",
+      "id": "电平发射器",
+      "name": "电平发射器",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29360,11 +29313,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-6e26d4c35425"
+      "href": "/linsmagic/atlas/ae/blocks/i-bbf3b3f3c2f2"
     },
     {
-      "id": "ME自动合成器",
-      "name": "ME自动合成器",
+      "id": "自动合成器",
+      "name": "自动合成器",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29381,7 +29334,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-d4cf5c0f9fc3"
+      "href": "/linsmagic/atlas/ae/blocks/i-2adc8c11a343"
     },
     {
       "id": "能源导线",
@@ -29395,7 +29348,7 @@
         "只传电、不导通 AE，把发电和储能方块连成独立电网",
         "贴着导线的发电方块、能源元件、能源接收器都接入电网",
         "电网连着的所有网络共用电量，一座发电站可供多个网络",
-        "用能源接收器把电网接到 ME 网络上；没有传输损耗",
+        "用能源接收器把电网接到 AE 网络上；没有传输损耗",
         "不占设备名额",
         "放置后与相邻 AE 方块自动组网"
       ],
@@ -29405,16 +29358,16 @@
       "href": "/linsmagic/atlas/ae/blocks/i-8b8ec22c936a"
     },
     {
-      "id": "ME量子终端",
-      "name": "ME量子终端",
+      "id": "量子终端",
+      "name": "量子终端",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/recovery_compass",
-      "description": "不受距离与维度限制的 ME 终端",
+      "description": "不受距离与维度限制的终端",
       "details": [
-        "不受距离与维度限制的 ME 终端",
-        "├ 右键 ME 无线访问点完成绑定",
+        "不受距离与维度限制的终端",
+        "├ 右键无线访问点完成绑定",
         "├ 在任何地方、任何维度右键空气打开终端",
         "├ 潜行右键空气：切换普通 / 合成模式",
         "└ 用红石充能桩或充能器充能"
@@ -29422,7 +29375,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-76d487f855a1"
+      "href": "/linsmagic/atlas/ae/items/i-04fc70bbf6b1"
     },
     {
       "id": "合成单元",
@@ -29461,8 +29414,8 @@
       "href": "/linsmagic/atlas/ae/blocks/i-70f26eea04bd"
     },
     {
-      "id": "ME无线访问点",
-      "name": "ME无线访问点",
+      "id": "无线访问点",
+      "name": "无线访问点",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -29476,7 +29429,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-a9dc8e729230"
+      "href": "/linsmagic/atlas/ae/blocks/i-9f6cc0c2c5c7"
     },
     {
       "id": "压印器",
@@ -29485,9 +29438,9 @@
       "category": "应用能源",
       "group": "blocks",
       "icon": "item/resin_bricks",
-      "description": "用压印模板压制电路板、组装处理器、研磨粉末",
+      "description": "用压印模板压制电路板、组装处理器、复制模板",
       "details": [
-        "用压印模板压制电路板、组装处理器、研磨粉末",
+        "用压印模板压制电路板、组装处理器、复制模板",
         "需要接入有电的网络（发电方块 + 线缆即可）",
         "接入网络时产物直接存进网络；否则留在输出格",
         "可装加速卡；传入阀可用管道送料",
@@ -29505,9 +29458,9 @@
       "category": "应用能源",
       "group": "blocks",
       "icon": "item/ochre_froglight",
-      "description": "消耗网络能量给赛特斯石英 / 无线终端充能",
+      "description": "消耗网络能量给无线终端 / 量子终端充电",
       "details": [
-        "消耗网络能量给赛特斯石英 / 无线终端充能",
+        "消耗网络能量给无线终端 / 量子终端充电",
         "需要接入有电的网络",
         "可装加速卡；传入阀可用管道送料",
         "放置后与相邻 AE 方块自动组网"
@@ -29518,22 +29471,23 @@
       "href": "/linsmagic/atlas/ae/blocks/i-872e55700a54"
     },
     {
-      "id": "晶体催化器",
-      "name": "晶体催化器",
-      "kind": "machine",
+      "id": "陨晶母体槽",
+      "name": "陨晶母体槽",
+      "kind": "material",
       "category": "应用能源",
-      "group": "blocks",
-      "icon": "item/chiseled_red_sandstone",
-      "description": "培育赛特斯石英种子、合成福鲁伊克斯水晶的机器",
+      "group": "items",
+      "icon": "item/purpur_pillar",
+      "description": "把陨晶晶核养成陨晶体的母槽",
       "details": [
-        "培育赛特斯石英种子、合成福鲁伊克斯水晶的机器",
-        "不接电也能用（慢 3 倍），接上有电的网络更快、可装加速卡",
-        "放置后与相邻 AE 方块自动组网"
+        "把陨晶晶核养成陨晶体的母槽",
+        "├ 不耗电、不用接线，晶核放它正上方就开始成长",
+        "├ 8～16 分钟后那一格晶核变成陨晶体",
+        "└ 成长时随机在上 / 北 / 南 / 东 / 西 结出 3 缕陨晶碎丝"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-bfe0eb6a0cd1"
+      "href": "/linsmagic/atlas/ae/items/i-6a855f3f17f5"
     },
     {
       "id": "1k存储组件",
@@ -29545,7 +29499,7 @@
       "description": "容量 1,024 字节的存储核心",
       "details": [
         "容量 1,024 字节的存储核心",
-        "├ 与 ME 存储外壳 / ME 多类存储外壳合成存储元件",
+        "├ 与存储外壳 / 多类存储外壳合成存储元件",
         "└ 与合成单元合成1k合成存储器"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29563,7 +29517,7 @@
       "description": "容量 4,096 字节的存储核心",
       "details": [
         "容量 4,096 字节的存储核心",
-        "├ 与 ME 存储外壳 / ME 多类存储外壳合成存储元件",
+        "├ 与存储外壳 / 多类存储外壳合成存储元件",
         "└ 与合成单元合成4k合成存储器"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29581,7 +29535,7 @@
       "description": "容量 16,384 字节的存储核心",
       "details": [
         "容量 16,384 字节的存储核心",
-        "├ 与 ME 存储外壳 / ME 多类存储外壳合成存储元件",
+        "├ 与存储外壳 / 多类存储外壳合成存储元件",
         "└ 与合成单元合成16k合成存储器"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29599,7 +29553,7 @@
       "description": "容量 65,536 字节的存储核心",
       "details": [
         "容量 65,536 字节的存储核心",
-        "├ 与 ME 存储外壳 / ME 多类存储外壳合成存储元件",
+        "├ 与存储外壳 / 多类存储外壳合成存储元件",
         "└ 与合成单元合成64k合成存储器"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29617,7 +29571,7 @@
       "description": "容量 262,144 字节的存储核心",
       "details": [
         "容量 262,144 字节的存储核心",
-        "├ 与 ME 存储外壳 / ME 多类存储外壳合成存储元件",
+        "├ 与存储外壳 / 多类存储外壳合成存储元件",
         "└ 与合成单元合成（无对应合成存储器）"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29626,15 +29580,15 @@
       "href": "/linsmagic/atlas/ae/items/i-ffe257a4f2da"
     },
     {
-      "id": "ME存储元件-1k",
-      "name": "ME存储元件-1k",
+      "id": "存储元件-1k",
+      "name": "存储元件-1k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/iron_horse_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+      "description": "放进驱动器 / 箱子，接入网络存储物品",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+        "放进驱动器 / 箱子，接入网络存储物品",
         "├ 容量: 1,024 字节，最多 63 种物品",
         "├ 每种物品占 8 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（只存指定物品）",
@@ -29643,18 +29597,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-ebed98613ad6"
+      "href": "/linsmagic/atlas/ae/items/i-4e5bd8e5eec2"
     },
     {
-      "id": "ME存储元件-4k",
-      "name": "ME存储元件-4k",
+      "id": "存储元件-4k",
+      "name": "存储元件-4k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/golden_horse_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+      "description": "放进驱动器 / 箱子，接入网络存储物品",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+        "放进驱动器 / 箱子，接入网络存储物品",
         "├ 容量: 4,096 字节，最多 63 种物品",
         "├ 每种物品占 32 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（只存指定物品）",
@@ -29663,18 +29617,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-0494f56df4a4"
+      "href": "/linsmagic/atlas/ae/items/i-4e2503fa0efe"
     },
     {
-      "id": "ME存储元件-16k",
-      "name": "ME存储元件-16k",
+      "id": "存储元件-16k",
+      "name": "存储元件-16k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/diamond_horse_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+      "description": "放进驱动器 / 箱子，接入网络存储物品",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+        "放进驱动器 / 箱子，接入网络存储物品",
         "├ 容量: 16,384 字节，最多 63 种物品",
         "├ 每种物品占 128 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（只存指定物品）",
@@ -29683,18 +29637,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-83e12495897c"
+      "href": "/linsmagic/atlas/ae/items/i-07b4e6e00d29"
     },
     {
-      "id": "ME存储元件-64k",
-      "name": "ME存储元件-64k",
+      "id": "存储元件-64k",
+      "name": "存储元件-64k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/leather_horse_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+      "description": "放进驱动器 / 箱子，接入网络存储物品",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+        "放进驱动器 / 箱子，接入网络存储物品",
         "├ 容量: 65,536 字节，最多 63 种物品",
         "├ 每种物品占 512 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（只存指定物品）",
@@ -29703,18 +29657,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-15c6745b4333"
+      "href": "/linsmagic/atlas/ae/items/i-406b670b7b87"
     },
     {
-      "id": "ME存储元件-256k",
-      "name": "ME存储元件-256k",
+      "id": "存储元件-256k",
+      "name": "存储元件-256k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/wolf_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+      "description": "放进驱动器 / 箱子，接入网络存储物品",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+        "放进驱动器 / 箱子，接入网络存储物品",
         "├ 容量: 262,144 字节，最多 63 种物品",
         "├ 每种物品占 2048 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（只存指定物品）",
@@ -29723,7 +29677,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-86e040ccad4b"
+      "href": "/linsmagic/atlas/ae/items/i-a2df13722cd1"
     },
     {
       "id": "1M存储组件",
@@ -29735,7 +29689,7 @@
       "description": "容量 1,048,576 字节的存储核心",
       "details": [
         "容量 1,048,576 字节的存储核心",
-        "├ 与 ME 存储外壳合成 ME 存储元件",
+        "├ 与存储外壳合成存储元件",
         "└ 与合成单元合成（无对应合成存储器）"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29753,7 +29707,7 @@
       "description": "容量 4,194,304 字节的存储核心",
       "details": [
         "容量 4,194,304 字节的存储核心",
-        "├ 与 ME 存储外壳合成 ME 存储元件",
+        "├ 与存储外壳合成存储元件",
         "└ 与合成单元合成（无对应合成存储器）"
       ],
       "obtain": "配方合成（应用能源）",
@@ -29762,15 +29716,15 @@
       "href": "/linsmagic/atlas/ae/items/i-7b6405231f98"
     },
     {
-      "id": "ME存储元件-1M",
-      "name": "ME存储元件-1M",
+      "id": "存储元件-1M",
+      "name": "存储元件-1M",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/copper_horse_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+      "description": "放进驱动器 / 箱子，接入网络存储物品",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+        "放进驱动器 / 箱子，接入网络存储物品",
         "├ 容量: 1,048,576 字节，最多 63 种物品",
         "├ 每种物品占 8192 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（只存指定物品）",
@@ -29779,18 +29733,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-eab9dcbf14f2"
+      "href": "/linsmagic/atlas/ae/items/i-48e3b7e1d414"
     },
     {
-      "id": "ME存储元件-4M",
-      "name": "ME存储元件-4M",
+      "id": "存储元件-4M",
+      "name": "存储元件-4M",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/netherite_horse_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+      "description": "放进驱动器 / 箱子，接入网络存储物品",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，接入网络存储物品",
+        "放进驱动器 / 箱子，接入网络存储物品",
         "├ 容量: 4,194,304 字节，最多 63 种物品",
         "├ 每种物品占 32768 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（只存指定物品）",
@@ -29799,11 +29753,11 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-0241a00fa85a"
+      "href": "/linsmagic/atlas/ae/items/i-dd9463338793"
     },
     {
-      "id": "ME多类存储外壳",
-      "name": "ME多类存储外壳",
+      "id": "多类存储外壳",
+      "name": "多类存储外壳",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
@@ -29811,23 +29765,23 @@
       "description": "能容纳上千种物品的存储元件外壳",
       "details": [
         "能容纳上千种物品的存储元件外壳",
-        "└ 与 1k～256k 存储组件合成对应容量的 ME 多类存储元件"
+        "└ 与 1k～256k 存储组件合成对应容量的多类存储元件"
       ],
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-b1d78732e4e1"
+      "href": "/linsmagic/atlas/ae/items/i-1bfff8b95cec"
     },
     {
-      "id": "ME多类存储元件-1k",
-      "name": "ME多类存储元件-1k",
+      "id": "多类存储元件-1k",
+      "name": "多类存储元件-1k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/copper_nautilus_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+      "description": "放进驱动器 / 箱子，适合存放种类繁多的杂物",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+        "放进驱动器 / 箱子，适合存放种类繁多的杂物",
         "├ 容量: 1,024 字节，最多 1024 种物品",
         "├ 每种物品占 0.5 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（最多 45 种）",
@@ -29836,18 +29790,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-c213ffa5f859"
+      "href": "/linsmagic/atlas/ae/items/i-e994798fb2d7"
     },
     {
-      "id": "ME多类存储元件-4k",
-      "name": "ME多类存储元件-4k",
+      "id": "多类存储元件-4k",
+      "name": "多类存储元件-4k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/iron_nautilus_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+      "description": "放进驱动器 / 箱子，适合存放种类繁多的杂物",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+        "放进驱动器 / 箱子，适合存放种类繁多的杂物",
         "├ 容量: 4,096 字节，最多 1024 种物品",
         "├ 每种物品占 2 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（最多 45 种）",
@@ -29856,18 +29810,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-8023d9f584e5"
+      "href": "/linsmagic/atlas/ae/items/i-4090fca9e0ea"
     },
     {
-      "id": "ME多类存储元件-16k",
-      "name": "ME多类存储元件-16k",
+      "id": "多类存储元件-16k",
+      "name": "多类存储元件-16k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/golden_nautilus_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+      "description": "放进驱动器 / 箱子，适合存放种类繁多的杂物",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+        "放进驱动器 / 箱子，适合存放种类繁多的杂物",
         "├ 容量: 16,384 字节，最多 1024 种物品",
         "├ 每种物品占 8 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（最多 45 种）",
@@ -29876,18 +29830,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-7977ed16afd2"
+      "href": "/linsmagic/atlas/ae/items/i-6b887391a10f"
     },
     {
-      "id": "ME多类存储元件-64k",
-      "name": "ME多类存储元件-64k",
+      "id": "多类存储元件-64k",
+      "name": "多类存储元件-64k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/diamond_nautilus_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+      "description": "放进驱动器 / 箱子，适合存放种类繁多的杂物",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+        "放进驱动器 / 箱子，适合存放种类繁多的杂物",
         "├ 容量: 65,536 字节，最多 1024 种物品",
         "├ 每种物品占 32 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（最多 45 种）",
@@ -29896,18 +29850,18 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-e9af3eacfca8"
+      "href": "/linsmagic/atlas/ae/items/i-df75b66a7b31"
     },
     {
-      "id": "ME多类存储元件-256k",
-      "name": "ME多类存储元件-256k",
+      "id": "多类存储元件-256k",
+      "name": "多类存储元件-256k",
       "kind": "material",
       "category": "应用能源",
       "group": "items",
       "icon": "item/netherite_nautilus_armor",
-      "description": "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+      "description": "放进驱动器 / 箱子，适合存放种类繁多的杂物",
       "details": [
-        "放进 ME 驱动器 / ME 箱子，适合存放种类繁多的杂物",
+        "放进驱动器 / 箱子，适合存放种类繁多的杂物",
         "├ 容量: 262,144 字节，最多 1024 种物品",
         "├ 每种物品占 128 字节，每 8 个物品占 1 字节",
         "├ 手持潜行右键空气：设置分区（最多 45 种）",
@@ -29916,7 +29870,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/items/i-363b0c776e39"
+      "href": "/linsmagic/atlas/ae/items/i-e529150c33e6"
     },
     {
       "id": "1k合成存储器",
@@ -29991,8 +29945,8 @@
       "href": "/linsmagic/atlas/ae/blocks/i-ffbb0c9ac7c0"
     },
     {
-      "id": "ME存储监控器",
-      "name": "ME存储监控器",
+      "id": "存储监控器",
+      "name": "存储监控器",
       "kind": "machine",
       "category": "应用能源",
       "group": "blocks",
@@ -30009,7 +29963,7 @@
       "obtain": "配方合成（应用能源）",
       "enchantments": [],
       "glint": true,
-      "href": "/linsmagic/atlas/ae/blocks/i-b861139d6688"
+      "href": "/linsmagic/atlas/ae/blocks/i-368c688e2bf3"
     },
     {
       "id": "钝化燧石残渣",
@@ -31994,9 +31948,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/echo_shard",
+      "description": "像有什么在很深的地方呼吸",
+      "details": [
+        "像有什么在很深的地方呼吸"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32008,9 +31964,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/prismarine_crystals",
+      "description": "雨点往上飘，落向看不见的天，而你截获了它",
+      "details": [
+        "雨点往上飘，落向看不见的天，而你截获了它"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32022,9 +31980,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/ink_sac",
+      "description": "停在半空，边缘缓缓滴落又吸回",
+      "details": [
+        "停在半空，边缘缓缓滴落又吸回"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32036,9 +31996,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/bell",
+      "description": "钟摆停在半途，凑近也听不见响",
+      "details": [
+        "钟摆停在半途，凑近也听不见响"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32050,9 +32012,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/glow_ink_sac",
+      "description": "幽蓝的微光一明一暗",
+      "details": [
+        "幽蓝的微光一明一暗"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32064,9 +32028,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/chiseled_deepslate",
+      "description": "碑上刻着字，看不懂",
+      "details": [
+        "碑上刻着字，看不懂"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32078,9 +32044,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/ender_eye",
+      "description": "裂缝深处缓缓眨了一下",
+      "details": [
+        "裂缝深处缓缓眨了一下"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32092,9 +32060,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/bone",
+      "description": "不知由什么骨头垒成",
+      "details": [
+        "不知由什么骨头垒成"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32106,9 +32076,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/compass",
+      "description": "仪器还在转，指针找不到北",
+      "details": [
+        "仪器还在转，指针找不到北"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32120,9 +32092,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/phantom_membrane",
+      "description": "长影贴地滑过，没有声音",
+      "details": [
+        "长影贴地滑过，没有声音"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32134,9 +32108,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/ender_pearl",
+      "description": "看不见眼睛，却知道它在看你",
+      "details": [
+        "看不见眼睛，却知道它在看你"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32148,9 +32124,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/nautilus_shell",
+      "description": "巨大的轮廓缓缓滑过",
+      "details": [
+        "巨大的轮廓缓缓滑过"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32162,9 +32140,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/sculk_sensor",
+      "description": "我估计它听不见",
+      "details": [
+        "我估计它听不见"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32176,9 +32156,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/sculk_shrieker",
+      "description": "嘴张到最大，却一声也发不出",
+      "details": [
+        "嘴张到最大，却一声也发不出"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32190,9 +32172,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/soul_soil",
+      "description": "这东西已经变成化石了",
+      "details": [
+        "这东西已经变成化石了"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32204,9 +32188,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/candle",
+      "description": "显然，它被捞上来之后就灭了，但蜡油表明，它燃烧时会向上增殖",
+      "details": [
+        "显然，它被捞上来之后就灭了，但蜡油表明，它燃烧时会向上增殖"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32218,9 +32204,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/twisting_vines",
+      "description": "藤梢一直在往上探，像在找什么",
+      "details": [
+        "藤梢一直在往上探，像在找什么"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32232,9 +32220,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/pointed_dripstone",
+      "description": "从顶上垂下来，尖头却朝上",
+      "details": [
+        "从顶上垂下来，尖头却朝上"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32246,9 +32236,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/blue_ice",
+      "description": "一团白气凝在那里，还是呼出的形状",
+      "details": [
+        "一团白气凝在那里，还是呼出的形状"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32260,9 +32252,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/black_dye",
+      "description": "薄薄一片，捏起来就从指缝滑走",
+      "details": [
+        "薄薄一片，捏起来就从指缝滑走"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32288,9 +32282,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/slime_ball",
+      "description": "伞盖一收一放，慢慢往更深处沉",
+      "details": [
+        "伞盖一收一放，慢慢往更深处沉"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32302,9 +32298,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/filled_map",
+      "description": "图上那些地方，你一个都找不到",
+      "details": [
+        "图上那些地方，你一个都找不到"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32316,9 +32314,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/heart_of_the_sea",
+      "description": "贴着墙听，它就停了。",
+      "details": [
+        "贴着墙听，它就停了。"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32330,9 +32330,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/moss_block",
+      "description": "贴着地面慢慢起伏，像在睡觉",
+      "details": [
+        "贴着地面慢慢起伏，像在睡觉"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32344,9 +32346,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/quartz_stairs",
+      "description": "一级一级往上，总差最后一级",
+      "details": [
+        "一级一级往上，总差最后一级"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32358,9 +32362,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/respawn_anchor",
+      "description": "抓在手里很沉，搁进水里就往上飘",
+      "details": [
+        "抓在手里很沉，搁进水里就往上飘"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32372,9 +32378,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/lantern",
+      "description": "提起来一点声响都没有",
+      "details": [
+        "提起来一点声响都没有"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32386,9 +32394,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/potion",
+      "description": "杯底的水面一直在轻轻晃",
+      "details": [
+        "杯底的水面一直在轻轻晃"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32400,9 +32410,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/bowl",
+      "description": "这里面的饭让人越吃越饿",
+      "details": [
+        "这里面的饭让人越吃越饿"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32414,9 +32426,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/white_banner",
+      "description": "没有风，旗面还在轻轻抖",
+      "details": [
+        "没有风，旗面还在轻轻抖"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32428,9 +32442,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/arrow",
+      "description": "箭尖一直指着来路",
+      "details": [
+        "箭尖一直指着来路"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32442,9 +32458,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/wither_rose",
+      "description": "从石缝里长出来，不死之花。",
+      "details": [
+        "从石缝里长出来，不死之花。"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32470,9 +32488,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/conduit",
+      "description": "中间那颗心一收一放，像在呼吸",
+      "details": [
+        "中间那颗心一收一放，像在呼吸"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32484,9 +32504,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/glass_pane",
+      "description": "镜面里照不出你，只照得出更深的地方",
+      "details": [
+        "镜面里照不出你，只照得出更深的地方"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32498,9 +32520,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/iron_door",
+      "description": "很显然，它被捞上来后就失效了",
+      "details": [
+        "很显然，它被捞上来后就失效了"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32512,9 +32536,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/water_bucket",
+      "description": "挂在那里，一滴都不往下落",
+      "details": [
+        "挂在那里，一滴都不往下落"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32540,9 +32566,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/dragon_breath",
+      "description": "瓶里有雾在慢慢转，说实话，我不建议你打开它",
+      "details": [
+        "瓶里有雾在慢慢转，说实话，我不建议你打开它"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32554,9 +32582,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/tripwire_hook",
+      "description": "齿纹都磨平了",
+      "details": [
+        "齿纹都磨平了"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32568,9 +32598,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/sand",
+      "description": "沙子从下往上漏。",
+      "details": [
+        "沙子从下往上漏。"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32582,9 +32614,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/ladder",
+      "description": "违反常理",
+      "details": [
+        "违反常理"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32596,9 +32630,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/oak_boat",
+      "description": "船头一直朝着同一个方向",
+      "details": [
+        "船头一直朝着同一个方向"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32610,9 +32646,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/name_tag",
+      "description": "牌子上什么都没写",
+      "details": [
+        "牌子上什么都没写"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32624,9 +32662,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/firework_rocket",
+      "description": "引线是湿的，凑近有火药味",
+      "details": [
+        "引线是湿的，凑近有火药味"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32638,9 +32678,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/firework_star",
+      "description": "捏在手里，凉得像一小块夜空",
+      "details": [
+        "捏在手里，凉得像一小块夜空"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32652,9 +32694,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/magma_cream",
+      "description": "隔着布还是烫的，不含有锟斤拷",
+      "details": [
+        "隔着布还是烫的，不含有锟斤拷"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32666,9 +32710,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/totem_of_undying",
+      "description": "握上去，心跳会慢下来。放心吧死不了",
+      "details": [
+        "握上去，心跳会慢下来。放心吧死不了"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32680,9 +32726,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/end_crystal",
+      "description": "悬在那里，下面什么也没有",
+      "details": [
+        "悬在那里，下面什么也没有"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32694,9 +32742,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/gunpowder",
+      "description": "点不着火，却一直有很淡的烟味",
+      "details": [
+        "点不着火，却一直有很淡的烟味"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32708,9 +32758,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/flint",
+      "description": "敲了很多次，一颗火星都没有，就和b站上某些视频一样",
+      "details": [
+        "敲了很多次，一颗火星都没有，就和b站上某些视频一样"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32722,9 +32774,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/paper",
+      "description": "凑近看，字迹在轻轻游动",
+      "details": [
+        "凑近看，字迹在轻轻游动"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32736,9 +32790,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/book",
+      "description": "翻到哪页，哪页是空白",
+      "details": [
+        "翻到哪页，哪页是空白"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32750,9 +32806,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/recovery_compass",
+      "description": "无论怎么转，都指着更低的地方",
+      "details": [
+        "无论怎么转，都指着更低的地方"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32764,9 +32822,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/sponge",
+      "description": "挤一挤，能听见很远的水声。不是海绵宝宝",
+      "details": [
+        "挤一挤，能听见很远的水声。不是海绵宝宝"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32806,9 +32866,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/shield",
+      "description": "盾面上有一道很深的划痕",
+      "details": [
+        "盾面上有一道很深的划痕"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32820,9 +32882,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/crossbow",
+      "description": "弦一直绷着，这弩是老绷家了",
+      "details": [
+        "弦一直绷着，这弩是老绷家了"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -32834,12 +32898,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/wither_skeleton_skull",
+      "description": "从深渊里带回来的东西，握在手心凉得像从没暖过。",
+      "details": [
+        "从深渊里带回来的东西，握在手心凉得像从没暖过。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-19809ee4534c"
     },
     {
@@ -32848,12 +32914,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/slime_ball",
+      "description": "在它体内翻涌的微小光点，离了宿主还在轻轻搏动。",
+      "details": [
+        "在它体内翻涌的微小光点，离了宿主还在轻轻搏动。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-b1e4f5c12286"
     },
     {
@@ -32862,12 +32930,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/bone_meal",
+      "description": "捏碎了的髓质，灰白里透着一点说不清的紫。",
+      "details": [
+        "捏碎了的髓质，灰白里透着一点说不清的紫。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-97029dcca47d"
     },
     {
@@ -32876,12 +32946,14 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/armadillo_scute",
+      "description": "薄薄一片，边缘割手，表面映不出任何倒影。",
+      "details": [
+        "薄薄一片，边缘割手，表面映不出任何倒影。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/basic/i-25187f8a4cd9"
     },
     {
@@ -32890,12 +32962,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/bone",
+      "description": "锋利无比",
+      "details": [
+        "锋利无比"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-03db2d657ab7"
     },
     {
@@ -32904,12 +32978,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/pointed_dripstone",
+      "description": "每一根都朝着不同的方向长，像是还想再扎谁一下。",
+      "details": [
+        "每一根都朝着不同的方向长，像是还想再扎谁一下。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-b402db5aae5d"
     },
     {
@@ -32918,12 +32994,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/heavy_core",
+      "description": "它抡了不知多少次的流星锤，沉得不像话。",
+      "details": [
+        "它抡了不知多少次的流星锤，沉得不像话。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-0f0a6f968edb"
     },
     {
@@ -32932,12 +33010,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/flint",
+      "description": "断口还渗着一点墨色的血，刃口薄得透光。",
+      "details": [
+        "断口还渗着一点墨色的血，刃口薄得透光。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-71456e476ece"
     },
     {
@@ -32946,12 +33026,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/phantom_membrane",
+      "description": "半透明的一缕，离了水还在慢慢卷。",
+      "details": [
+        "半透明的一缕，离了水还在慢慢卷。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-014ec047f2e1"
     },
     {
@@ -32960,12 +33042,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/turtle_scute",
+      "description": "敲上去闷闷地响，背面被蹭得发亮。",
+      "details": [
+        "敲上去闷闷地响，背面被蹭得发亮。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-daa45019c8c1"
     },
     {
@@ -32974,12 +33058,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/ender_eye",
+      "description": "那只眼睛的正中，盯久了会觉得它也在看你。",
+      "details": [
+        "那只眼睛的正中，盯久了会觉得它也在看你。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-5bc9fff99aa2"
     },
     {
@@ -32988,12 +33074,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/phantom_membrane",
+      "description": "翼膜上裂着几道口子，对着光看是半透明的。",
+      "details": [
+        "翼膜上裂着几道口子，对着光看是半透明的。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-28dcd95f24e9"
     },
     {
@@ -33002,12 +33090,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/amethyst_shard",
+      "description": "一排倒钩的颚齿，缝里还塞着洗不掉的黑泥。",
+      "details": [
+        "一排倒钩的颚齿，缝里还塞着洗不掉的黑泥。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-6644ae9b4a0b"
     },
     {
@@ -33016,12 +33106,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/soul_lantern",
+      "description": "提在手里的一点残火，风一吹就晃，却总也不灭。",
+      "details": [
+        "提在手里的一点残火，风一吹就晃，却总也不灭。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-5ea2ec172a58"
     },
     {
@@ -33030,12 +33122,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/fermented_spider_eye",
+      "description": "鼓鼓囊囊的一小袋，捏上去温热，还在轻轻跳。",
+      "details": [
+        "鼓鼓囊囊的一小袋，捏上去温热，还在轻轻跳。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-e15a481acd84"
     },
     {
@@ -33044,12 +33138,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/skeleton_skull",
+      "description": "三颗头里割下来的一颗，凑近了还能听见很轻的磨牙声。",
+      "details": [
+        "三颗头里割下来的一颗，凑近了还能听见很轻的磨牙声。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-94f8e4560804"
     },
     {
@@ -33058,12 +33154,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/magma_block",
+      "description": "从壳里割下来的燃囊，鼓鼓囊囊，隔着皮按下去还是烫的。",
+      "details": [
+        "从壳里割下来的燃囊，鼓鼓囊囊，隔着皮按下去还是烫的。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-4d72f41ddc11"
     },
     {
@@ -33072,12 +33170,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/iron_ingot",
+      "description": "从前臂上卸下来的一截镰刃，薄得透光，刃口泛着一层洗不掉的青灰。",
+      "details": [
+        "从前臂上卸下来的一截镰刃，薄得透光，刃口泛着一层洗不掉的青灰。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-6a87032386e9"
     },
     {
@@ -33086,12 +33186,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/goat_horn",
+      "description": "从头上掰下来的一片大颚，内侧磨得发亮，边缘还带着几颗钝齿。",
+      "details": [
+        "从头上掰下来的一片大颚，内侧磨得发亮，边缘还带着几颗钝齿。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-1a8518df890c"
     },
     {
@@ -33100,12 +33202,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/tripwire_hook",
+      "description": "从尾链末端卸下来的铁锚钩，三根倒刺朝外撇着，穿环上还挂着一小截链节。",
+      "details": [
+        "从尾链末端卸下来的铁锚钩，三根倒刺朝外撇着，穿环上还挂着一小截链节。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-35f12cf68e3d"
     },
     {
@@ -33114,12 +33218,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/cobweb",
+      "description": "从腹底扯下来的一团丝囊，越拉越长，拉到尽头还是不断的。",
+      "details": [
+        "从腹底扯下来的一团丝囊，越拉越长，拉到尽头还是不断的。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-a3f4e00ffb1c"
     },
     {
@@ -33128,12 +33234,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_scrap",
+      "description": "从背上掀下来的一片硬甲，断面留着几道刀口，内侧磨得发亮。",
+      "details": [
+        "从背上掀下来的一片硬甲，断面留着几道刀口，内侧磨得发亮。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-04d96bda45c3"
     },
     {
@@ -33142,12 +33250,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/sea_lantern",
+      "description": "从竿尖摘下来的一只灯囊，外壳是黑的，里面那点光还在一亮一亮。",
+      "details": [
+        "从竿尖摘下来的一只灯囊，外壳是黑的，里面那点光还在一亮一亮。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-c6bc9fa71797"
     },
     {
@@ -33156,12 +33266,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/echo_shard",
+      "description": "从剖开的胸口里摘出来的那块核，鳞粉裹着它，凑近了还能听见极轻的一跳一跳。",
+      "details": [
+        "从剖开的胸口里摘出来的那块核，鳞粉裹着它，凑近了还能听见极轻的一跳一跳。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-12b9e5648c03"
     },
     {
@@ -33170,12 +33282,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/sculk_vein",
+      "description": "从耳根底下剥下来的一层薄膜，绷得发紧，指头一按就嗡嗡地颤，颤得没有一点声音。",
+      "details": [
+        "从耳根底下剥下来的一层薄膜，绷得发紧，指头一按就嗡嗡地颤，颤得没有一点声音。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-f3453781239e"
     },
     {
@@ -33184,12 +33298,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/pufferfish",
+      "description": "从腹里摘下来的一只酸囊，鼓得发亮，凑近了能听见里面晃荡的声响。",
+      "details": [
+        "从腹里摘下来的一只酸囊，鼓得发亮，凑近了能听见里面晃荡的声响。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-7c73fd942d96"
     },
     {
@@ -33198,12 +33314,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/shulker_shell",
+      "description": "从背上剥下来的一圈壳板，首尾咬得严丝合缝，掰开还会自己卷回去。",
+      "details": [
+        "从背上剥下来的一圈壳板，首尾咬得严丝合缝，掰开还会自己卷回去。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-e7406e6685e2"
     },
     {
@@ -33212,12 +33330,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/phantom_membrane",
+      "description": "扯下来的一整片背壳，油光锃亮，壳底下那层膜却软得像没长成。",
+      "details": [
+        "扯下来的一整片背壳，油光锃亮，壳底下那层膜却软得像没长成。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-bc7ecfed6435"
     },
     {
@@ -33226,12 +33346,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/nautilus_shell",
+      "description": "从身上一圈圈剥下来的鳞环，掰开还会自己合回去，掰的时候得使上全身的劲。",
+      "details": [
+        "从身上一圈圈剥下来的鳞环，掰开还会自己合回去，掰的时候得使上全身的劲。"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-e2a20078f3ea"
     },
     {
@@ -33240,9 +33362,11 @@
       "kind": "material",
       "category": "基础材料",
       "group": "basic",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/feather",
+      "description": "我敢打赌这不是乌鸡的，因为mc没有乌鸡",
+      "details": [
+        "我敢打赌这不是乌鸡的，因为mc没有乌鸡"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -33254,12 +33378,14 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_ingot",
+      "description": "三件通用掉落熔在一起压出来的锭，沉手，表面没有一点光。",
+      "details": [
+        "三件通用掉落熔在一起压出来的锭，沉手，表面没有一点光。"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-4b25ab14b2be"
     },
     {
@@ -33268,13 +33394,271 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/amethyst_cluster",
+      "description": "苔藓的呼吸、尖啸的余音和叹息的冷气，",
+      "details": [
+        "苔藓的呼吸、尖啸的余音和叹息的冷气，",
+        "被那颗珠子一节一节鼓成了核，握在手里能觉出它一跳一跳。"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-6a69bcb99ffe"
+    },
+    {
+      "id": "虚空凝素",
+      "name": "虚空凝素",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/prismarine_crystals",
+      "description": "虚空锯口螈体内凝出的晶簇，离了宿主还在慢慢变沉。",
+      "details": [
+        "虚空锯口螈体内凝出的晶簇，离了宿主还在慢慢变沉。",
+        "晶面下压着一层纹，像是被什么攥过。"
+      ],
+      "obtain": "",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-1f042fc55bb8"
+    },
+    {
+      "id": "深渊凝素",
+      "name": "深渊凝素",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/echo_shard",
+      "description": "深渊头目体内凝出的凝块，黑得把光都吸了进去。",
+      "details": [
+        "深渊头目体内凝出的凝块，黑得把光都吸了进去。",
+        "握久了掌心发麻，像它在缓缓地吸气。"
+      ],
+      "obtain": "",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-7fe240f34932"
+    },
+    {
+      "id": "Vila信息素",
+      "name": "Vila信息素",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/ghast_tear",
+      "description": "四角虚空凝素、四边深渊凝素，居中是远古虚空神蜕。",
+      "details": [
+        "四角虚空凝素、四边深渊凝素，居中是远古虚空神蜕。",
+        "凝素在神蜕里养出来的信息素，是基岩凝核的黏合剂。"
+      ],
+      "obtain": "配方合成：虚空凝素×4 + 深渊凝素×4 + 远古虚空神蜕",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-5f4782469a04"
+    },
+    {
+      "id": "Vila-基岩凝核",
+      "name": "Vila-基岩凝核",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/netherite_scrap",
+      "description": "六枚奇点矿核围成一圈，两翼各垫一枚Vila信息素，基岩真髓居中。",
+      "details": [
+        "六枚奇点矿核围成一圈，两翼各垫一枚Vila信息素，基岩真髓居中。",
+        "千墟四件的两翼料，一件甲用掉两颗。"
+      ],
+      "obtain": "配方合成：奇点矿核×6 + Vila信息素×2 + 基岩真髓",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-43ddeae85cd3"
+    },
+    {
+      "id": "噩梦因素",
+      "name": "噩梦因素",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/fermented_spider_eye",
+      "description": "八块梦魇聚合物-U5 围住一团粘稠呕吐物凝成。",
+      "details": [
+        "八块梦魇聚合物-U5 围住一团粘稠呕吐物凝成。",
+        "归墟四角料，一件甲用掉四颗。"
+      ],
+      "obtain": "配方合成：梦魇聚合物-U5×8 + 粘稠呕吐物",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-22afc00db79b"
+    },
+    {
+      "id": "星核铁质",
+      "name": "星核铁质",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/iron_ingot",
+      "description": "星核矿压四角、天命结晶拉四边，中间嵌一块乌德铁。",
+      "details": [
+        "星核矿压四角、天命结晶拉四边，中间嵌一块乌德铁。",
+        "噩梦因素链的起手料，往上压成虚质聚合物-U1。"
+      ],
+      "obtain": "配方合成：星核矿×4 + 天命结晶×4 + 乌德铁",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-87cc9f16cf85"
+    },
+    {
+      "id": "虚质聚合物-U1",
+      "name": "虚质聚合物-U1",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/coal_block",
+      "description": "八团虚质围着星核铁质压成的黑块。",
+      "details": [
+        "八团虚质围着星核铁质压成的黑块。",
+        "再夹一枚深渊星核就是虚质聚合物-U2。"
+      ],
+      "obtain": "配方合成：虚质×8 + 星核铁质",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-8204bdd22f6f"
+    },
+    {
+      "id": "虚质聚合物-U2",
+      "name": "虚质聚合物-U2",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/crying_obsidian",
+      "description": "八块虚质聚合物-U1 夹着一枚深渊星核凝成。",
+      "details": [
+        "八块虚质聚合物-U1 夹着一枚深渊星核凝成。",
+        "梦魇聚合物-U5 的芯料。"
+      ],
+      "obtain": "配方合成：虚质聚合物-U1×8 + 深渊星核",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-fa26b02a7bc0"
+    },
+    {
+      "id": "梦魇聚合物-U1",
+      "name": "梦魇聚合物-U1",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/red_nether_bricks",
+      "description": "八只梦魇围着致密下界合金块-A2 压紧。",
+      "details": [
+        "八只梦魇围着致密下界合金块-A2 压紧。",
+        "梦魇侧聚合物链的底料，一路往上压。"
+      ],
+      "obtain": "配方合成：梦魇×8 + 致密下界合金块-A2",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-0355fb0c793a"
+    },
+    {
+      "id": "梦魇聚合物-U2",
+      "name": "梦魇聚合物-U2",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/redstone_block",
+      "description": "八块梦魇聚合物-U1 掺一粒石头压得更实。",
+      "details": [
+        "八块梦魇聚合物-U1 掺一粒石头压得更实。",
+        "再压实一轮就到 U3。"
+      ],
+      "obtain": "配方合成：梦魇聚合物-U1×8 + 石头",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-2b84034594d6"
+    },
+    {
+      "id": "梦魇聚合物-U3",
+      "name": "梦魇聚合物-U3",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/nether_wart_block",
+      "description": "八块梦魇聚合物-U2 掺一粒石头压得更实。",
+      "details": [
+        "八块梦魇聚合物-U2 掺一粒石头压得更实。",
+        "再压实一轮就到 U4。"
+      ],
+      "obtain": "配方合成：梦魇聚合物-U2×8 + 石头",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-b8bf06433a61"
+    },
+    {
+      "id": "梦魇聚合物-U4",
+      "name": "梦魇聚合物-U4",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/magma_block",
+      "description": "八块梦魇聚合物-U3 掺一块草方块压得更实。",
+      "details": [
+        "八块梦魇聚合物-U3 掺一块草方块压得更实。",
+        "最后压一次就是 U5。"
+      ],
+      "obtain": "配方合成：梦魇聚合物-U3×8 + 草方块",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-353cba500d21"
+    },
+    {
+      "id": "梦魇聚合物-U5",
+      "name": "梦魇聚合物-U5",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/shroomlight",
+      "description": "八块梦魇聚合物-U4 夹着虚质聚合物-U2 压成。",
+      "details": [
+        "八块梦魇聚合物-U4 夹着虚质聚合物-U2 压成。",
+        "噩梦因素的芯，八块合一颗。"
+      ],
+      "obtain": "配方合成：梦魇聚合物-U4×8 + 虚质聚合物-U2",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-43bb6b3b34ee"
+    },
+    {
+      "id": "基岩碎块",
+      "name": "基岩碎块",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/bedrock",
+      "description": "基岩红移铲从基岩里啃下来的碎屑，断面还留着红热的凿痕。",
+      "details": [
+        "基岩红移铲从基岩里啃下来的碎屑，断面还留着红热的凿痕。",
+        "九块碎屑摆满合成格，可以拼回一个真正的基岩。"
+      ],
+      "obtain": "",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-e7f8c4e5bb1d"
+    },
+    {
+      "id": "飘渺执念",
+      "name": "飘渺执念",
+      "kind": "material",
+      "category": "高级材料",
+      "group": "advanced",
+      "icon": "item/phantom_membrane",
+      "description": "八枚梦魇结核围住一块基岩碎屑，凝成一团迟迟不肯散去的执念。",
+      "details": [
+        "八枚梦魇结核围住一块基岩碎屑，凝成一团迟迟不肯散去的执念。",
+        "千墟四件的中枢料，一件甲用掉一枚。"
+      ],
+      "obtain": "配方合成：梦魇结核×8 + 基岩碎块",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/materials/advanced/i-3b0d1d26c24a"
     },
     {
       "id": "深渊碎星剑",
@@ -33282,9 +33666,12 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_sword",
+      "description": "剑脊里嵌着几粒深渊的碎星，挥动时有一点光顺着刃口走。",
+      "details": [
+        "剑脊里嵌着几粒深渊的碎星，挥动时有一点光顺着刃口走。",
+        "锋利 VI / 耐久 IV / 抢夺 III"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33296,9 +33683,13 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_sword",
+      "description": "碎星沉进了剑脊深处，整把剑褪成没有光的黑。",
+      "details": [
+        "碎星沉进了剑脊深处，整把剑褪成没有光的黑。",
+        "锋利 VI / 耐久 IV / 抢夺 III",
+        "命中额外造成 4 点真实伤害，并使目标真实流血 3 秒（每秒流失 1 点生命）命中使目标失明 2 秒"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33310,9 +33701,12 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_axe",
+      "description": "斧背倒着长满刺猬留下的棘，抡出去时先扎进去，再劈下来。",
+      "details": [
+        "斧背倒着长满刺猬留下的棘，抡出去时先扎进去，再劈下来。",
+        "锋利 VI / 耐久 IV / 击退 III"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33324,9 +33718,13 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_sword",
+      "description": "用蜈蚣那对镰足拼成的长镰，挥起来是一道很宽的弧。",
+      "details": [
+        "用蜈蚣那对镰足拼成的长镰，挥起来是一道很宽的弧。",
+        "锋利 VI / 耐久 V / 横扫之刃 III",
+        "命中使目标中毒 IV 持续 10 秒持有期间免疫中毒"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33338,9 +33736,12 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/trident",
+      "description": "三根叉尖上凝着水母的冷光，入水之后才真正醒过来。",
+      "details": [
+        "三根叉尖上凝着水母的冷光，入水之后才真正醒过来。",
+        "穿刺 V / 忠诚 III / 耐久 IV"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33352,9 +33753,13 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/mace",
+      "description": "甲虫的整块背壳做锤头，从高处砸下来时闷得像塌了一层。",
+      "details": [
+        "甲虫的整块背壳做锤头，从高处砸下来时闷得像塌了一层。",
+        "密度 VI / 破甲 V / 耐久 IV",
+        "持有期间受到的伤害降低 23%"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33366,9 +33771,13 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/bow",
+      "description": "以黢黑羽毛做羽、深渊残响做弦，拉满时听不见一点声音。",
+      "details": [
+        "以黢黑羽毛做羽、深渊残响做弦，拉满时听不见一点声音。",
+        "力量 VI / 冲击 III / 耐久 IV / 无限 I",
+        "射出的箭拖着一道浓厚的黑气"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33380,9 +33789,12 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_pickaxe",
+      "description": "镐头凝着倒长的石笋，掘进时像是往地里钻，而不是砸。",
+      "details": [
+        "镐头凝着倒长的石笋，掘进时像是往地里钻，而不是砸。",
+        "效率 VI / 时运 III / 耐久 IV"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33394,9 +33806,13 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_pickaxe",
+      "description": "钻机与钻镐在同一炉子里熔成了一把，镐身里像还留着机器在转。",
+      "details": [
+        "钻机与钻镐在同一炉子里熔成了一把，镐身里像还留着机器在转。",
+        "效率 VIII / 时运 III / 耐久 IV",
+        "潜行挖掘时把周围 3x3x3 的方块一并挖开水下获得急迫 III"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33408,13 +33824,35 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_shovel",
+      "description": "铲面嵌着倒流的沙，铲起来的土会自己往下滑回去一点。",
+      "details": [
+        "铲面嵌着倒流的沙，铲起来的土会自己往下滑回去一点。",
+        "效率 VI / 耐久 IV",
+        "右键抛出一块虚空砂，无重力飞出 8 格沿途的生物失明 5 秒、反胃 3 秒"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/items/tools/i-b0106243e471"
+    },
+    {
+      "id": "基岩红移铲",
+      "name": "基岩红移铲",
+      "kind": "tool",
+      "category": "功能性工具",
+      "group": "tools",
+      "icon": "item/netherite_shovel",
+      "description": "铲刃抵着基岩磨到发红，一挥就能把瞄着的方块整块铲走。",
+      "details": [
+        "铲刃抵着基岩磨到发红，一挥就能把瞄着的方块整块铲走。",
+        "效率 X",
+        "右键：瞬间把瞄着的方块挖成掉落物（最远 6 格），连基岩都能挖挖基岩不掉落基岩——每次仅有 0.0001% 概率迸出一块 [基岩碎块]每次挥铲消耗最大耐久度的 35%，冷却 0.3 秒"
+      ],
+      "obtain": "配方合成：基岩造物法杖×4 + 基石×2 + 深渊战铲×2 + 树叶清理铲",
+      "enchantments": [],
+      "glint": false,
+      "href": "/linsmagic/atlas/items/tools/i-98fef01a84ab"
     },
     {
       "id": "渊底垂钓竿",
@@ -33422,9 +33860,12 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/fishing_rod",
+      "description": "竿梢上还缠着一缕装雾瓶里的雾，抛出去时水面会静下来。",
+      "details": [
+        "竿梢上还缠着一缕装雾瓶里的雾，抛出去时水面会静下来。",
+        "海之眷顾 III / 诱饵 III / 耐久 IV"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33455,9 +33896,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_helmet",
+      "description": "深渊套装的头部部件。",
+      "details": [
+        "深渊套装的头部部件。",
+        "保护 IV / 水下呼吸 III / 耐久 IV"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33469,9 +33913,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_chestplate",
+      "description": "深渊套装的胸甲部件。",
+      "details": [
+        "深渊套装的胸甲部件。",
+        "保护 IV / 荆棘 III / 耐久 IV"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33483,9 +33930,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_leggings",
+      "description": "深渊套装的护腿部件。",
+      "details": [
+        "深渊套装的护腿部件。",
+        "保护 IV / 迅捷潜行 III / 耐久 IV"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33497,9 +33947,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_boots",
+      "description": "深渊套装的战靴部件。",
+      "details": [
+        "深渊套装的战靴部件。",
+        "保护 IV / 摔落保护 IV / 深海探索者 III / 耐久 IV"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33511,9 +33964,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/shield",
+      "description": "盾面上那道旧划痕被重新浇了一层深色的合金，沉得能压住风。",
+      "details": [
+        "盾面上那道旧划痕被重新浇了一层深色的合金，沉得能压住风。",
+        "耐久 X / 经验修补 I"
+      ],
       "obtain": "配方合成",
       "enchantments": [],
       "glint": false,
@@ -33525,10 +33981,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "渊息套装的头部部件。",
+      "details": [
+        "渊息套装的头部部件。",
+        "保护 V / 水下呼吸 IV / 耐久 V"
+      ],
+      "obtain": "配方合成：渊息凝核×4 + 贴地的耳朵×4 + 深渊头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-1be4f0a47c28"
@@ -33539,10 +33998,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "渊息套装的胸甲部件。",
+      "details": [
+        "渊息套装的胸甲部件。",
+        "保护 V / 荆棘 IV / 耐久 V"
+      ],
+      "obtain": "配方合成：渊息凝核×4 + 墙后的心跳×4 + 深渊胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-0492d10f3e3c"
@@ -33553,10 +34015,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "渊息套装的护腿部件。",
+      "details": [
+        "渊息套装的护腿部件。",
+        "保护 V / 迅捷潜行 IV / 耐久 V"
+      ],
+      "obtain": "配方合成：渊息凝核×4 + 倒行的脚印×4 + 深渊护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-975f3e3d1323"
@@ -33567,10 +34032,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "渊息套装的战靴部件。",
+      "details": [
+        "渊息套装的战靴部件。",
+        "保护 V / 摔落保护 V / 深海探索者 IV / 耐久 V"
+      ],
+      "obtain": "配方合成：渊息凝核×4 + 悬空的台阶×4 + 深渊战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-a0be6b99e477"
@@ -33581,10 +34049,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "千棘套装的头部部件。",
+      "details": [
+        "千棘套装的头部部件。",
+        "保护 VI / 水下呼吸 V / 耐久 V"
+      ],
+      "obtain": "配方合成：刺猬的棘刺×4 + 半截的箭头×4 + 渊息头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-8cf9438fe196"
@@ -33595,10 +34066,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "千棘套装的胸甲部件。",
+      "details": [
+        "千棘套装的胸甲部件。",
+        "保护 VI / 荆棘 V / 耐久 V"
+      ],
+      "obtain": "配方合成：刺猬的棘刺×4 + 上爬的枯藤×4 + 渊息胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-7a4e16d37a0b"
@@ -33609,10 +34083,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "千棘套装的护腿部件。",
+      "details": [
+        "千棘套装的护腿部件。",
+        "保护 VI / 迅捷潜行 IV / 耐久 V"
+      ],
+      "obtain": "配方合成：刺猬的棘刺×4 + 绷着弦的弩×4 + 渊息护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-a6fccb45dcfa"
@@ -33623,10 +34100,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "千棘套装的战靴部件。",
+      "details": [
+        "千棘套装的战靴部件。",
+        "保护 VI / 摔落保护 V / 深海探索者 IV / 耐久 V"
+      ],
+      "obtain": "配方合成：刺猬的棘刺×4 + 打不出火的燧石×4 + 渊息战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-1bc95e6771d9"
@@ -33637,10 +34117,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/diamond_helmet",
+      "description": "虚空套装的头部部件。",
+      "details": [
+        "虚空套装的头部部件。",
+        "保护 III / 水下呼吸 II / 耐久 III"
+      ],
+      "obtain": "配方合成：虚质×4 + 狂乱自旋的破损指南针×4 + 钻石头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-77410ee00e7c"
@@ -33651,10 +34134,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/diamond_chestplate",
+      "description": "虚空套装的胸甲部件。",
+      "details": [
+        "虚空套装的胸甲部件。",
+        "保护 III / 荆棘 II / 耐久 III"
+      ],
+      "obtain": "配方合成：虚质×4 + 纠缠在一起的致密蛛网团×4 + 钻石胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-132801fb1f08"
@@ -33665,10 +34151,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/diamond_leggings",
+      "description": "虚空套装的护腿部件。",
+      "details": [
+        "虚空套装的护腿部件。",
+        "保护 III / 迅捷潜行 II / 耐久 III"
+      ],
+      "obtain": "配方合成：虚质×4 + 断裂的合金钓线×4 + 钻石护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-983048606a54"
@@ -33679,10 +34168,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/diamond_boots",
+      "description": "虚空套装的战靴部件。",
+      "details": [
+        "虚空套装的战靴部件。",
+        "保护 III / 摔落保护 III / 深海探索者 II / 耐久 III"
+      ],
+      "obtain": "配方合成：虚质×4 + 被咬烂的皮靴×4 + 钻石靴子",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-96d1c55d0904"
@@ -33693,10 +34185,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "梦魇套装的头部部件。",
+      "details": [
+        "梦魇套装的头部部件。",
+        "保护 IV / 水下呼吸 III / 耐久 IV / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 凝滞的光子结晶×4 + 虚空头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-da0fcc7c96cb"
@@ -33707,10 +34202,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "梦魇套装的胸甲部件。",
+      "details": [
+        "梦魇套装的胸甲部件。",
+        "保护 IV / 荆棘 III / 耐久 IV / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 深渊领主的外层骨板×4 + 虚空胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-eb79c8573c1e"
@@ -33721,10 +34219,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "梦魇套装的护腿部件。",
+      "details": [
+        "梦魇套装的护腿部件。",
+        "保护 IV / 迅捷潜行 III / 耐久 IV / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 高维折叠骨板×4 + 虚空护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-78e3eafdc401"
@@ -33735,10 +34236,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "梦魇套装的战靴部件。",
+      "details": [
+        "梦魇套装的战靴部件。",
+        "保护 IV / 摔落保护 IV / 深海探索者 III / 耐久 IV / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 反引力致密核心×4 + 虚空战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-c783dc3baf43"
@@ -33749,12 +34253,15 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/end_crystal",
+      "description": "虚质压四角，不灭虚空纤维蚕丝拉四边，中间封住一只梦魇。",
+      "details": [
+        "虚质压四角，不灭虚空纤维蚕丝拉四边，中间封住一只梦魇。",
+        "梦魇套的合成骨架，每件护甲用掉一枚。"
+      ],
+      "obtain": "配方合成：虚质×4 + 不灭虚空纤维蚕丝×4 + 梦魇×1",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-0d6fdead363b"
     },
     {
@@ -33763,10 +34270,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "虚潮套装的头部部件。",
+      "details": [
+        "虚潮套装的头部部件。",
+        "保护 V / 水下呼吸 IV / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 终焉全知之眼×4 + 梦魇头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-1b698206127c"
@@ -33777,10 +34287,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "虚潮套装的胸甲部件。",
+      "details": [
+        "虚潮套装的胸甲部件。",
+        "保护 V / 荆棘 IV / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 原初虚空之茧×4 + 梦魇胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-5e419ffe9179"
@@ -33791,10 +34304,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "虚潮套装的护腿部件。",
+      "details": [
+        "虚潮套装的护腿部件。",
+        "保护 V / 迅捷潜行 IV / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 虚无原质×4 + 梦魇护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-88ea99d953ef"
@@ -33805,10 +34321,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "虚潮套装的战靴部件。",
+      "details": [
+        "虚潮套装的战靴部件。",
+        "保护 V / 摔落保护 V / 深海探索者 IV / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：梦魇结核×4 + 奇点矿核×4 + 梦魇战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-32ade41c7238"
@@ -33819,10 +34338,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "噬魇套装的头部部件。",
+      "details": [
+        "噬魇套装的头部部件。",
+        "保护 VI / 水下呼吸 V / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：远古虚空神蜕×4 + 梦魇×4 + 虚潮头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-19d0237fac20"
@@ -33833,10 +34355,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "噬魇套装的胸甲部件。",
+      "details": [
+        "噬魇套装的胸甲部件。",
+        "保护 VI / 荆棘 V / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：基岩真髓×4 + 梦魇×4 + 虚潮胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-b6f4cef35e63"
@@ -33847,10 +34372,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "噬魇套装的护腿部件。",
+      "details": [
+        "噬魇套装的护腿部件。",
+        "保护 VI / 迅捷潜行 V / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：倒流的天体星盘×4 + 梦魇×4 + 虚潮护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-5653195fe27c"
@@ -33861,10 +34389,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "噬魇套装的战靴部件。",
+      "details": [
+        "噬魇套装的战靴部件。",
+        "保护 VI / 摔落保护 VI / 深海探索者 V / 耐久 V / 经验修补 I"
+      ],
+      "obtain": "配方合成：绝对零度钓竿（基岩级）×4 + 梦魇×4 + 虚潮战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-7b1f02899ae3"
@@ -33875,10 +34406,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "归墟套装的头部部件。",
+      "details": [
+        "归墟套装的头部部件。",
+        "保护 VII / 水下呼吸 VI / 耐久 VI / 经验修补 I"
+      ],
+      "obtain": "配方合成：噩梦因素×4 + 终焉全知之眼×4 + 噬魇头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-e09cd22f76a1"
@@ -33889,10 +34423,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "归墟套装的胸甲部件。",
+      "details": [
+        "归墟套装的胸甲部件。",
+        "保护 VII / 荆棘 VI / 耐久 VI / 经验修补 I"
+      ],
+      "obtain": "配方合成：噩梦因素×4 + 原初虚空之茧×4 + 噬魇胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-d5e110a598cb"
@@ -33903,10 +34440,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "归墟套装的护腿部件。",
+      "details": [
+        "归墟套装的护腿部件。",
+        "保护 VII / 迅捷潜行 VI / 耐久 VI / 经验修补 I"
+      ],
+      "obtain": "配方合成：噩梦因素×4 + 虚无原质×4 + 噬魇护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-cdb9a59c343f"
@@ -33917,10 +34457,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "归墟套装的战靴部件。",
+      "details": [
+        "归墟套装的战靴部件。",
+        "保护 VII / 摔落保护 VII / 深海探索者 VI / 耐久 VI / 经验修补 I"
+      ],
+      "obtain": "配方合成：噩梦因素×4 + 奇点矿核×4 + 噬魇战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-851a1c0a813d"
@@ -33931,9 +34474,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_helmet",
+      "description": "千墟归因·逸步虚空套装的头部部件。",
+      "details": [
+        "千墟归因·逸步虚空套装的头部部件。",
+        "保护 VIII / 水下呼吸 VII / 耐久 VII / 经验修补 I"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -33945,9 +34491,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_chestplate",
+      "description": "千墟归因·逸步虚空套装的胸甲部件。",
+      "details": [
+        "千墟归因·逸步虚空套装的胸甲部件。",
+        "保护 VIII / 荆棘 VII / 耐久 VII / 经验修补 I"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -33959,9 +34508,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_leggings",
+      "description": "千墟归因·逸步虚空套装的护腿部件。",
+      "details": [
+        "千墟归因·逸步虚空套装的护腿部件。",
+        "保护 VIII / 迅捷潜行 VII / 耐久 VII / 经验修补 I"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -33973,9 +34525,12 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_boots",
+      "description": "千墟归因·逸步虚空套装的战靴部件。",
+      "details": [
+        "千墟归因·逸步虚空套装的战靴部件。",
+        "保护 VIII / 摔落保护 VIII / 深海探索者 VII / 耐久 VII / 经验修补 I"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -33987,12 +34542,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/carved_pumpkin",
+      "description": "右键：切到旁观模式，持续3秒，到点自动回到原来的模式",
+      "details": [
+        "右键：切到旁观模式，持续3秒，到点自动回到原来的模式",
+        "旁观期间获得速度III，原本更快时不覆盖",
+        "旁观期间无法攻击、无法破坏方块，怪物也不会点名你",
+        "冷却10秒；旁观模式下右键无效",
+        "一对空掉的眼窝，谁也认不出你是谁"
+      ],
+      "obtain": "配方合成：粗制深渊皮革×8 + 熄灭的末影之眼碎块",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-b0b8842a5a7d"
     },
     {
@@ -34001,12 +34562,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/wither_skeleton_skull",
+      "description": "右键：切到旁观模式，持续5秒，到点自动回到原来的模式",
+      "details": [
+        "右键：切到旁观模式，持续5秒，到点自动回到原来的模式",
+        "旁观期间获得速度III、夜视III，已有更高等级时不覆盖",
+        "旁观期间无法攻击、无法破坏方块，怪物也不会点名你",
+        "冷却10秒；旁观模式下右键无效",
+        "把脸也遮上了，连自己都认不出自己"
+      ],
+      "obtain": "配方合成：逃避者面具 + 相位珍珠粉末×2 + 不灭虚空纤维蚕丝×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-77690e648e45"
     },
     {
@@ -34015,12 +34582,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/clock",
+      "description": "右键：让身上已有的药水效果暂停计时，持续6秒",
+      "details": [
+        "右键：让身上已有的药水效果暂停计时，持续6秒",
+        "冻结期间新加的效果照常倒计时，到点接着走自己那份",
+        "永久效果与无限时长效果不受影响",
+        "冷却25秒；旁观模式下右键无效",
+        "秒针停了一格，药效也就少掉一格"
+      ],
+      "obtain": "配方合成：逆流时钟 + 凝固的时间滴露×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-0c2ef9622a9d"
     },
     {
@@ -34029,12 +34602,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/clock",
+      "description": "右键：让自己和8格内玩家的药水效果暂停计时，持续8秒",
+      "details": [
+        "右键：让自己和8格内玩家的药水效果暂停计时，持续8秒",
+        "冻结期间新加的效果照常倒计时，到点接着走自己那份",
+        "永久效果与无限时长效果不受影响",
+        "冷却20秒；旁观模式下右键无效",
+        "琥珀把附近这段时间一起冻住了"
+      ],
+      "obtain": "配方合成：时滞怀表 + 永冻时空琥珀×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-250310653619"
     },
     {
@@ -34043,12 +34622,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/rotten_flesh",
+      "description": "右键：接下来5秒受到的伤害不扣血，先记进囊里，最多记20点",
+      "details": [
+        "右键：接下来5秒受到的伤害不扣血，先记进囊里，最多记20点",
+        "到点把记下的50%以真实伤害砸回8格内的所有生物",
+        "一下没挨到就什么也不砸；虚空、自杀与插件自定义伤害照旧生效",
+        "冷却40秒；旁观模式下右键无效",
+        "囊口朝内，挨的打全漏进去了"
+      ],
+      "obtain": "配方合成：粗制深渊皮革 + 浸透虚空的腐肉×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-8bc9f750086d"
     },
     {
@@ -34057,12 +34642,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/ghast_tear",
+      "description": "右键：接下来8秒受到的伤害不扣血，先记进胃里，最多记40点",
+      "details": [
+        "右键：接下来8秒受到的伤害不扣血，先记进胃里，最多记40点",
+        "到点把记下的100%以真实伤害砸回12格内的所有生物",
+        "一下没挨到就什么也不砸；虚空、自杀与插件自定义伤害照旧生效",
+        "冷却30秒；旁观模式下右键无效",
+        "它把吞下去的疼攒着，再原样吐回来"
+      ],
+      "obtain": "配方合成：代伤皮囊 + 深渊支配者触须肉块×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-a5d5a3c20228"
     },
     {
@@ -34071,12 +34662,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/crossbow",
+      "description": "右键：钩住准星18格内第一个方块，把自己拉过去落脚",
+      "details": [
+        "右键：钩住准星18格内第一个方块，把自己拉过去落脚",
+        "落不住脚、或18格内没东西，就不发射也不扣冷却",
+        "甩过去会把当前速度清零，冷却12秒",
+        "线够长，就够把自己甩过去"
+      ],
+      "obtain": "配方合成：生锈的深渊重锚 + 断裂的合金钓线×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-2fc58eba1a1f"
     },
     {
@@ -34085,12 +34681,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/trident",
+      "description": "右键：钩住准星28格内第一个方块，把自己拉过去落脚",
+      "details": [
+        "右键：钩住准星28格内第一个方块，把自己拉过去落脚",
+        "线上先撞到掉落物时改为把它拽进背包，这次不位移，只等2秒",
+        "落不住脚、或28格内没东西，就不发射也不扣冷却",
+        "到位后获得速度IV持续3秒；甩过去会把当前速度清零，冷却8秒",
+        "锚沉得下去，人也拉得过去"
+      ],
+      "obtain": "配方合成：合金打捞钩 + 未受污染的纯净下界合金碎块×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-a8ad30b10b7f"
     },
     {
@@ -34099,12 +34701,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/note_block",
+      "description": "右键：沿准星敲一次回声，报出穿过第一面墙之后的空腔距离",
+      "details": [
+        "右键：沿准星敲一次回声，报出穿过第一面墙之后的空腔距离",
+        "同时报正下方32格内的空腔距离",
+        "空腔指以某一格为中心的3×3×3全空；超过64格算没有",
+        "冷却3秒",
+        "咚——回来的那一声里带着洞的大小"
+      ],
+      "obtain": "配方合成：风化的粗糙玄武岩渣 + 回响声学石碎块×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-017c64144196"
     },
     {
@@ -34113,12 +34721,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/sculk_sensor",
+      "description": "右键：沿准星与左右各偏25°敲三次回声，各报一个空腔距离",
+      "details": [
+        "右键：沿准星与左右各偏25°敲三次回声，各报一个空腔距离",
+        "同时报正下方32格内的空腔距离，并让24格内生物发光5秒",
+        "空腔指以某一格为中心的3×3×3全空；超过64格算没有",
+        "冷却2秒",
+        "振动图上多出来的几个坑，一眼就数得清"
+      ],
+      "obtain": "配方合成：回声测深锤 + 完整发光器官×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-bc84537a82eb"
     },
     {
@@ -34127,12 +34741,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/book",
+      "description": "右键：立刻获得力量II与速度II，持续8秒",
+      "details": [
+        "右键：立刻获得力量II与速度II，持续8秒",
+        "8秒到点强制还账：虚弱III与缓慢III，持续5秒",
+        "欠的账写进玩家数据：正好在还账前下线或崩服，再上线照样要还",
+        "死一次这笔账就一笔勾销；账没到期时再按无效",
+        "冷却30秒，从按下起算",
+        "把手伸进明天的自己口袋里"
+      ],
+      "obtain": "配方合成：攥热的护符 + 哑掉的星光×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-69dd0bb7034e"
     },
     {
@@ -34141,12 +34762,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/enchanted_book",
+      "description": "右键：立刻获得力量X与速度III，持续12秒",
+      "details": [
+        "右键：立刻获得力量X与速度III，持续12秒",
+        "12秒到点强制还账：虚弱III与缓慢III，持续2秒",
+        "增益期间再按一次＝提前还清：立刻进入还账，还账时长再减半成1秒",
+        "欠的账写进玩家数据；死一次这笔账就一笔勾销",
+        "冷却20秒，从按下起算",
+        "它连本带利都替你算好了"
+      ],
+      "obtain": "配方合成：深渊透支契 + 不灭虚空纤维蚕丝×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-e9c0241d7c2b"
     },
     {
@@ -34155,12 +34783,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/recovery_compass",
+      "description": "右键：把血量倒回4秒前那一刻，只回血，不回别的",
+      "details": [
+        "右键：把血量倒回4秒前那一刻，只回血，不回别的",
+        "每 tick 记一次血量，攒成8秒的卷",
+        "4秒前不比现在高就不生效，也不扣冷却",
+        "倒回去不超过当前生命上限；冷却20秒",
+        "脉还记着你刚才的样子"
+      ],
+      "obtain": "配方合成：渊息凝核 + 装着雾的瓶子×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-bc41ad2de994"
     },
     {
@@ -34169,12 +34803,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/experience_bottle",
+      "description": "右键：把血量倒回8秒前那一刻，只回血，不回别的",
+      "details": [
+        "右键：把血量倒回8秒前那一刻，只回血，不回别的",
+        "倒带量不足4点时，额外补3秒再生II",
+        "每 tick 记一次血量，攒成8秒的卷",
+        "8秒前不比现在高就不生效，也不扣冷却；倒回去不超过当前生命上限",
+        "冷却12秒",
+        "这一口气还没散完，就还能接着用"
+      ],
+      "obtain": "配方合成：渊息回溯脉 + 高维折叠骨板×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-2cdcf0c2d9cc"
     },
     {
@@ -34183,12 +34824,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/prismarine_crystals",
+      "description": "右键：开一个3秒的窗口，飞向自己的弹射物在贴脸2格内被捏停",
+      "details": [
+        "右键：开一个3秒的窗口，飞向自己的弹射物在贴脸2格内被捏停",
+        "捏停的弹射物掉在自己脚边，窗口期间免疫弹射物伤害",
+        "自己射出去的不算",
+        "冷却8秒，从按下起算（含这3秒窗口）",
+        "光过不去的东西，也过不去箭"
+      ],
+      "obtain": "配方合成：微型引力透镜 + 凝滞的光子结晶×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-5e88461c85ac"
     },
     {
@@ -34197,12 +34844,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/end_crystal",
+      "description": "右键：开一个5秒的窗口，飞向自己的弹射物在贴脸2格内被接管",
+      "details": [
+        "右键：开一个5秒的窗口，飞向自己的弹射物在贴脸2格内被接管",
+        "接管后沿原路送回，改打24格内最近的一只敌对生物，弓箭类伤害翻倍",
+        "24格内没有敌对生物时和虚无棱镜一样掉在脚边",
+        "自己射出去的不算；窗口期间免疫弹射物伤害",
+        "冷却6秒，从按下起算（含这5秒窗口）",
+        "折一道，来路就变成去路"
+      ],
+      "obtain": "配方合成：虚无棱镜 + 纯净暗物质液滴×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-01ed5f01b2c0"
     },
     {
@@ -34211,12 +34865,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/sculk",
+      "description": "右键：以自身为中心6格内所有生物（包括自己）的药水效果全部抹掉",
+      "details": [
+        "右键：以自身为中心6格内所有生物（包括自己）的药水效果全部抹掉",
+        "一次性脉冲，抹完就散；虚空、自杀与插件自定义伤害与此无关",
+        "冷却25秒",
+        "这一片里谁也别想多出半分力"
+      ],
+      "obtain": "配方合成：静默的钟 + 失声的尖啸×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-de496af85292"
     },
     {
@@ -34225,12 +34884,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/sculk_catalyst",
+      "description": "右键：以按下时的位置为圆心，半径8格持续压制5秒",
+      "details": [
+        "右键：以按下时的位置为圆心，半径8格持续压制5秒",
+        "压制期间圆内的生物（包括自己）挂不上任何药水效果，刚挂上就被抹掉",
+        "圆心定死在按下那一格，人走出去照样被抹",
+        "冷却18秒",
+        "尖啸哑下去之后的那一段安静"
+      ],
+      "obtain": "配方合成：沉渊静域 + 坍缩中子星碎块×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-a47f0a9c311d"
     },
     {
@@ -34239,12 +34904,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/totem_of_undying",
+      "description": "拿着它（主手或副手）挨下致命一击：自动烧掉一层充能，把人拉回2点血",
+      "details": [
+        "拿着它（主手或副手）挨下致命一击：自动烧掉一层充能，把人拉回2点血",
+        "同时挂上再生II 10秒、吸收II 5秒，这一下伤害整个不算",
+        "共3层，用一层少一层；触发后60秒内不会再连着触发第二次",
+        "只认手里拿的，收在背包里不生效；被虚空判死的救不回来",
+        "耗尽后剩一副空壳，名字会灰下去",
+        "它替你数着还剩几条命"
+      ],
+      "obtain": "配方合成：攥热的护符 + 不灭虚空纤维蚕丝×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-1f583b7dba9c"
     },
     {
@@ -34253,12 +34925,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/totem_of_undying",
+      "description": "拿着它（主手或副手）挨下致命一击：自动烧掉一层充能，把人拉回4点血",
+      "details": [
+        "拿着它（主手或副手）挨下致命一击：自动烧掉一层充能，把人拉回4点血",
+        "同时挂上再生II 14秒、吸收II 8秒、抗性II 4秒，这一下伤害整个不算",
+        "共6层，用一层少一层；触发后60秒内不会再连着触发第二次",
+        "只认手里拿的，收在背包里不生效；被虚空判死的救不回来",
+        "耗尽后剩一副空壳，名字会灰下去",
+        "同一副壳，裹了六次心跳"
+      ],
+      "obtain": "配方合成：深渊图腾 + 渊息凝核×2 + 高维折叠骨板×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-7ffc75d8eae6"
     },
     {
@@ -34267,12 +34946,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/totem_of_undying",
+      "description": "拿着它（主手或副手）挨下致命一击：自动烧掉一层充能，把人拉回6点血",
+      "details": [
+        "拿着它（主手或副手）挨下致命一击：自动烧掉一层充能，把人拉回6点血",
+        "同时挂上再生III 18秒、吸收III 12秒、抗性II 6秒、火焰免疫8秒，这一下伤害整个不算",
+        "共8层，用一层少一层；触发后60秒内不会再连着触发第二次",
+        "只认手里拿的，收在背包里不生效；被虚空判死的救不回来",
+        "耗尽后剩一副空壳，名字会灰下去",
+        "八次心跳排队站在你身后"
+      ],
+      "obtain": "配方合成：渊息图腾 + 纯净暗物质液滴×2 + 坍缩中子星碎块×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-6cbd02b83874"
     },
     {
@@ -34281,12 +34967,18 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/ender_eye",
+      "description": "右键：把它扔出去，撞到人、撞到方块或飞到24格就在落点炸开",
+      "details": [
+        "右键：把它扔出去，撞到人、撞到方块或飞到24格就在落点炸开",
+        "落点2格内的生物当场没了；15格内的按远近吃真伤，正中心160点、到边缘归零",
+        "玩家不吃那口即死，只吃这份真伤；自己那一发也不算在自己头上",
+        "扔出去就没了，一次少一件；一次只能有一发在路上，没落点前不能再扔",
+        "它先吞下去，再吐出来"
+      ],
+      "obtain": "配方合成：微型引力透镜 + 坍缩中子星碎块×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/weapons/i-9709ce3d46ff"
     },
     {
@@ -34295,12 +34987,20 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/decorated_pot",
+      "description": "右键：把身上挂着的药水效果整批吸进罐子，人就干净了",
+      "details": [
+        "右键：把身上挂着的药水效果整批吸进罐子，人就干净了",
+        "潜行右键：把罐里那批原样倒回自己身上，等级和剩下的时间照旧",
+        "一罐最多装6条；罐里已经装着时再吸会并进去，同一种留更强的那条",
+        "只吸药水带来的效果；装备、套装与信标给的效果吸不走",
+        "冷却8秒；吸走的瞬间，怀表那笔冻结快照一并作废",
+        "罐里的东西写在罐子身上，重启也不丢",
+        "开盖的时候能闻到上一场战斗的味道"
+      ],
+      "obtain": "配方合成：装着雾的瓶子 + 墙后的心跳×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-44ef0e476108"
     },
     {
@@ -34309,12 +35009,20 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/decorated_pot",
+      "description": "右键：把身上挂着的药水效果整批吸进罐子，人就干净了",
+      "details": [
+        "右键：把身上挂着的药水效果整批吸进罐子，人就干净了",
+        "潜行右键：把罐里那批原样倒回自己身上，等级和剩下的时间照旧",
+        "潜行右键时对着看向的玩家：把这罐整批倒给他，自己一点不留",
+        "一罐最多装12条；冷却6秒；怀表快照同样作废",
+        "只吸药水带来的效果；装备、套装与信标给的效果吸不走",
+        "罐里的东西写在罐子身上，重启也不丢",
+        "瓮底沉着别人的味道"
+      ],
+      "obtain": "配方合成：汲味陶罐 + 冻住的叹息×2 + 凝滞的光子结晶×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-756650aa7fdc"
     },
     {
@@ -34323,12 +35031,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/tripwire_hook",
+      "description": "右键：看向24格内的一名玩家，把主手那一件顺着线送进他背包",
+      "details": [
+        "右键：看向24格内的一名玩家，把主手那一件顺着线送进他背包",
+        "他背包装不下就原样退回你手上，并告诉你为什么",
+        "一次只摘一颗：主手是一叠时剩下的留在手上",
+        "只送同一个世界里的活人；冷却5秒",
+        "线这头沉了一下，那头就亮了"
+      ],
+      "obtain": "配方合成：透明的水母 + 断裂的合金钓线×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-0a206a224843"
     },
     {
@@ -34337,12 +35051,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/filled_map",
+      "description": "右键：把主手那一整叠送出去，不看距离，也不看他在哪个世界",
+      "details": [
+        "右键：把主手那一整叠送出去，不看距离，也不看他在哪个世界",
+        "他背包装不下就整叠退回你脚边",
+        "对着谁送还是按看向算；人已经不在这个世界时，线上记着上一个看过的人",
+        "冷却8秒",
+        "图上没有岸，所以哪里都到得了"
+      ],
+      "obtain": "配方合成：系线的浮标 + 画着别处的地图×2 + 不灭虚空纤维蚕丝×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-27454466687d"
     },
     {
@@ -34351,12 +35071,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/iron_trapdoor",
+      "description": "右键：在脚下摆一只夹子，最多撑60秒",
+      "details": [
+        "右键：在脚下摆一只夹子，最多撑60秒",
+        "生物踏进1.5格就被咬住4秒：走不动，吃24点真伤，然后夹子供损",
+        "咬住那4秒挂缓慢V；同一时间你名下只有一只；冷却12秒",
+        "不认玩家，也不认摆它的人；重启或区块卸载就干净收走，不留残骸",
+        "它等的就是你踩下来的那一下"
+      ],
+      "obtain": "配方合成：上爬的枯藤 + 未受污染的纯净下界合金碎块×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-e130b14fa270"
     },
     {
@@ -34365,12 +35091,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/copper_grate",
+      "description": "右键：在脚下摆一只笼子，最多撑90秒，同一时间能架三只",
+      "details": [
+        "右键：在脚下摆一只笼子，最多撑90秒，同一时间能架三只",
+        "踏进2.5格被咬住5秒、吃40点真伤，松开后再挂4秒缓慢IV",
+        "玩家也咬，只咬2秒；摆它的人自己不算；每一只各自供损",
+        "冷却10秒",
+        "一格一格的齿，数都数不过来"
+      ],
+      "obtain": "配方合成：沉渊捕夹 + 会呼吸的苔藓×2 + 坍缩中子星碎块×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-57042c15ce8c"
     },
     {
@@ -34379,12 +35111,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/water_bucket",
+      "description": "右键：把一小片雨扣在头顶，跟着你走，持续20秒",
+      "details": [
+        "右键：把一小片雨扣在头顶，跟着你走，持续20秒",
+        "半径5格内：冒火的一律浇灭，作物每秒有三成往上长一格",
+        "你甩出去的竿子把咬钩等待压到3-6秒（这片雨只认你）",
+        "冷却30秒；不改世界天气，也不往世界里放水",
+        "桶口朝下扣着，雨就一直下不下来"
+      ],
+      "obtain": "配方合成：会呼吸的苔藓 + 透明的水母×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-57612517b30f"
     },
     {
@@ -34393,12 +35131,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/cauldron",
+      "description": "右键：把一整片雨季搬到头顶，跟着你走，持续24秒",
+      "details": [
+        "右键：把一整片雨季搬到头顶，跟着你走，持续24秒",
+        "半径8格：浇灭、作物每秒六成长一格，队友踩进来一样算",
+        "谁的竿子落在这片雨里都把等待压到2-4秒",
+        "冷却24秒",
+        "锅底下漏着一小片天"
+      ],
+      "obtain": "配方合成：扣着的雨 + 冻住的叹息×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-a9a5e804da6c"
     },
     {
@@ -34407,10 +35151,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/iron_sword",
+      "description": "刀柄上刻着一排道子，每接上一刀就划过去一道。",
+      "details": [
+        "刀柄上刻着一排道子，每接上一刀就划过去一道。",
+        "耐久 III",
+        "└ 没层数时攻速3.0、伤害5 └ 命中后1.5秒内再命中：叠1层，最多5层 └ 每层攻速+0.28、伤害+2，满层攻速4.4、伤害15 └ 断档或空挥：层数退回1 └ 手持期间攻速与伤害由这把刀定档"
+      ],
+      "obtain": "配方合成：使者的獠牙×4 + 铁剑",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-2f491248ec1c"
@@ -34421,10 +35169,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_sword",
+      "description": "短刀换了新柄，道子已经刻不下了，改划在刀背上。",
+      "details": [
+        "短刀换了新柄，道子已经刻不下了，改划在刀背上。",
+        "耐久 V / 抢夺 II",
+        "└ 没层数时攻速3.2、伤害6 └ 命中后1.5秒内再命中：叠1层，最多8层 └ 每层攻速+0.36、伤害+2.5，满层攻速6.08、伤害26 └ 断档或空挥：层数退回2（短刀只退回1） └ 手持期间攻速与伤害由这把刀定档"
+      ],
+      "obtain": "配方合成：数落的短刀 + 锯口螈的尾锤×2 + 凝视者的瞳核×2",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-4c4f3160f4bd"
@@ -34435,10 +35187,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/bow",
+      "description": "弓臂上量过尺，射得越远才越有分量。",
+      "details": [
+        "弓臂上量过尺，射得越远才越有分量。",
+        "力量 IV / 冲击 II / 耐久 III",
+        "└ 10格内的目标：这一箭只算1点伤害 └ 越过10格后每格补0.6点真实伤害，封顶30点 └ 距离按箭出手到命中那条直线算，60格外就是满伤 └ 弓自身的力量附魔照旧走护甲"
+      ],
+      "obtain": "配方合成：影翼的裂膜×4 + 弓",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-7c90a95889b4"
@@ -34449,10 +35205,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/bow",
+      "description": "猎到后来它自己会找补：贴脸的不算，远处的替你把甲磨薄。",
+      "details": [
+        "猎到后来它自己会找补：贴脸的不算，远处的替你把甲磨薄。",
+        "力量 VI / 冲击 III / 耐久 IV / 无限 I",
+        "└ 10格内的目标：这一箭只算1点伤害 └ 越过10格后每格补0.9点真实伤害，封顶45点 └ 命中时把目标身上每件护甲磨掉15%耐久，磨穿的当场碎掉 └ 远距离那份真伤不认护甲，也认得穿磨薄的甲"
+      ],
+      "obtain": "配方合成：远猎者 + 蜈蚣的镰足×2 + 坍缩中子星碎块×2",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-e42bebc33926"
@@ -34463,10 +35223,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/crossbow",
+      "description": "不挑弹药，包里有啥就射啥，只是没箭时得现吃一件。",
+      "details": [
+        "不挑弹药，包里有啥就射啥，只是没箭时得现吃一件。",
+        "快速装填 III / 耐久 III",
+        "└ 包里有箭时照常上箭，不耍花样 └ 一根箭都没有时：右键吃掉背包最下面那件有分量的东西，当场射出去 └ 分量：泥土2 / 圆石4 / 红石6 / 铜锭8 / 铁锭12 / 金块22 / 钻石26 / 下界合金锭30（其中15点真伤） └ 只认这几样，别的东西不吃，也不会吃掉手里这把 └ 每射一发隔0.5秒；吃不下就不射，也不扣冷却"
+      ],
+      "obtain": "配方合成：虚空合金锭×4 + 弩",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-f18c0c290c3d"
@@ -34477,10 +35241,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/crossbow",
+      "description": "弩膛里塞得下两样东西，它也就不再挑了。",
+      "details": [
+        "弩膛里塞得下两样东西，它也就不再挑了。",
+        "快速装填 IV / 穿透 IV / 耐久 IV",
+        "└ 包里有箭时照常上箭，不耍花样 └ 一根箭都没有时：右键一口吃两件有分量的东西，分量叠算 └ 只剩一件时吃一件，分量表跟奇诡一样 └ 每射一发隔0.4秒；吃不下就不射，也不扣冷却"
+      ],
+      "obtain": "配方合成：奇诡 + 半截的箭头×2 + 凝滞的光子结晶×2",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-2a646b4c5a86"
@@ -34491,10 +35259,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/stone_sword",
+      "description": "刃是石头的，快不了也重不了，能指望的只有握它的人还剩多少血。",
+      "details": [
+        "刃是石头的，快不了也重不了，能指望的只有握它的人还剩多少血。",
+        "耐久 IV / 抢夺 III",
+        "└ 手持期间伤害按已缺血量定档：每缺1点 +0.8，最多按20点缺口算 └ 满血只有4点伤害，缺满20点是20点 └ 每次命中扣自己0.5点血，剩不到1.5点血时不扣 └ 攻速它不动，跟着手里的石头剑走"
+      ],
+      "obtain": "配方合成：寄生体的血囊×4 + 石剑",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-9793245a042b"
@@ -34505,10 +35277,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/diamond_sword",
+      "description": "两头都开刃，中间那截柄能翻手腕——翻过去就是另一把。",
+      "details": [
+        "两头都开刃，中间那截柄能翻手腕——翻过去就是另一把。",
+        "耐久 IV",
+        "└ 右键：换手（轻档↔重档），冷却2秒，档位记在剑上 └ 轻档攻速3.4、伤害5；每命中3次，第3刀附带10点真实伤害 └ 重档攻速0.9、伤害11；命中时身前2.5格内其他活物各吃14点，顺带都推一把 └ 换手持别的东西时计数清零，档位留在剑上"
+      ],
+      "obtain": "配方合成：甲虫的甲壳×4 + 钻石剑",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-16906c91578a"
@@ -34519,10 +35295,14 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_sword",
+      "description": "柄上加了第二道防滑，翻起来不用看手。",
+      "details": [
+        "柄上加了第二道防滑，翻起来不用看手。",
+        "耐久 V / 抢夺 II",
+        "└ 右键：换手（轻档↔重档），冷却1.5秒，档位记在剑上 └ 轻档攻速3.6、伤害6；每命中3次，第3刀附带16点真实伤害 └ 重档攻速1.0、伤害14；命中时身前3格内其他活物各吃20点，顺带都推一把 └ 换手持别的东西时计数清零，档位留在剑上"
+      ],
+      "obtain": "配方合成：Ploc-双刃剑 + 虚空虫的颚齿×2 + 不灭虚空纤维蚕丝×2",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/weapons/i-0f5a4c57dab6"
@@ -34533,9 +35313,12 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/eye_armor_trim_smithing_template",
+      "description": "编码晶片居中，全知之眼压上，两枚瞳核拉左右，失声的尖啸垫底。",
+      "details": [
+        "编码晶片居中，全知之眼压上，两枚瞳核拉左右，失声的尖啸垫底。",
+        "千墟头盔四角的骨架，一件头盔用掉三枚。"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -34547,9 +35330,12 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/rib_armor_trim_smithing_template",
+      "description": "活体组织居中，虚空之茧压上，两枚棘刺拉左右，会呼吸的苔藓垫底。",
+      "details": [
+        "活体组织居中，虚空之茧压上，两枚棘刺拉左右，会呼吸的苔藓垫底。",
+        "千墟胸甲四角的骨架，一件胸甲用掉三枚。"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -34561,9 +35347,12 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/spire_armor_trim_smithing_template",
+      "description": "脊椎骨片居中，折叠骨板压上，两枚镰足拉左右，上爬的枯藤垫底。",
+      "details": [
+        "脊椎骨片居中，折叠骨板压上，两枚镰足拉左右，上爬的枯藤垫底。",
+        "千墟护腿四角的骨架，一条护腿用掉三枚。"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -34575,9 +35364,12 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/silence_armor_trim_smithing_template",
+      "description": "超新星残骸居中，奇点矿核压上，两枚甲壳拉左右，一鼓一鼓的珠子垫底。",
+      "details": [
+        "超新星残骸居中，奇点矿核压上，两枚甲壳拉左右，一鼓一鼓的珠子垫底。",
+        "千墟战靴四角的骨架，一双战靴用掉三枚。"
+      ],
       "obtain": "",
       "enchantments": [],
       "glint": false,
@@ -34589,12 +35381,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/chainmail_helmet",
+      "description": "以爆破翼膜封住观测缝的炸风面盔",
+      "details": [
+        "以爆破翼膜封住观测缝的炸风面盔",
+        "└ 炸压（吃到爆炸伤害时叠 1 层，8 秒不挨炸退 1 层）：每层使下一次近战伤害 +15%，命中后清空",
+        "└ 本件：爆炸来源的伤害 -15%",
+        "└ 套装(2件)：挨炸后 4 秒抗性提升 I；(4件) 释放炸压时按层数追加 2 点真伤"
+      ],
+      "obtain": "配方合成：爆破翼膜×4 + 炸灵结晶",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-db4ab62da319"
     },
     {
@@ -34603,12 +35400,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/chainmail_chestplate",
+      "description": "以爆裂凝胶衬里的炸风锁铠",
+      "details": [
+        "以爆裂凝胶衬里的炸风锁铠",
+        "└ 炸压（吃到爆炸伤害时叠 1 层，8 秒不挨炸退 1 层）：每层使下一次近战伤害 +15%，命中后清空",
+        "└ 本件：炸压上限 6（否则 5）",
+        "└ 套装(2件)：挨炸后 4 秒抗性提升 I；(4件) 释放炸压时按层数追加 2 点真伤"
+      ],
+      "obtain": "配方合成：爆裂凝胶×7 + 炸灵结晶",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-d8e867c29ea6"
     },
     {
@@ -34617,12 +35419,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/chainmail_leggings",
+      "description": "以爆燃绿硝浸染裤脚的炸风护腿",
+      "details": [
+        "以爆燃绿硝浸染裤脚的炸风护腿",
+        "└ 炸压（吃到爆炸伤害时叠 1 层，8 秒不挨炸退 1 层）：每层使下一次近战伤害 +15%，命中后清空",
+        "└ 本件：爆炸击退只剩 40%",
+        "└ 套装(2件)：挨炸后 4 秒抗性提升 I；(4件) 释放炸压时按层数追加 2 点真伤"
+      ],
+      "obtain": "配方合成：爆燃绿硝×3 + 硫磺骨屑×5",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-ec1d9496a899"
     },
     {
@@ -34631,12 +35438,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/chainmail_boots",
+      "description": "踩着炎爆火泪定型的炸风踏靴",
+      "details": [
+        "踩着炎爆火泪定型的炸风踏靴",
+        "└ 炸压（吃到爆炸伤害时叠 1 层，8 秒不挨炸退 1 层）：每层使下一次近战伤害 +15%，命中后清空",
+        "└ 本件：炸压 3 层以上时速度 I",
+        "└ 套装(2件)：挨炸后 4 秒抗性提升 I；(4件) 释放炸压时按层数追加 2 点真伤"
+      ],
+      "obtain": "配方合成：爆燃余烬×2 + 炎爆火泪×5",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-d6fe688bcbd8"
     },
     {
@@ -34645,12 +35457,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/firework_rocket",
+      "description": "夹着烟花引芯的胸针，被炸到就顺着气浪走",
+      "details": [
+        "夹着烟花引芯的胸针，被炸到就顺着气浪走",
+        "└ 放在快捷栏第 9 格生效：",
+        "└ 挨炸后 3 秒内免摔落伤害，并获得跳跃提升 III"
+      ],
+      "obtain": "配方合成：烟花引芯×4 + 聚爆雷管",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-8e25955a2f3d"
     },
     {
@@ -34659,12 +35475,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/amethyst_shard",
+      "description": "以狂欢之星压模的徽章，炸开的冲击不止一人",
+      "details": [
+        "以狂欢之星压模的徽章，炸开的冲击不止一人",
+        "└ 放在快捷栏第 9 格生效：",
+        "└ 释放炸压的那一击，身前 2.5 格内其它活物各吃这击伤害的 25%"
+      ],
+      "obtain": "配方合成：狂欢爆竹×4 + 狂欢之星",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-bc791626ba16"
     },
     {
@@ -34673,12 +35493,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/leather_helmet",
+      "description": "蒙着织食丝囊的馋饿兜帽，闻得出三格外的饭菜",
+      "details": [
+        "蒙着织食丝囊的馋饿兜帽，闻得出三格外的饭菜",
+        "└ 食积（每吃一次食物叠 1 层，12 秒不吃退 1 层）：每层使近战伤害 +8%，命中消耗 1 层",
+        "└ 本件：进食后 4 秒生命恢复 I",
+        "└ 套装(2件)：进食额外 +2 饱和度；(4件) 命中不再消耗食积"
+      ],
+      "obtain": "配方合成：织食丝囊×4 + 贪灵结晶",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-3bb8184055ed"
     },
     {
@@ -34687,12 +35512,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/leather_chestplate",
+      "description": "反复浸过饱腹凝胶的馋饿油袍，油腻反光",
+      "details": [
+        "反复浸过饱腹凝胶的馋饿油袍，油腻反光",
+        "└ 食积（每吃一次食物叠 1 层，12 秒不吃退 1 层）：每层使近战伤害 +8%，命中消耗 1 层",
+        "└ 本件：食积上限 7（否则 5）",
+        "└ 套装(2件)：进食额外 +2 饱和度；(4件) 命中不再消耗食积"
+      ],
+      "obtain": "配方合成：饱腹凝胶×7 + 饕餮胶核",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-43308a48eaac"
     },
     {
@@ -34701,12 +35531,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/leather_leggings",
+      "description": "以饿骸肋骨撑形的馋饿缚裙，坐得住也吃得下",
+      "details": [
+        "以饿骸肋骨撑形的馋饿缚裙，坐得住也吃得下",
+        "└ 食积（每吃一次食物叠 1 层，12 秒不吃退 1 层）：每层使近战伤害 +8%，命中消耗 1 层",
+        "└ 本件：食积 3 层以上时抗性提升 I",
+        "└ 套装(2件)：进食额外 +2 饱和度；(4件) 命中不再消耗食积"
+      ],
+      "obtain": "配方合成：噬月翼膜×3 + 馋涎火泪×5",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-b5ae61244a8b"
     },
     {
@@ -34715,12 +35550,17 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/leather_boots",
+      "description": "踩过整片餐厨残渣的馋饿踏靴，鞋底永远粘",
+      "details": [
+        "踩过整片餐厨残渣的馋饿踏靴，鞋底永远粘",
+        "└ 食积（每吃一次食物叠 1 层，12 秒不吃退 1 层）：每层使近战伤害 +8%，命中消耗 1 层",
+        "└ 本件：食积 3 层以上时速度 I",
+        "└ 套装(2件)：进食额外 +2 饱和度；(4件) 命中不再消耗食积"
+      ],
+      "obtain": "配方合成：饥鸣之喙×2 + 饱腹凝胶×5",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/armor/i-8c0c45356f44"
     },
     {
@@ -34729,12 +35569,16 @@
       "kind": "tool",
       "category": "食物/药剂",
       "group": "food",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/bread",
+      "description": "压紧的一层腐食涎液配三层饿骸肋骨，够吃一天",
+      "details": [
+        "压紧的一层腐食涎液配三层饿骸肋骨，够吃一天",
+        "└ 食用：在面包本身的回复之外再 +10 饱食度 +10 饱和度，8 秒生命恢复 II",
+        "└ 食积 +3 层；代价：20 秒饥饿 I"
+      ],
+      "obtain": "配方合成：腐食涎液×4 + 饥饿咒符",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/food/i-4f51b641023b"
     },
     {
@@ -34743,12 +35587,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/cauldron",
+      "description": "一路走一路炖的吞汉大釜，锅底从没凉过",
+      "details": [
+        "一路走一路炖的吞汉大釜，锅底从没凉过",
+        "└ 放在快捷栏第 9 格生效：",
+        "└ 每 2 秒 +1 饱食度，且食积不再随时间退层"
+      ],
+      "obtain": "配方合成：啃噬箭簇×4 + 饿骸肋骨×3",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-04ab6ab257d3"
     },
     {
@@ -34757,12 +35605,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/redstone_block",
+      "description": "以狂澜血潮沉入血月灾厄结晶底溺出来的祭潮",
+      "details": [
+        "以狂澜血潮沉入血月灾厄结晶底溺出来的祭潮",
+        "└ 放在快捷栏第 9 格生效：",
+        "└ 持续获得 生命恢复 III + 力量 II + 速度 II",
+        "└ 自身血量不足三成时追加 抗性提升 II"
+      ],
+      "obtain": "配方合成：血凝黏液×4 + 血月灾厄结晶×4 + 血潮·狂澜",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-2a3ec42b53ba"
     },
     {
@@ -34771,12 +35624,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/soul_lantern",
+      "description": "把噬魂魔焰关进血咒精魄牢笼里养着的狱焰",
+      "details": [
+        "把噬魂魔焰关进血咒精魄牢笼里养着的狱焰",
+        "└ 放在快捷栏第 8 格生效：",
+        "└ 周身升腾的狱焰魂环，附带落地黑烟",
+        "└ 近战命中 20% 追加 8 点真实伤害并点燃目标 3 秒"
+      ],
+      "obtain": "配方合成：怨灵结晶×2 + 血咒精魄×2 + 噬魂魔焰护符",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-41f224e58f31"
     },
     {
@@ -34785,12 +35643,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/ender_eye",
+      "description": "君主之眸再往上一重，织成能戴的冕",
+      "details": [
+        "君主之眸再往上一重，织成能戴的冕",
+        "└ 放在快捷栏第 9 格生效：",
+        "└ 夜视 + 缓降 + 速度 III + 跳跃提升 III",
+        "└ 受击 35% 闪现躲避"
+      ],
+      "obtain": "配方合成：末影低语之鳞×4 + 血咒精魄×4 + 虚空行者之眸",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-5fba565444ea"
     },
     {
@@ -34799,12 +35662,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/magma_cream",
+      "description": "炽核外面再裹一层毁灭血髓，烧到塌缩成星",
+      "details": [
+        "炽核外面再裹一层毁灭血髓，烧到塌缩成星",
+        "└ 放在快捷栏第 9 格生效：",
+        "└ 抗火 II + 力量 III",
+        "└ 站在火或岩浆里时追加 抗性提升 II + 生命恢复 I",
+        "└ 受击 45% 点燃攻击者 6 秒"
+      ],
+      "obtain": "配方合成：灼魂烈焰核×2 + 毁灭血髓×2 + 熔岩血核·炽",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-a72fa9e893c4"
     },
     {
@@ -34813,12 +35682,20 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "enchantments": [],
-      "glint": false,
+      "icon": "item/netherite_hoe",
+      "description": "裂月之镰吞掉四颗血月灾厄结晶，从此不见月",
+      "details": [
+        "裂月之镰吞掉四颗血月灾厄结晶，从此不见月",
+        "└ 命中时：85% 恢复 5❤ 并使目标迟缓 V（5 秒）",
+        "└ 血月之夜 额外 60% 触发凋零 IV（5 秒）",
+        "└ 非血月之夜 20% 触发凋零 II（3 秒）"
+      ],
+      "obtain": "配方合成：嚎哭尸首×4 + 血月灾厄结晶×4 + 血月收割镰·裂月",
+      "enchantments": [
+        "锋利 VIII",
+        "耐久 VI"
+      ],
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/weapons/i-efb6082280be"
     },
     {
@@ -34827,12 +35704,21 @@
       "kind": "weapon",
       "category": "武器",
       "group": "weapons",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "enchantments": [],
-      "glint": false,
+      "icon": "item/netherite_sword",
+      "description": "寂灭之刃归到无一物，四颗毁灭血髓压成刃脊",
+      "details": [
+        "寂灭之刃归到无一物，四颗毁灭血髓压成刃脊",
+        "└ 命中时：使目标 凋零 V（12 秒）+ 虚弱 V（10 秒）",
+        "└ 70% 追加 13 点真实伤害并吸取 9 点生命",
+        "└ 目标血量不足四成时必定收割：真伤 18 点、吸取 18 点，并给自己力量 II（5 秒）"
+      ],
+      "obtain": "配方合成：八目血珠×4 + 毁灭血髓×4 + 噬魂骨刃·寂灭",
+      "enchantments": [
+        "锋利 VII",
+        "火焰附加 V",
+        "耐久 VII"
+      ],
+      "glint": true,
       "href": "/linsmagic/atlas/weapons/weapons/i-7545b853800d"
     },
     {
@@ -34850,7 +35736,7 @@
         "├ 合成归魄四件的料",
         "└ 魄羽披风的基底料"
       ],
-      "obtain": "",
+      "obtain": "魔镜合成：中心魂石 + 周围八格任意物魄（可重复，工作台做不了）",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-b8cc01ca9040"
@@ -34872,7 +35758,7 @@
         "└ 置于第9格时：",
         "└ 每 10 秒可完全免掉一次摔落伤害"
       ],
-      "obtain": "",
+      "obtain": "配方合成：4 归魄泥 + 2 魔力布匹 + 1 薄翼残片",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-893f27fb8fd9"
@@ -34892,7 +35778,7 @@
         "├ 合成凝魄四件的料",
         "└ 魄羽披风升档成归魄云裳的料"
       ],
-      "obtain": "",
+      "obtain": "魔镜合成：中心强化魂石 + 周围八格任意物魄（可重复，工作台做不了）",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-72499fb33a0b"
@@ -34903,10 +35789,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "归魄套装的头部部件。",
+      "details": [
+        "归魄套装的头部部件。",
+        "保护 IV / 水下呼吸 III / 耐久 IV"
+      ],
+      "obtain": "配方合成：归魄泥×5 + 皮革头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-9ca6f2d64066"
@@ -34917,10 +35806,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "归魄套装的胸甲部件。",
+      "details": [
+        "归魄套装的胸甲部件。",
+        "保护 IV / 荆棘 II / 耐久 IV"
+      ],
+      "obtain": "配方合成：归魄泥×5 + 皮革胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-a03ceb4756cc"
@@ -34931,10 +35823,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "归魄套装的护腿部件。",
+      "details": [
+        "归魄套装的护腿部件。",
+        "保护 IV / 迅捷潜行 II / 耐久 IV"
+      ],
+      "obtain": "配方合成：归魄泥×5 + 皮革护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-ed10c1de5f68"
@@ -34945,10 +35840,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "归魄套装的战靴部件。",
+      "details": [
+        "归魄套装的战靴部件。",
+        "保护 IV / 摔落保护 IV / 深海探索者 II / 耐久 IV"
+      ],
+      "obtain": "配方合成：归魄泥×5 + 皮革靴子",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-81ea1fc0ec09"
@@ -34959,10 +35857,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "凝魄套装的头部部件。",
+      "details": [
+        "凝魄套装的头部部件。",
+        "保护 V / 水下呼吸 IV / 耐久 V"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×4 + 归魄头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-f1b6aadfc8c0"
@@ -34973,10 +35874,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "凝魄套装的胸甲部件。",
+      "details": [
+        "凝魄套装的胸甲部件。",
+        "保护 V / 荆棘 III / 耐久 V"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×4 + 归魄胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-87f0691ce3f0"
@@ -34987,10 +35891,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "凝魄套装的护腿部件。",
+      "details": [
+        "凝魄套装的护腿部件。",
+        "保护 V / 迅捷潜行 III / 耐久 V"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×4 + 归魄护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-f4d82268a528"
@@ -35001,10 +35908,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "凝魄套装的战靴部件。",
+      "details": [
+        "凝魄套装的战靴部件。",
+        "保护 V / 摔落保护 V / 深海探索者 III / 耐久 V"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×4 + 归魄战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-51dd90d5aca5"
@@ -35026,7 +35936,7 @@
         "└ 置于第9格时：",
         "└ 无限次免掉摔落伤害，每次触发后 3 秒充能"
       ],
-      "obtain": "",
+      "obtain": "配方合成：4 凝魄晶 + 2 薄翼残片 + 魄羽披风（合成即升档）",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-792e71816e99"
@@ -35037,10 +35947,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_helmet",
+      "description": "万魄套装的头部部件。",
+      "details": [
+        "万魄套装的头部部件。",
+        "保护 VI / 水下呼吸 V / 耐久 VI"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×2 + 魂石聚合体×2 + 凝魄头盔",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-c839682f933f"
@@ -35051,10 +35964,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_chestplate",
+      "description": "万魄套装的胸甲部件。",
+      "details": [
+        "万魄套装的胸甲部件。",
+        "保护 VI / 荆棘 IV / 耐久 VI"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×2 + 魂石聚合体×2 + 凝魄胸甲",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-f70a81ddc097"
@@ -35065,10 +35981,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_leggings",
+      "description": "万魄套装的护腿部件。",
+      "details": [
+        "万魄套装的护腿部件。",
+        "保护 VI / 迅捷潜行 IV / 耐久 VI"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×2 + 魂石聚合体×2 + 凝魄护腿",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-0badb8cc0e34"
@@ -35079,10 +35998,13 @@
       "kind": "weapon",
       "category": "装备",
       "group": "armor",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_boots",
+      "description": "万魄套装的战靴部件。",
+      "details": [
+        "万魄套装的战靴部件。",
+        "保护 VI / 摔落保护 VI / 深海探索者 IV / 耐久 VI"
+      ],
+      "obtain": "配方合成：凝魄晶×4 + 归魄泥×2 + 魂石聚合体×2 + 凝魄战靴",
       "enchantments": [],
       "glint": false,
       "href": "/linsmagic/atlas/weapons/armor/i-93d9149ab7bc"
@@ -35104,7 +36026,7 @@
         "└ 置于第9格时：",
         "└ 无限次免掉摔落伤害，每次触发后 1 秒充能"
       ],
-      "obtain": "",
+      "obtain": "配方合成：4 魂石聚合体 + 2 薄翼残片 + 归魄云裳（合成即升档）",
       "enchantments": [],
       "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-6022b8f99483"
@@ -35115,12 +36037,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/ghast_tear",
+      "description": "置于第9格：主手近战命中时 20% 追加 4 点真伤",
+      "details": [
+        "置于第9格：主手近战命中时 20% 追加 4 点真伤",
+        "星核矿磨出来的齿，护甲与抗性都挡不住那一下",
+        "它咬的是星星，不差你这一层甲"
+      ],
+      "obtain": "配方合成：星核矿×4 + 虚空丝×4 + 虚空精华",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-cb0c198989b5"
     },
     {
@@ -35129,12 +36055,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/turtle_helmet",
+      "description": "置于第9格：挡下致命一击，把你拉到 2 点血",
+      "details": [
+        "置于第9格：挡下致命一击，把你拉到 2 点血",
+        "真实伤害与指令打死也算，挡下之后 5 分钟不能再挡",
+        "世界边界剥下的壳，框住的东西就没碎过",
+        "壳上有一道白印，那是别人替你碎的地方"
+      ],
+      "obtain": "配方合成：界壳×4 + 虚空丝×4 + 虚空精华",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-e74901550158"
     },
     {
@@ -35143,12 +36074,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/suspicious_sand",
+      "description": "置于第9格：常驻急迫I，并抹掉身上的挖掘疲劳",
+      "details": [
+        "置于第9格：常驻急迫I，并抹掉身上的挖掘疲劳",
+        "只抹挖掘疲劳，饥饿与不幸照旧",
+        "砂在袋里自己往下流，手跟着它往下凿"
+      ],
+      "obtain": "配方合成：乌德砂×4 + 虚空丝×4 + 虚空精华",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-65857e9972c5"
     },
     {
@@ -35157,12 +36092,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/gold_nugget",
+      "description": "置于第9格：异界行商的买价一律打 9 折",
+      "details": [
+        "置于第9格：异界行商的买价一律打 9 折",
+        "只压买入价，卖给行商的价格不动",
+        "金点在袋里游，游到谁手上谁就让价"
+      ],
+      "obtain": "配方合成：暗金×4 + 虚空丝×4 + 虚空精华",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-4669abfd1272"
     },
     {
@@ -35171,12 +36110,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/iron_nugget",
+      "description": "置于第9格：身上四件护甲的耐久消耗减 20%",
+      "details": [
+        "置于第9格：身上四件护甲的耐久消耗减 20%",
+        "只认穿在身上的护甲，手里拿的工具不吃这条",
+        "扣子上没有反光，磨掉的耐久也看不见"
+      ],
+      "obtain": "配方合成：乌德铁×4 + 虚空丝×4 + 虚空精华",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-5a2cb04f071f"
     },
     {
@@ -35185,12 +36128,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/sea_pickle",
+      "description": "置于第9格：虚空钓竿的收杆窗口宽 0.2 秒",
+      "details": [
+        "置于第9格：虚空钓竿的收杆窗口宽 0.2 秒",
+        "跟深空钓者那本附魔叠加，各算各的",
+        "它跳得比浮漂还准，提前半拍告诉你该收了"
+      ],
+      "obtain": "配方合成：虚空灵腺×4 + 虚空丝×4 + 虚空精华",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-ae4214f23145"
     },
     {
@@ -35199,12 +36146,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/magma_cream",
+      "description": "置于第9格：被近战打中时 25% 让攻击者烧 3 秒",
+      "details": [
+        "置于第9格：被近战打中时 25% 让攻击者烧 3 秒",
+        "只认贴脸的与弹射物的那一下，环境伤害不回敬",
+        "贴着皮的那一面一直是烫的"
+      ],
+      "obtain": "配方合成：九合金坯 + 虚空丝×2 + 炎烬残渣×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-bc546dacd90a"
     },
     {
@@ -35213,12 +36164,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/quartz",
+      "description": "置于第9格：被近战打中时 25% 给攻击者缓慢IV 2 秒",
+      "details": [
+        "置于第9格：被近战打中时 25% 给攻击者缓慢IV 2 秒",
+        "只认贴脸的那一下，弓箭与药水不冻人",
+        "谁碰它，谁的下半身就先麻掉"
+      ],
+      "obtain": "配方合成：九合金坯 + 虚空丝×2 + 霜华花瓣×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-6bdbbb92a6b1"
     },
     {
@@ -35227,12 +36182,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/feather",
+      "description": "置于第9格：常驻速度I，摔落伤害减半",
+      "details": [
+        "置于第9格：常驻速度I，摔落伤害减半",
+        "风灵铁锭那一系的轻，压在衬里就剩这点",
+        "它一直想把你往上抬一点，哪怕只一点"
+      ],
+      "obtain": "配方合成：九合金坯 + 虚空丝×2 + 风魂遗簇×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-556522c8d415"
     },
     {
@@ -35241,12 +36200,18 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_scrap",
+      "description": "九种合金在魔镜里压成的一块坯，边上一圈各认各的颜色",
+      "details": [
+        "九种合金在魔镜里压成的一块坯，边上一圈各认各的颜色",
+        "在魔镜里做：九格各摆一种合金，铁系位可拿乌德铁顶，金系位可拿暗金顶",
+        "└ 用途：",
+        "├ 合成三件一档衬甲与上位两档的料",
+        "└ 九种合金锭唯一的共同出口"
+      ],
+      "obtain": "魔镜合成：九格各摆一种合金（铁系位可拿乌德铁顶、金系位可拿暗金顶，工作台做不了）",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-dbb54a684fd2"
     },
     {
@@ -35255,12 +36220,19 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_scrap",
+      "description": "置于第9格：熔／霜／风三条同时生效，数字全按二档",
+      "details": [
+        "置于第9格：熔／霜／风三条同时生效，数字全按二档",
+        "└ 被近战或弹幕打中时 30% 让攻击者烧 4 秒",
+        "└ 被近战打中时 30% 给攻击者缓慢IV 3 秒",
+        "└ 常驻速度II，摔落伤害减 70%",
+        "三件一档衬甲叠成的一件，冻与烧各自掷骰，同一拳可能一起吃",
+        "三种温度挤在同一层衬里，谁挨上都不知道会沾哪一种"
+      ],
+      "obtain": "配方合成：熔火／霜华／风灵衬甲各一 + 九合金坯 + 虚空精华",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-606a6b6dad52"
     },
     {
@@ -35269,12 +36241,22 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_scrap",
+      "description": "置于第9格：三条效果全按三档，下面五条一起生效",
+      "details": [
+        "置于第9格：三条效果全按三档，下面五条一起生效",
+        "└ 被近战或弹幕打中时 35% 让攻击者烧 5 秒",
+        "└ 被近战打中时 35% 给攻击者缓慢V 4 秒",
+        "└ 常驻速度III，摔落伤害减 90%",
+        "└ 常驻抗性提升I",
+        "└ 每 10 秒攒一层挡下护盾，最多5层，一层挡一刀不吃血",
+        "└ 摔疼落地时把摔力传给身周3格：4 点真伤，把站着的顶起来",
+        "九种合金反复炼过的一层芯，贴在背上一直是沉的",
+        "到这一步已经没有布料了，剩的就是合金"
+      ],
+      "obtain": "配方合成：三相衬甲 + 虚空精华×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-1450717d4059"
     },
     {
@@ -35283,12 +36265,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/iron_ingot",
+      "description": "置于第9格：身上四件护甲的耐久消耗减 35%",
+      "details": [
+        "置于第9格：身上四件护甲的耐久消耗减 35%",
+        "└ 每 20 秒给磨损最重的一件护甲补 1 点耐久",
+        "只认穿在身上的护甲，手里拿的工具不吃这两条",
+        "多一枚扣子，绑得就没那么容易松"
+      ],
+      "obtain": "配方合成：乌德铁扣 + 乌德铁×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-29621a1c1e58"
     },
     {
@@ -35297,12 +36284,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/netherite_scrap",
+      "description": "置于第9格：耐久消耗减 50%，并把咬星那一下并进来",
+      "details": [
+        "置于第9格：耐久消耗减 50%，并把咬星那一下并进来",
+        "└ 每 15 秒给磨损最重的一件护甲补 2 点耐久",
+        "└ 主手近战命中时 25% 追加 6 点真伤",
+        "乌德铁重打一枚扣，把那颗齿抱住，护甲与抗性照旧挡不住",
+        "扣子内侧那一圈齿痕没磨掉，还在咬"
+      ],
+      "obtain": "配方合成：乌德铁双扣 + 咬星的齿 + 星核矿×4 + 乌德铁 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-e039c32a3262"
     },
     {
@@ -35311,12 +36304,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/turtle_helmet",
+      "description": "置于第9格：挡下致命一击，把你拉到 4 点血",
+      "details": [
+        "置于第9格：挡下致命一击，把你拉到 4 点血",
+        "└ 挡下之后 10 秒带抗性提升I",
+        "真实伤害与指令打死也算，挡下之后 4 分钟不能再挡",
+        "裂过的地方填了一道白，比原来还厚"
+      ],
+      "obtain": "配方合成：没碎的界壳 + 界壳×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-6e3060b52e99"
     },
     {
@@ -35325,12 +36323,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/turtle_scute",
+      "description": "置于第9格：挡下致命一击，把你拉到 6 点血",
+      "details": [
+        "置于第9格：挡下致命一击，把你拉到 6 点血",
+        "└ 挡下之后 15 秒带抗性提升II",
+        "真实伤害与指令打死也算，挡下之后 3 分钟不能再挡",
+        "两块壳中间夹着的东西一直在动"
+      ],
+      "obtain": "配方合成：补好的界壳 + 界壳×4 + 虚空精华×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-95b891a2710b"
     },
     {
@@ -35339,12 +36342,16 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/andesite",
+      "description": "十五样石屑砂粒在魔镜里压成的一块坯，粗看像半块磨盘",
+      "details": [
+        "十五样石屑砂粒在魔镜里压成的一块坯，粗看像半块磨盘",
+        "在魔镜里做：外圈八格各摆一种石屑料，中心一格虚空精华",
+        "石头磨石头，磨下来的粉也算石头"
+      ],
+      "obtain": "魔镜合成：外圈八格各摆一种石屑砂粒（名单里任意一样都算），中心虚空精华（工作台做不了）",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-235fd08995bc"
     },
     {
@@ -35353,12 +36360,16 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/bone_block",
+      "description": "十二样碎骨在魔镜里压成的一块坯，骨茬全朝里",
+      "details": [
+        "十二样碎骨在魔镜里压成的一块坯，骨茬全朝里",
+        "在魔镜里做：外圈八格各摆一种骨骸料，中心一格虚空精华",
+        "谁都不完整了，凑一起倒像一副骨架"
+      ],
+      "obtain": "魔镜合成：外圈八格各摆一种骨骸料（名单里任意一样都算），中心虚空精华（工作台做不了）",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-2585355772c1"
     },
     {
@@ -35367,12 +36378,16 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/heavy_weighted_pressure_plate",
+      "description": "十一样重料在魔镜里压成的一块坯，搁地上压出一块印",
+      "details": [
+        "十一样重料在魔镜里压成的一块坯，搁地上压出一块印",
+        "在魔镜里做：外圈八格各摆一种重料，中心一格虚空精华",
+        "它不沉，只是不肯跟着别人动"
+      ],
+      "obtain": "魔镜合成：外圈八格各摆一种重料（名单里任意一样都算），中心虚空精华（工作台做不了）",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-de6ba8d6ec50"
     },
     {
@@ -35381,12 +36396,16 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/barrel",
+      "description": "十五样破烂在魔镜里压成的一块坯，边上还卡着别人的东西",
+      "details": [
+        "十五样破烂在魔镜里压成的一块坯，边上还卡着别人的东西",
+        "在魔镜里做：外圈八格各摆一种破烂，中心一格虚空精华",
+        "没有人丢的东西是无用的，只是还没人捡"
+      ],
+      "obtain": "魔镜合成：外圈八格各摆一种破烂（名单里任意一样都算），中心虚空精华（工作台做不了）",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-e479117a445d"
     },
     {
@@ -35395,12 +36414,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/flint",
+      "description": "置于第9格：手里工具的耐久消耗减 20%",
+      "details": [
+        "置于第9格：手里工具的耐久消耗减 20%",
+        "只认手上那件，身上四件护甲归乌德铁扣管",
+        "砂粒咬进铁里，铁就磨得慢一点"
+      ],
+      "obtain": "配方合成：石屑坯 + 虚空丝×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-9f88e1ff4e11"
     },
     {
@@ -35409,12 +36432,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/quartz",
+      "description": "置于第9格：手里工具的耐久消耗减 35%",
+      "details": [
+        "置于第9格：手里工具的耐久消耗减 35%",
+        "还是只认手上那件，护甲不吃这条",
+        "换了细一号的砂，伤口就浅一号"
+      ],
+      "obtain": "配方合成：磨石坠 + 石屑坯×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-33d551dda02f"
     },
     {
@@ -35423,12 +36450,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/grindstone",
+      "description": "置于第9格：工具与护甲的耐久消耗一起减 50%",
+      "details": [
+        "置于第9格：工具与护甲的耐久消耗一起减 50%",
+        "└ 每 15 秒给磨损最重的一件护甲补 2 点耐久",
+        "护甲那半条与乌德铁双扣同一套规矩，但不带咬星那一下",
+        "扣子面上嵌着一层砂，磨别人的同时也磨自己"
+      ],
+      "obtain": "配方合成：金刚砂坠 + 乌德铁双扣 + 乌德铁 + 石屑坯×4 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-647d3983a14b"
     },
     {
@@ -35437,12 +36469,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/bone",
+      "description": "置于第9格：生命上限 +2 点（一颗心）",
+      "details": [
+        "置于第9格：生命上限 +2 点（一颗心）",
+        "跟套装那几条加血是各挂各的，一起算",
+        "骨串贴着锁骨，数着你还差几根"
+      ],
+      "obtain": "配方合成：骨骸坯 + 虚空丝×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-03e05580082a"
     },
     {
@@ -35451,12 +36487,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/skeleton_skull",
+      "description": "置于第9格：生命上限 +4 点（两颗心）",
+      "details": [
+        "置于第9格：生命上限 +4 点（两颗心）",
+        "加的那几颗心一挂上就补成满血，摘掉才夹回去",
+        "肋骨一根根串起来，抱住的不是头骨，是胸口"
+      ],
+      "obtain": "配方合成：骨串护符 + 骨骸坯×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-91b53a88ce7c"
     },
     {
@@ -35465,12 +36505,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/dragon_breath",
+      "description": "置于第9格：生命上限 +6 点（三颗心）",
+      "details": [
+        "置于第9格：生命上限 +6 点（三颗心）",
+        "└ 血量低于 30% 时常驻抗性提升II",
+        "接骨那口气只在快见底时提起来，血回到 30% 以上就散",
+        "断过的地方长出一层新骨，比原来更厚"
+      ],
+      "obtain": "配方合成：肋骨串 + 骨骸坯×4 + 虚空精华×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-a02d46b698fa"
     },
     {
@@ -35479,12 +36524,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/gunpowder",
+      "description": "置于第9格：吃到的击退减四成，辐射攒得慢一成",
+      "details": [
+        "置于第9格：吃到的击退减四成，辐射攒得慢一成",
+        "减的是被打飞的那一下，伤害照吃",
+        "一袋铅粒在腰上坠着，风推不动你"
+      ],
+      "obtain": "配方合成：重核坯 + 虚空丝×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-c21e131a8f0c"
     },
     {
@@ -35493,12 +36542,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/anvil",
+      "description": "置于第9格：完全不吃击退，辐射攒得慢两成",
+      "details": [
+        "置于第9格：完全不吃击退，辐射攒得慢两成",
+        "近战、爆炸、弹幕那一下都挪不动你，伤害照吃",
+        "铁砧挂在腰上，站得住也就没人推得倒"
+      ],
+      "obtain": "配方合成：铅粒坠 + 重核坯×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-35c1be579804"
     },
     {
@@ -35507,12 +36560,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/lodestone",
+      "description": "置于第9格：完全不吃击退，辐射只攒六成",
+      "details": [
+        "置于第9格：完全不吃击退，辐射只攒六成",
+        "└ 脚踩地面时挂抗性提升I",
+        "腾空那一刻护体就散，落地又回来",
+        "磁极反着接大地，谁拽你都是拽这颗星"
+      ],
+      "obtain": "配方合成：配重坠 + 重核坯×4 + 虚空精华×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-cb9514a431fe"
     },
     {
@@ -35521,12 +36579,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/name_tag",
+      "description": "置于第9格：3 格内的掉落物与经验球朝你飞",
+      "details": [
+        "置于第9格：3 格内的掉落物与经验球朝你飞",
+        "每半秒揽一次，掉在脚下的不用伸手",
+        "它认得每一样东西的名字，包括你没看见的"
+      ],
+      "obtain": "配方合成：杂物坯 + 虚空丝×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-bc1cc421ad84"
     },
     {
@@ -35535,12 +36597,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/leather",
+      "description": "置于第9格：6 格内的掉落物与经验球朝你飞",
+      "details": [
+        "置于第9格：6 格内的掉落物与经验球朝你飞",
+        "└ 同种且标签一致的掉落物顺手并成一组",
+        "并堆只并半径里的，带附魔与带名字的不会跟白件并到一起",
+        "腰带上一圈环，什么都能挂一下"
+      ],
+      "obtain": "配方合成：拾荒挂坠 + 杂物坯×2 + 虚空精华×2",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-d387bbc62c0f"
     },
     {
@@ -35549,12 +36616,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/bundle",
+      "description": "置于第9格：10 格内的掉落物与经验球朝你飞，并堆照旧",
+      "details": [
+        "置于第9格：10 格内的掉落物与经验球朝你飞，并堆照旧",
+        "└ 经验获取 +25%",
+        "并的是掉在地上的那一份，进了背包就不归它管了",
+        "袋口朝内，越装越轻"
+      ],
+      "obtain": "配方合成：破烂腰带 + 杂物坯×4 + 虚空精华×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-c051273b789a"
     },
     {
@@ -35563,12 +36635,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/gold_ingot",
+      "description": "置于第9格：火焰与岩浆的伤害归 0",
+      "details": [
+        "置于第9格：火焰与岩浆的伤害归 0",
+        "熔火金锭打的戒圈，着火与泡岩浆都不再掉血",
+        "只免这两样，被火烧着的木头与爆炸照吃"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-4eaf709f3b2a"
     },
     {
@@ -35577,12 +36653,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_ingot",
+      "description": "置于第9格：火焰与岩浆的伤害归 0",
+      "details": [
+        "置于第9格：火焰与岩浆的伤害归 0",
+        "正着火或泡在岩浆里时，每秒回 1 点血",
+        "熔火金戒外面再箍四块熔火金锭，戒圈厚了一圈",
+        "只免这两样，爆炸与摔落照吃，着火状态本身还在"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-b379a480401f"
     },
     {
@@ -35591,12 +36672,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/magma_cream",
+      "description": "置于第9格：近战命中给目标挂燃烧 3 秒",
+      "details": [
+        "置于第9格：近战命中给目标挂燃烧 3 秒",
+        "熔岩红宝石镶的戒面，四秒只能点着一次",
+        "烧不动本就抗火的家伙，那一下等于白给"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-7ae22a9da7e0"
     },
     {
@@ -35605,12 +36690,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/netherite_scrap",
+      "description": "置于第9格：近战命中给目标挂燃烧 5 秒",
+      "details": [
+        "置于第9格：近战命中给目标挂燃烧 5 秒",
+        "两下只隔 2 秒；打正烧着的补 2 点真伤",
+        "燃火戒外圈又嵌四颗熔岩红宝石，戒面烫得握不住",
+        "烧不动本就抗火的家伙，那口真伤也跟着没了"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-07c8ac67df40"
     },
     {
@@ -35619,12 +36709,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/lapis_lazuli",
+      "description": "置于第9格：被打时给攻击者挂缓慢IV 2 秒",
+      "details": [
+        "置于第9格：被打时给攻击者挂缓慢IV 2 秒",
+        "霜蓝宝石磨的小戒，谁碰你一下自己先沉半步",
+        "只认有来头的伤，摔落与中毒找不到人，就不挂"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-c73525aea269"
     },
     {
@@ -35633,12 +36727,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/diamond",
+      "description": "置于第9格：被打时给攻击者挂缓慢V 3 秒",
+      "details": [
+        "置于第9格：被打时给攻击者挂缓慢V 3 秒",
+        "同时给自己挂抗性提升II 3 秒",
+        "霜蓝戒外圈再嵌四颗霜蓝宝石，碰你的人先冻牢半步",
+        "只认有来头的伤，摔落与中毒找不到人，就不挂"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-296be756ec7f"
     },
     {
@@ -35647,12 +36746,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/prismarine_crystals",
+      "description": "置于第9格：泡在水里不再耗氧",
+      "details": [
+        "置于第9格：泡在水里不再耗氧",
+        "海蓝宝石嵌在戒圈里，下了水颜色更深",
+        "只在真泡着的时候挂水下呼吸，岸上看不出来"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-19cbde7328f3"
     },
     {
@@ -35661,12 +36764,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/heart_of_the_sea",
+      "description": "置于第9格：泡在水里不再耗氧",
+      "details": [
+        "置于第9格：泡在水里不再耗氧",
+        "泡着的时候每秒回 1 点血",
+        "海蓝戒外圈再箍四颗海蓝宝石，戒身压手却不发凉",
+        "回血只在水里算，上岸那一秒起就停"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-58df34dc031e"
     },
     {
@@ -35675,12 +36783,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/phantom_membrane",
+      "description": "置于第9格：挨打时 10% 往后闪开 6 格",
+      "details": [
+        "置于第9格：挨打时 10% 往后闪开 6 格",
+        "虚空紫晶的碎棱卡在戒圈上，闪的那一下先偏再退",
+        "落点要站得住，退路被堵死就不闪，伤害照吃"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-abaf527b8808"
     },
     {
@@ -35689,12 +36801,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/ender_eye",
+      "description": "置于第9格：挨打时 15% 往后闪开 10 格",
+      "details": [
+        "置于第9格：挨打时 15% 往后闪开 10 格",
+        "闪成的那一下隐身 3 秒",
+        "裂空戒外圈再嵌四颗虚空紫晶，挪走时拖一道残影",
+        "落点要站得住，退路被堵死就不闪，伤害照吃"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-1965e8251710"
     },
     {
@@ -35703,12 +36820,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/emerald",
+      "description": "置于第9格：露天白天的近战额外 1 点真伤",
+      "details": [
+        "置于第9格：露天白天的近战额外 1 点真伤",
+        "炎阳之玉磨的戒面，头顶不能有方块挡着",
+        "夜里与洞里都不算，护甲与抗性挡不住这一发"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-295d0cd7a8bf"
     },
     {
@@ -35717,12 +36838,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/nether_star",
+      "description": "置于第9格：露天白天的近战额外 2 点真伤",
+      "details": [
+        "置于第9格：露天白天的近战额外 2 点真伤",
+        "夜里与洞里也补 1 点，只是不再挑地方",
+        "炎阳戒外圈再嵌四块炎阳之玉，戒面一直温着",
+        "白天那份要头顶到天没挡，护甲与抗性都拦不住"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-77b28a9c1a13"
     },
     {
@@ -35731,12 +36857,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/ghast_tear",
+      "description": "主手右键：朝准星瞬移，最多 12 格",
+      "details": [
+        "主手右键：朝准星瞬移，最多 12 格",
+        "末影珍珠精粹封在戒面里，不像珍珠那样挨一下反冲",
+        "两头隔 20 秒，落点站不住就往后退着找"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-32199c3703a2"
     },
     {
@@ -35745,12 +36875,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/chorus_fruit",
+      "description": "主手右键：朝准星瞬移，最多 20 格",
+      "details": [
+        "主手右键：朝准星瞬移，最多 20 格",
+        "挪完之后 3 秒带速度I",
+        "瞬影戒外圈再封四份末影珍珠精粹，照样不反冲",
+        "两头隔 12 秒，落点站不住就往后退着找"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-9802613ff666"
     },
     {
@@ -35759,12 +36894,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/feather",
+      "description": "主手右键：往准星方向蹬出去，两下隔 20 秒",
+      "details": [
+        "主手右键：往准星方向蹬出去，两下隔 20 秒",
+        "风之翠晶做戒面，握紧能觉出一股托力，脚下带一点抬升",
+        "蹬出去撞墙也照样扣血，摔下来自己接住"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-e6e963d672af"
     },
     {
@@ -35773,12 +36912,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/elytra",
+      "description": "主手右键：往准星方向蹬出去，两下隔 10 秒",
+      "details": [
+        "主手右键：往准星方向蹬出去，两下隔 10 秒",
+        "蹬完 4 秒带缓落，接住往下那一段",
+        "风行戒外圈再镶四颗风之翠晶，托力比下位那枚更冲",
+        "撞墙照样扣血，缓落不管水平那一段"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-013f38d54ebf"
     },
     {
@@ -35787,12 +36931,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/totem_of_undying",
+      "description": "置于第9格：火焰与岩浆的伤害归 0",
+      "details": [
+        "置于第9格：火焰与岩浆的伤害归 0",
+        "正着火或泡在岩浆里时，每秒回 2 点血",
+        "熔火重戒四角各压一颗熔火金锭，四边包四块金块",
+        "只免这两样，爆炸与摔落照吃，着火状态本身还在"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-b19f1341a4c8"
     },
     {
@@ -35801,12 +36950,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/blaze_rod",
+      "description": "置于第9格：近战命中给目标挂燃烧 8 秒",
+      "details": [
+        "置于第9格：近战命中给目标挂燃烧 8 秒",
+        "两下只隔 1 秒；打正烧着的补 3 点真伤",
+        "燃火重戒四角各嵌一颗熔岩红宝石，四边压四块岩浆块",
+        "烧不动本就抗火的家伙，那口真伤也跟着没了"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-2b99c9db6612"
     },
     {
@@ -35815,12 +36969,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/dragon_breath",
+      "description": "置于第9格：被打时给攻击者挂缓慢VI 4 秒",
+      "details": [
+        "置于第9格：被打时给攻击者挂缓慢VI 4 秒",
+        "同时给自己挂抗性提升II 4 秒",
+        "霜蓝重戒四角各嵌一颗霜蓝宝石，四边压四块青金石块",
+        "只认有来头的伤，摔落与中毒找不到人，就不挂"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-ccd33465eb73"
     },
     {
@@ -35829,12 +36988,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/nautilus_shell",
+      "description": "置于第9格：泡在水里不再耗氧",
+      "details": [
+        "置于第9格：泡在水里不再耗氧",
+        "泡着的时候每秒回 2 点血",
+        "海蓝重戒四角各嵌一颗海蓝宝石，四边压四块海晶石砖",
+        "回血只在水里算，上岸那一秒起就停"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-a6b22947f768"
     },
     {
@@ -35843,12 +37007,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/shulker_shell",
+      "description": "置于第9格：挨打时 20% 往后闪开 14 格",
+      "details": [
+        "置于第9格：挨打时 20% 往后闪开 14 格",
+        "闪成的那一下隐身 5 秒",
+        "裂空重戒四角各嵌一颗虚空紫晶，四边压四块黑曜石",
+        "落点要站得住，退路被堵死就不闪，伤害照吃"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-ad2fff3299c2"
     },
     {
@@ -35857,12 +37026,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/glistering_melon_slice",
+      "description": "置于第9格：露天白天的近战额外 3 点真伤",
+      "details": [
+        "置于第9格：露天白天的近战额外 3 点真伤",
+        "夜里与洞里也补 2 点，不再挑地方",
+        "炎阳重戒四角各嵌一块炎阳之玉，四边压四块荧石",
+        "白天那份要头顶到天没挡，护甲与抗性都拦不住"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-0ae9346a6c9d"
     },
     {
@@ -35871,12 +37045,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/echo_shard",
+      "description": "主手右键：朝准星瞬移，最多 24 格",
+      "details": [
+        "主手右键：朝准星瞬移，最多 24 格",
+        "挪完之后 5 秒带速度I",
+        "瞬影重戒四角各封一份末影珍珠精粹，四边压四颗末影珍珠",
+        "两头隔 8 秒，落点站不住就往后退着找"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-8096d9f8a5bd"
     },
     {
@@ -35885,12 +37064,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/recovery_compass",
+      "description": "主手右键：往准星方向蹬出去，两下隔 6 秒",
+      "details": [
+        "主手右键：往准星方向蹬出去，两下隔 6 秒",
+        "蹬完 6 秒带缓落，接住往下那一段",
+        "风行重戒四角各镶一颗风之翠晶，四边压四枚风弹",
+        "撞墙照样扣血，缓落不管水平那一段"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-e79243be6ac7"
     },
     {
@@ -35899,12 +37083,17 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/compass",
+      "description": "主手右键：按副手那块样品石定矿种，指针转向最近的同类原矿",
+      "details": [
+        "主手右键：按副手那块样品石定矿种，指针转向最近的同类原矿",
+        "搜索范围：水平  格、上下  格，只认原版原矿方块",
+        "指针保持  秒，时间一到自己松开；两次右键隔  秒",
+        "它不认识矿，只认你手里这块石头"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-f844ef391ce7"
     },
     {
@@ -35913,12 +37102,16 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/spyglass",
+      "description": "握在手里：每  秒报一次周围  格的敌对生物数量与方位",
+      "details": [
+        "握在手里：每  秒报一次周围  格的敌对生物数量与方位",
+        "计数只数怪物，玩家、村民和动物不算；方位报最近那一头",
+        "└ 放下就停，主手副手都算握着"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-46adb34eb11a"
     },
     {
@@ -35927,12 +37120,17 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/leather_boots",
+      "description": "握在手里：别人走过的地方给你浮出脚印粒子，只有你看得见",
+      "details": [
+        "握在手里：别人走过的地方给你浮出脚印粒子，只有你看得见",
+        "脚印范围  格，保留  秒；潜行走过的人不留脚印",
+        "自己蹲下时另报最近一脚：谁踩的、几秒前、往哪个方向",
+        "靴印比人诚实"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-6de1b896031d"
     },
     {
@@ -35941,12 +37139,16 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/milk_bucket",
+      "description": "主手右键：灭掉自己身上的火",
+      "details": [
+        "主手右键：灭掉自己身上的火",
+        "无限次，两次间隔  秒；只管自己，泼不到别人",
+        "水不多，够浇一次"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-25430081d046"
     },
     {
@@ -35955,12 +37157,17 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/lantern",
+      "description": "放在背包任一格：以带灯的人为中心， 格内的玩家全部挂夜视",
+      "details": [
+        "放在背包任一格：以带灯的人为中心， 格内的玩家全部挂夜视",
+        "每秒续一次，离开光照圈  秒后夜视自己散",
+        "亮的是眼睛不是方块，地图亮度不变",
+        "风灌不进这层壳，灯芯一直是直的"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-e3d0506205ee"
     },
     {
@@ -35969,12 +37176,16 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/paper",
+      "description": "主手右键：立刻回  点血，用掉一根",
+      "details": [
+        "主手右键：立刻回  点血，用掉一根",
+        "血是满的不浪费；两根之间至少隔  秒",
+        "止得住血，止不住别的"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-a61fde406f25"
     },
     {
@@ -35983,12 +37194,17 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/paper",
+      "description": "握在手里：每  秒报一次异界行商的行情",
+      "details": [
+        "握在手里：每  秒报一次异界行商的行情",
+        "报两件事：下一批限时收购还要等多久，以及你背包里最值钱的一种矿砂此刻的收价",
+        "收价后面的箭头按基准价比：↑ 高于基准、↓ 低于基准、— 差不到 %",
+        "└ 只读，不经手交易，成交仍以行商界面为准"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-1f1001d0da4f"
     },
     {
@@ -35997,12 +37213,17 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/book",
+      "description": "主手右键：报夜事件的排期",
+      "details": [
+        "主手右键：报夜事件的排期",
+        "夜事件只在入夜那一下掷骰，没有更靠前的排期，所以日历报的是「距入夜还有多久、这一晚开奖了没有」",
+        "已开奖就报结果：近期无事 或事件名与等级；未开奖则报池子里有几家在等",
+        "血月按配置概率单独报；两次右键隔  秒"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-19443ecd81d2"
     },
     {
@@ -36011,12 +37232,17 @@
       "kind": "tool",
       "category": "功能性工具",
       "group": "tools",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
+      "icon": "item/bell",
+      "description": "挂第 9 格：周围  格内刷出敌对生物时响一声",
+      "details": [
+        "挂第 9 格：周围  格内刷出敌对生物时响一声",
+        "响完报「有 N 只靠近」，N 是此刻圈内的敌对生物总数",
+        "两次响铃之间至少隔  秒；只叫醒，不给 buff",
+        "它不看是谁刷的，只看有没有东西刷出来"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/tools/i-fc27035ac01f"
     },
     {
@@ -36025,12 +37251,15 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/heavy_weighted_pressure_plate",
+      "description": "天平线三件的坯：金锭压出来的一枚等重砣",
+      "details": [
+        "天平线三件的坯：金锭压出来的一枚等重砣",
+        "中心一枚金锭，四角四枚铁粒"
+      ],
+      "obtain": "配方合成：金锭 + 铁粒×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-3e6d18ea772f"
     },
     {
@@ -36039,12 +37268,15 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/bone",
+      "description": "贪食线三件的坯：骨头上倒着削出四道钩",
+      "details": [
+        "贪食线三件的坯：骨头上倒着削出四道钩",
+        "中心一根骨头，四角四枚金粒"
+      ],
+      "obtain": "配方合成：骨头 + 金粒×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-6bc4e6724d62"
     },
     {
@@ -36053,12 +37285,15 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/string",
+      "description": "影线三件的坯：染黑的丝缎，摊开来不像活物",
+      "details": [
+        "影线三件的坯：染黑的丝缎，摊开来不像活物",
+        "中心一团黑染料，四角四根线"
+      ],
+      "obtain": "配方合成：黑染料 + 线×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-d2946b631afb"
     },
     {
@@ -36067,12 +37302,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/clock",
+      "description": "置于第9格：血量掉到  以下自动借  点血",
+      "details": [
+        "置于第9格：血量掉到  以下自动借  点血",
+        "借来的要还：之后每秒抽  点，抽到还清为止",
+        "抽到只剩  点就抽不动了，欠款挂着等你回血",
+        "两次借贷隔  秒"
+      ],
+      "obtain": "配方合成：等臂砣 + 红石×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-bdf2e33f8875"
     },
     {
@@ -36081,12 +37321,17 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/clock",
+      "description": "置于第9格：血量掉到  以下自动借  点血",
+      "details": [
+        "置于第9格：血量掉到  以下自动借  点血",
+        "之后每秒抽  点，抽到还清为止",
+        "抽血不会把血抽到  点以下，抽不动就先挂账",
+        "两次借贷隔  秒"
+      ],
+      "obtain": "配方合成：借贷天平 + 等臂砣×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-bbbb3f97b481"
     },
     {
@@ -36095,12 +37340,18 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/clock",
+      "description": "置于第9格：血量掉到  以下自动借  点血",
+      "details": [
+        "置于第9格：血量掉到  以下自动借  点血",
+        "之后每秒抽  点，抽到还清为止",
+        "抽血不会把血抽到  点以下，抽不动就先挂账",
+        "└ 还清那一下白送  点血",
+        "两次借贷隔  秒"
+      ],
+      "obtain": "配方合成：高利天平 + 等臂砣×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-6e79696bd8d7"
     },
     {
@@ -36109,12 +37360,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/tripwire_hook",
+      "description": "置于第9格：你击杀的生物，掉落里随机  种按 × 算",
+      "details": [
+        "置于第9格：你击杀的生物，掉落里随机  种按 × 算",
+        "翻倍直接落在原地那一堆里，不另开格子",
+        "两次翻倍隔  秒"
+      ],
+      "obtain": "配方合成：倒刺钩骨 + 骨头×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-157776945bf9"
     },
     {
@@ -36123,12 +37378,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/tripwire_hook",
+      "description": "置于第9格：你击杀的生物，掉落里随机  种按 × 算",
+      "details": [
+        "置于第9格：你击杀的生物，掉落里随机  种按 × 算",
+        "翻倍直接落在原地那一堆里，不另开格子",
+        "两次翻倍隔  秒"
+      ],
+      "obtain": "配方合成：贪食钩 + 倒刺钩骨×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-887b4b9a8ebc"
     },
     {
@@ -36137,12 +37396,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/tripwire_hook",
+      "description": "置于第9格：你击杀的生物，掉落里随机  种按 × 算",
+      "details": [
+        "置于第9格：你击杀的生物，掉落里随机  种按 × 算",
+        "翻倍直接落在原地那一堆里，不另开格子；单种叠到一组上限就停",
+        "两次翻倍隔  秒"
+      ],
+      "obtain": "配方合成：贪食喉 + 倒刺钩骨×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-914df13089cb"
     },
     {
@@ -36151,12 +37414,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/phantom_membrane",
+      "description": "置于第9格：站着不动满  秒叠一层影，最多  层",
+      "details": [
+        "置于第9格：站着不动满  秒叠一层影，最多  层",
+        "每层挡住 % 伤害，最多挡 %",
+        "脚下一挪，层数全散"
+      ],
+      "obtain": "配方合成：影缎 + 线×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-82f76737dc83"
     },
     {
@@ -36165,12 +37432,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/phantom_membrane",
+      "description": "置于第9格：站着不动满  秒叠一层影，最多  层",
+      "details": [
+        "置于第9格：站着不动满  秒叠一层影，最多  层",
+        "每层挡住 % 伤害，最多挡 %",
+        "脚下一挪，层数全散"
+      ],
+      "obtain": "配方合成：三寸影 + 影缎×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-90ce59eecf1e"
     },
     {
@@ -36179,12 +37450,16 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/phantom_membrane",
+      "description": "置于第9格：站着不动满  秒叠一层影，最多  层",
+      "details": [
+        "置于第9格：站着不动满  秒叠一层影，最多  层",
+        "每层挡住 % 伤害，最多挡 %",
+        "└ 脚下一挪只散一层，不用从头站起"
+      ],
+      "obtain": "配方合成：五寸影 + 影缎×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-ee074accdeac"
     },
     {
@@ -36193,12 +37468,21 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/echo_shard",
+      "description": "置于第9格：借贷／贪食／影／配重四系全按第四档算",
+      "details": [
+        "置于第9格：借贷／贪食／影／配重四系全按第四档算",
+        "└ 血量掉到  以下自动借  点，之后每秒抽  点，抽到还清为止",
+        "还清白送  点血 · 两次借贷隔  秒",
+        "└ 击杀的掉落里随机  种按 × 算，两次隔  秒",
+        "└ 站着不动满  秒叠一层影，最多  层，每层挡 %、封顶 %",
+        "被人推、被击退、被水冲都不算挪窝，只有按着移动键走才散一层",
+        "└ 完全不吃击退，辐射只攒 %",
+        "四枚顶端合成即销毁，拆不回来"
+      ],
+      "obtain": "配方合成：无常天平 + 贪食胃 + 一丈影 + 逆磁重锚（四枚各占一臂，中间空着）",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-f5187c05c3a5"
     },
     {
@@ -36207,12 +37491,15 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/iron_nugget",
+      "description": "三签的坯：铁锭上磨下来的一枚楔",
+      "details": [
+        "三签的坯：铁锭上磨下来的一枚楔",
+        "中心一枚铁锭，四角四枚铁粒"
+      ],
+      "obtain": "配方合成：铁锭 + 铁粒×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-4072f5889e3e"
     },
     {
@@ -36221,12 +37508,12 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
+      "icon": "item/flint",
       "description": "",
       "details": [],
-      "obtain": "",
+      "obtain": "配方合成：开刃铁楔 + 燧石×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-8b48a6c8438c"
     },
     {
@@ -36235,12 +37522,12 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
+      "icon": "item/flint",
       "description": "",
       "details": [],
-      "obtain": "",
+      "obtain": "配方合成：开刃签 + 开刃铁楔×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-5a9cf4f287bc"
     },
     {
@@ -36249,12 +37536,12 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
+      "icon": "item/flint",
       "description": "",
       "details": [],
-      "obtain": "",
+      "obtain": "配方合成：见血签 + 开刃铁楔×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-0f399179c70e"
     },
     {
@@ -36263,12 +37550,15 @@
       "kind": "material",
       "category": "高级材料",
       "group": "advanced",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
+      "icon": "item/glass_bottle",
+      "description": "三件瓶子的坯：一只没灌东西的空瓶",
+      "details": [
+        "三件瓶子的坯：一只没灌东西的空瓶",
+        "中心一只玻璃瓶，四角四个雪球"
+      ],
+      "obtain": "配方合成：玻璃瓶 + 雪球×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/materials/advanced/i-bda2db1b76d3"
     },
     {
@@ -36277,12 +37567,12 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
+      "icon": "item/glass_bottle",
       "description": "",
       "details": [],
-      "obtain": "",
+      "obtain": "配方合成：空四时瓶 + 红石×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-66759a76d5f6"
     },
     {
@@ -36291,12 +37581,12 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
+      "icon": "item/glass_bottle",
       "description": "",
       "details": [],
-      "obtain": "",
+      "obtain": "配方合成：应时瓶 + 空四时瓶×4",
       "enchantments": [],
-      "glint": false,
+      "glint": true,
       "href": "/linsmagic/atlas/items/accessories/i-07b0d0081173"
     },
     {
@@ -36305,13 +37595,138 @@
       "kind": "tool",
       "category": "饰品",
       "group": "accessories",
-      "icon": "item/knowledge_book",
+      "icon": "item/glass_bottle",
       "description": "",
       "details": [],
+      "obtain": "配方合成：四时瓶 + 空四时瓶×4",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/items/accessories/i-75455dd99838"
+    },
+    {
+      "id": "透明物品展示框编辑器",
+      "name": "透明物品展示框编辑器",
+      "kind": "tool",
+      "category": "功能性工具",
+      "group": "tools",
+      "icon": "item/brush",
+      "description": "主手拿着，右键方块的某个面：在那一面贴一只透明物品展示框",
+      "details": [
+        "主手拿着，右键方块的某个面：在那一面贴一只透明物品展示框",
+        "└ 扣  块木板，什么木板都行，凑够就算",
+        "左键那只展示框：拆掉，退回  块木板（按摆进去时用得最多的那种）",
+        "框里照原版那样右键放东西，只是看不见框、只看得见东西",
+        "拿在手里时， 格内的透明展示框头顶浮出「这有个物品展示框」",
+        "└ 每  秒认一次，编辑器收起来字就没；框一直在",
+        "拆框只认这把编辑器：别的打法、别的工具都打不掉它"
+      ],
+      "obtain": "配方合成：木板×4 + 玻璃板",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/items/tools/i-7448afc68262"
+    },
+    {
+      "id": "装饰物兑换券",
+      "name": "装饰物兑换券",
+      "kind": "tool",
+      "category": "功能性工具",
+      "group": "tools",
+      "icon": "item/paper",
+      "description": "在「建筑美学 · 精制装饰物品」里取头颅时，每取 1 枚扣 1 张",
+      "details": [
+        "在「建筑美学 · 精制装饰物品」里取头颅时，每取 1 枚扣 1 张",
+        "└ 右键取 64 枚时按背包里的张数扣；凑不够就只取够的那几枚",
+        "异界行商处出售：0.5 金币一张"
+      ],
       "obtain": "",
       "enchantments": [],
-      "glint": false,
-      "href": "/linsmagic/atlas/items/accessories/i-75455dd99838"
+      "glint": true,
+      "href": "/linsmagic/atlas/items/tools/i-57ae093f382d"
+    },
+    {
+      "id": "魔法光源调制器",
+      "name": "魔法光源调制器",
+      "kind": "tool",
+      "category": "功能性工具",
+      "group": "tools",
+      "icon": "item/glow_ink_sac",
+      "description": "",
+      "details": [],
+      "obtain": "配方合成：发光菌丝纤维×2 + 发光浆果精油×2 + 发光地衣孢子×2 + 木棍 + 魂石 + 铁块",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/items/tools/i-d2f71c9d8370"
+    },
+    {
+      "id": "盔甲架编辑器",
+      "name": "盔甲架编辑器",
+      "kind": "tool",
+      "category": "功能性工具",
+      "group": "tools",
+      "icon": "item/shears",
+      "description": "主手拿着，右键任意一只盔甲架：打开这一只的编辑面板（对哪只改哪只，不用选）",
+      "details": [
+        "主手拿着，右键任意一只盔甲架：打开这一只的编辑面板（对哪只改哪只，不用选）",
+        "四个开关：有胳膊 / 无重力 / 倒立 / 小盔甲架，点一下就翻、当场变",
+        "六个肢体各开一页：头、身体、左臂、右臂、左腿、右腿，一页 X / Y / Z 三轴",
+        "└ 每一下  度，角度收在 -~ 之间",
+        "└ 只动点的那一轴，另两轴不跟着跑",
+        "倒立这一档：原版 26.2 已经把 Inverted 标志位删了，剩下能做的是把身体绕 Z 拧 180 度（连头带臂翻过去，腿不跟）",
+        "开关和姿态都写进盔甲架本身：区块卸载、重启、别人碰都不丢",
+        "改起来不吃材料、不限次数；领地里的盔甲架照旧要领地权限"
+      ],
+      "obtain": "配方合成：剪刀 + 铁链×4",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/items/tools/i-a864a5a11dc6"
+    },
+    {
+      "id": "展示实体投影器",
+      "name": "展示实体投影器",
+      "kind": "tool",
+      "category": "功能性工具",
+      "group": "tools",
+      "icon": "item/amethyst_shard",
+      "description": "主手拿着，右键方块的某个面：在那一格开「放什么」面板",
+      "details": [
+        "主手拿着，右键方块的某个面：在那一格开「放什么」面板",
+        "把任意物品 / 方块塞进前两排  格，点确定：那一格立起一只物品展示实体",
+        "└ 塞几件就投几只，出厂全叠在同一格中心，靠位移挪开；整叠塞进去就投整叠",
+        "└ 东西是从你包里拿走的；没点确定就关掉面板，塞进去的原样退回",
+        "右键那只投影开调整面板：它站的那格有一团  格见方的隐形碰撞盒，点得到",
+        "└ 位移 / 旋转 / 缩放各一页，一页 X / Y / Z 三轴，只动点的那一轴",
+        "└ 位移  格，最远离原格  格",
+        "└ 旋转  度，收在 -~ 度",
+        "└ 缩放  倍，夹在 ~ 倍之间",
+        "出厂按原版 FIXED 姿态：方块物品只有半格大、坐在那一格底面，撑满一格就把三轴各拧到 2 倍",
+        "调整面板里点「收掉这只投影」：实体和碰撞盒一起没，里面那件东西掉回你身上",
+        "投影连碰撞盒都存盘；改起来不吃材料、不限次数，领地里的格子照旧要权限",
+        "只认这把投影器放下、打了标记的展示实体：别人摆的实体点不开这套面板"
+      ],
+      "obtain": "配方合成：玻璃×4 + 紫水晶碎片",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/items/tools/i-4beb9420f923"
+    },
+    {
+      "id": "盔甲纹饰清除剂",
+      "name": "盔甲纹饰清除剂",
+      "kind": "tool",
+      "category": "功能性工具",
+      "group": "tools",
+      "icon": "item/paper",
+      "description": "主手或副手拿着，右键：把身上穿着的盔甲上的纹饰全部洗掉",
+      "details": [
+        "主手或副手拿着，右键：把身上穿着的盔甲上的纹饰全部洗掉",
+        "└ 只认穿在身上的四格，背包里的和手上拿的不动",
+        "└ 一次洗掉所有带纹饰的甲，扣 1 个",
+        "└ 身上一件带纹饰的甲都没有时，这一剂不消耗",
+        "异界行商处购买：10 金币一个"
+      ],
+      "obtain": "",
+      "enchantments": [],
+      "glint": true,
+      "href": "/linsmagic/atlas/items/tools/i-3c3e374df490"
     },
     {
       "id": "minecraft:bookshelf",
@@ -37125,7 +38540,7 @@
       "kind": "tool",
       "category": "待分类",
       "group": "other",
-      "icon": "item/knowledge_book",
+      "icon": "item/broken_elytra",
       "description": "",
       "details": [],
       "obtain": "",
@@ -39031,19 +40446,6 @@
       "href": "/linsmagic/atlas/vanilla/glow_ink_sac"
     },
     {
-      "id": "minecraft:sand",
-      "name": "沙子",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/sand",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/sand"
-    },
-    {
       "id": "minecraft:white_concrete",
       "name": "白色混凝土",
       "kind": "vanilla",
@@ -39081,6 +40483,19 @@
       "obtain": "",
       "glint": false,
       "href": "/linsmagic/atlas/vanilla/blue_dye"
+    },
+    {
+      "id": "minecraft:budding_amethyst",
+      "name": "紫水晶母岩",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/budding_amethyst",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/budding_amethyst"
     },
     {
       "id": "minecraft:stone_bricks",
@@ -39369,6 +40784,71 @@
       "href": "/linsmagic/atlas/vanilla/black_dye"
     },
     {
+      "id": "minecraft:water_bucket",
+      "name": "水桶",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/water_bucket",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/water_bucket"
+    },
+    {
+      "id": "minecraft:cracked_stone_bricks",
+      "name": "裂纹石砖",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/cracked_stone_bricks",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/cracked_stone_bricks"
+    },
+    {
+      "id": "minecraft:ancient_debris",
+      "name": "远古残骸",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/ancient_debris",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/ancient_debris"
+    },
+    {
+      "id": "minecraft:grass_block",
+      "name": "草方块",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/grass_block",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/grass_block"
+    },
+    {
+      "id": "minecraft:bedrock",
+      "name": "基岩",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/bedrock",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/bedrock"
+    },
+    {
       "id": "minecraft:melon_seeds",
       "name": "西瓜种子",
       "kind": "vanilla",
@@ -39642,56 +41122,251 @@
       "href": "/linsmagic/atlas/vanilla/iron_hoe"
     },
     {
-      "id": "minecraft:chiseled_stone_bricks",
-      "name": "雕纹石砖",
+      "id": "minecraft:brick",
+      "name": "红砖",
       "kind": "vanilla",
       "category": "原版材料",
       "group": "vanilla",
-      "icon": "item/chiseled_stone_bricks",
+      "icon": "item/brick",
       "description": "Minecraft 原版材料。",
       "details": [],
       "obtain": "",
       "glint": false,
-      "href": "/linsmagic/atlas/vanilla/chiseled_stone_bricks"
+      "href": "/linsmagic/atlas/vanilla/brick"
     },
     {
-      "id": "minecraft:water_bucket",
-      "name": "水桶",
+      "id": "minecraft:nether_brick",
+      "name": "下界砖",
       "kind": "vanilla",
       "category": "原版材料",
       "group": "vanilla",
-      "icon": "item/water_bucket",
+      "icon": "item/nether_brick",
       "description": "Minecraft 原版材料。",
       "details": [],
       "obtain": "",
       "glint": false,
-      "href": "/linsmagic/atlas/vanilla/water_bucket"
+      "href": "/linsmagic/atlas/vanilla/nether_brick"
     },
     {
-      "id": "肥力腐殖",
-      "name": "肥力腐殖",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "other",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-c6baaa400f73"
-    },
-    {
-      "id": "minecraft:moss_carpet",
-      "name": "覆地苔藓",
+      "id": "minecraft:sugar",
+      "name": "糖",
       "kind": "vanilla",
       "category": "原版材料",
       "group": "vanilla",
-      "icon": "item/moss_carpet",
+      "icon": "item/sugar",
       "description": "Minecraft 原版材料。",
       "details": [],
       "obtain": "",
       "glint": false,
-      "href": "/linsmagic/atlas/vanilla/moss_carpet"
+      "href": "/linsmagic/atlas/vanilla/sugar"
+    },
+    {
+      "id": "minecraft:egg",
+      "name": "鸡蛋",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/egg",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/egg"
+    },
+    {
+      "id": "minecraft:totem_of_undying",
+      "name": "不死图腾",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/totem_of_undying",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/totem_of_undying"
+    },
+    {
+      "id": "minecraft:ender_chest",
+      "name": "末影箱",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/ender_chest",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/ender_chest"
+    },
+    {
+      "id": "minecraft:sugar_cane",
+      "name": "甘蔗",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/sugar_cane",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/sugar_cane"
+    },
+    {
+      "id": "minecraft:sculk",
+      "name": "幽匿块",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/sculk",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/sculk"
+    },
+    {
+      "id": "minecraft:sand",
+      "name": "沙子",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/sand",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/sand"
+    },
+    {
+      "id": "minecraft:mangrove_propagule",
+      "name": "红树胎生苗",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/mangrove_propagule",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/mangrove_propagule"
+    },
+    {
+      "id": "minecraft:pink_dye",
+      "name": "粉红色染料",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/pink_dye",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/pink_dye"
+    },
+    {
+      "id": "minecraft:spore_blossom",
+      "name": "孢子花",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/spore_blossom",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/spore_blossom"
+    },
+    {
+      "id": "minecraft:wheat_seeds",
+      "name": "小麦种子",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/wheat_seeds",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/wheat_seeds"
+    },
+    {
+      "id": "minecraft:cyan_dye",
+      "name": "青色染料",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/cyan_dye",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/cyan_dye"
+    },
+    {
+      "id": "minecraft:dripstone_block",
+      "name": "滴水石块",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/dripstone_block",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/dripstone_block"
+    },
+    {
+      "id": "minecraft:shroomlight",
+      "name": "菌光体",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/shroomlight",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/shroomlight"
+    },
+    {
+      "id": "minecraft:mushroom_stem",
+      "name": "蘑菇柄",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/mushroom_stem",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/mushroom_stem"
+    },
+    {
+      "id": "minecraft:red_dye",
+      "name": "红色染料",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/red_dye",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/red_dye"
+    },
+    {
+      "id": "minecraft:respawn_anchor",
+      "name": "重生锚",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/respawn_anchor",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/respawn_anchor"
     },
     {
       "id": "minecraft:enchanted_golden_apple",
@@ -39707,6 +41382,45 @@
       "href": "/linsmagic/atlas/vanilla/enchanted_golden_apple"
     },
     {
+      "id": "minecraft:dragon_egg",
+      "name": "龙蛋",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/dragon_egg",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/dragon_egg"
+    },
+    {
+      "id": "minecraft:chiseled_stone_bricks",
+      "name": "雕纹石砖",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/chiseled_stone_bricks",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/chiseled_stone_bricks"
+    },
+    {
+      "id": "minecraft:moss_carpet",
+      "name": "覆地苔藓",
+      "kind": "vanilla",
+      "category": "原版材料",
+      "group": "vanilla",
+      "icon": "item/moss_carpet",
+      "description": "Minecraft 原版材料。",
+      "details": [],
+      "obtain": "",
+      "glint": false,
+      "href": "/linsmagic/atlas/vanilla/moss_carpet"
+    },
+    {
       "id": "minecraft:apple",
       "name": "苹果",
       "kind": "vanilla",
@@ -39718,19 +41432,6 @@
       "obtain": "",
       "glint": false,
       "href": "/linsmagic/atlas/vanilla/apple"
-    },
-    {
-      "id": "minecraft:ancient_debris",
-      "name": "远古残骸",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/ancient_debris",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/ancient_debris"
     },
     {
       "id": "minecraft:white_concrete_powder",
@@ -40123,19 +41824,6 @@
       "href": "/linsmagic/atlas/vanilla/black_concrete_powder"
     },
     {
-      "id": "minecraft:wheat_seeds",
-      "name": "小麦种子",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/wheat_seeds",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/wheat_seeds"
-    },
-    {
       "id": "minecraft:beetroot",
       "name": "甜菜根",
       "kind": "vanilla",
@@ -40487,19 +42175,6 @@
       "href": "/linsmagic/atlas/vanilla/flowering_azalea_leaves"
     },
     {
-      "id": "minecraft:dripstone_block",
-      "name": "滴水石块",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/dripstone_block",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/dripstone_block"
-    },
-    {
       "id": "mining-rig",
       "name": "工业矿机组",
       "kind": "machine",
@@ -40555,169 +42230,6 @@
       "glint": false,
       "href": "/linsmagic/atlas/machines/infuser-array",
       "structureId": "diagram_50312d0bcb44"
-    },
-    {
-      "id": "minecraft:coal_block",
-      "name": "煤炭块",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/coal_block",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/coal_block"
-    },
-    {
-      "id": "煤矿机核心",
-      "name": "煤矿机核心",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "structures",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-1f6ce57add42",
-      "structureId": "diagram_1f6ce57add42"
-    },
-    {
-      "id": "minecraft:raw_copper_block",
-      "name": "粗铜块",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/raw_copper_block",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/raw_copper_block"
-    },
-    {
-      "id": "铜矿机核心",
-      "name": "铜矿机核心",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "structures",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-4d509a3051fe",
-      "structureId": "diagram_4d509a3051fe"
-    },
-    {
-      "id": "minecraft:raw_iron_block",
-      "name": "粗铁块",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/raw_iron_block",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/raw_iron_block"
-    },
-    {
-      "id": "铁矿机核心",
-      "name": "铁矿机核心",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "structures",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-a4cf474682d6",
-      "structureId": "diagram_a4cf474682d6"
-    },
-    {
-      "id": "minecraft:raw_gold_block",
-      "name": "粗金块",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/raw_gold_block",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/raw_gold_block"
-    },
-    {
-      "id": "金矿机核心",
-      "name": "金矿机核心",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "structures",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-52115a4515ca",
-      "structureId": "diagram_52115a4515ca"
-    },
-    {
-      "id": "青金石矿机核心",
-      "name": "青金石矿机核心",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "structures",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-6a0ada09cc28",
-      "structureId": "diagram_6a0ada09cc28"
-    },
-    {
-      "id": "minecraft:emerald_block",
-      "name": "绿宝石块",
-      "kind": "vanilla",
-      "category": "原版材料",
-      "group": "vanilla",
-      "icon": "item/emerald_block",
-      "description": "Minecraft 原版材料。",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/vanilla/emerald_block"
-    },
-    {
-      "id": "绿宝石矿机核心",
-      "name": "绿宝石矿机核心",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "structures",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-547b371e4e20",
-      "structureId": "diagram_547b371e4e20"
-    },
-    {
-      "id": "钻石矿机核心",
-      "name": "钻石矿机核心",
-      "kind": "tool",
-      "category": "待分类",
-      "group": "structures",
-      "icon": "item/knowledge_book",
-      "description": "",
-      "details": [],
-      "obtain": "",
-      "glint": false,
-      "href": "/linsmagic/atlas/items/other/i-8a188d4ce01f",
-      "structureId": "diagram_8a188d4ce01f"
     },
     {
       "id": "minecraft:daylight_detector",
@@ -42813,11 +44325,11 @@
       "group": "传奇",
       "icon": "item/enchanted_book",
       "glint": true,
-      "description": "耐久损耗概率降低60%",
+      "description": "耐久损耗概率降低90%",
       "levelEffects": [
-        "耐久损耗概率降低60%",
-        "耐久损耗概率降低70%",
-        "耐久损耗概率降低80%"
+        "耐久损耗概率降低90%",
+        "耐久损耗概率降低95%",
+        "耐久损耗概率降低99.9%"
       ],
       "details": [
         "最高等级：3",
@@ -45622,9 +47134,9 @@
       "group": "传奇",
       "icon": "item/enchanted_book",
       "glint": true,
-      "description": "命中时按60%/30%/10%额外造成8/12/16点真实伤害",
+      "description": "命中时按60%/30%/10%额外造成2/3/4点真实伤害",
       "levelEffects": [
-        "命中时按60%/30%/10%额外造成8/12/16点真实伤害"
+        "命中时按60%/30%/10%额外造成2/3/4点真实伤害"
       ],
       "details": [
         "最高等级：1",
@@ -46536,7 +48048,9 @@
         "灼魂烈焰核",
         "血烬余温",
         "残魂断刃",
-        "怨灵结晶"
+        "怨灵结晶",
+        "血潮·溺祭",
+        "血月收割镰·吞月"
       ]
     },
     {
@@ -86644,39 +88158,6 @@
       "guiOnly": false
     },
     {
-      "id": "ae_certus_seed",
-      "name": "赛特斯石英种子合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "赛特斯石英种子",
-          "count": 2
-        }
-      ],
-      "slots": [
-        null,
-        null,
-        null,
-        {
-          "id": "赛特斯石英粉",
-          "count": 1
-        },
-        {
-          "id": "minecraft:sand",
-          "count": 1
-        },
-        null,
-        null,
-        null,
-        null
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_certus_seed",
-      "note": "",
-      "guiOnly": false
-    },
-    {
       "id": "ae_silicon",
       "name": "硅合成",
       "station": "工作台",
@@ -86707,61 +88188,55 @@
       "guiOnly": false
     },
     {
-      "id": "ae_fluix_crystal",
-      "name": "福鲁伊克斯水晶合成",
+      "id": "ae_phase_conductor",
+      "name": "三相水晶导体合成",
       "station": "工作台",
-      "type": "crafting",
+      "type": "shapeless",
       "result": [
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         }
       ],
-      "slots": [
-        null,
-        null,
-        null,
+      "slots": [],
+      "inputs": [
         {
-          "id": "充能赛特斯石英",
+          "id": "具能陨晶体",
           "count": 1
         },
         {
-          "id": "minecraft:redstone",
+          "id": "minecraft:netherite_block",
           "count": 1
         },
         {
-          "id": "minecraft:quartz",
+          "id": "minecraft:purpur_block",
           "count": 1
         },
-        null,
-        null,
-        null
+        {
+          "id": "空灵结晶",
+          "count": 1
+        }
       ],
       "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_fluix_crystal",
+      "href": "/linsmagic/atlas/recipes/ae/ae_phase_conductor",
       "note": "",
       "guiOnly": false
     },
     {
-      "id": "ae_fluix_pearl",
-      "name": "福鲁伊克斯珍珠合成",
+      "id": "ae_phase_pearl",
+      "name": "三相导体珍珠合成",
       "station": "工作台",
-      "type": "crafting",
+      "type": "shapeless",
       "result": [
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         }
       ],
-      "slots": [
-        null,
+      "slots": [],
+      "inputs": [
         {
-          "id": "福鲁伊克斯粉",
-          "count": 1
-        },
-        null,
-        {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         },
         {
@@ -86769,18 +88244,16 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯粉",
+          "id": "黯魂晶",
           "count": 1
         },
-        null,
         {
-          "id": "福鲁伊克斯粉",
+          "id": "minecraft:netherite_block",
           "count": 1
-        },
-        null
+        }
       ],
       "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_fluix_pearl",
+      "href": "/linsmagic/atlas/recipes/ae/ae_phase_pearl",
       "note": "",
       "guiOnly": false
     },
@@ -86801,7 +88274,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "陨石碎粉",
           "count": 1
         },
         {
@@ -86809,7 +88282,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "陨石碎粉",
           "count": 1
         },
         {
@@ -86817,7 +88290,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "陨石碎粉",
           "count": 1
         },
         {
@@ -86825,7 +88298,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "陨石碎粉",
           "count": 1
         },
         {
@@ -86854,11 +88327,11 @@
         null,
         null,
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         },
         {
@@ -86894,7 +88367,7 @@
         null,
         null,
         {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         },
         null,
@@ -86912,12 +88385,12 @@
     },
     {
       "id": "ae_cable",
-      "name": "ME线缆合成",
+      "name": "线缆合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 4
         }
       ],
@@ -86926,7 +88399,7 @@
         null,
         null,
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -86934,7 +88407,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         null,
@@ -86948,12 +88421,12 @@
     },
     {
       "id": "ae_cell_housing",
-      "name": "ME存储外壳合成",
+      "name": "存储外壳合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         }
       ],
@@ -87014,7 +88487,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -87022,7 +88495,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -87030,7 +88503,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -87038,7 +88511,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -87242,7 +88715,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -87269,19 +88742,19 @@
     },
     {
       "id": "ae_cell_1k",
-      "name": "ME存储元件-1k合成",
+      "name": "存储元件-1k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储元件-1k",
+          "id": "存储元件-1k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         null,
@@ -87302,19 +88775,19 @@
     },
     {
       "id": "ae_cell_4k",
-      "name": "ME存储元件-4k合成",
+      "name": "存储元件-4k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储元件-4k",
+          "id": "存储元件-4k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         null,
@@ -87335,19 +88808,19 @@
     },
     {
       "id": "ae_cell_16k",
-      "name": "ME存储元件-16k合成",
+      "name": "存储元件-16k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储元件-16k",
+          "id": "存储元件-16k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         null,
@@ -87368,19 +88841,19 @@
     },
     {
       "id": "ae_cell_64k",
-      "name": "ME存储元件-64k合成",
+      "name": "存储元件-64k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储元件-64k",
+          "id": "存储元件-64k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         null,
@@ -87401,19 +88874,19 @@
     },
     {
       "id": "ae_cell_256k",
-      "name": "ME存储元件-256k合成",
+      "name": "存储元件-256k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储元件-256k",
+          "id": "存储元件-256k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         null,
@@ -87461,7 +88934,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -87515,7 +88988,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -87542,19 +89015,19 @@
     },
     {
       "id": "ae_cell_1m",
-      "name": "ME存储元件-1M合成",
+      "name": "存储元件-1M合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储元件-1M",
+          "id": "存储元件-1M",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         null,
@@ -87575,19 +89048,19 @@
     },
     {
       "id": "ae_cell_4m",
-      "name": "ME存储元件-4M合成",
+      "name": "存储元件-4M合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储元件-4M",
+          "id": "存储元件-4M",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         null,
@@ -87608,18 +89081,18 @@
     },
     {
       "id": "ae_wide_cell_housing",
-      "name": "ME多类存储外壳合成",
+      "name": "多类存储外壳合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME多类存储外壳",
+          "id": "多类存储外壳",
           "count": 1
         }
       ],
       "slots": [
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -87627,7 +89100,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -87635,7 +89108,7 @@
           "count": 1
         },
         {
-          "id": "ME存储外壳",
+          "id": "存储外壳",
           "count": 1
         },
         {
@@ -87643,7 +89116,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -87651,7 +89124,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         }
       ],
@@ -87662,19 +89135,19 @@
     },
     {
       "id": "ae_wide_cell_1k",
-      "name": "ME多类存储元件-1k合成",
+      "name": "多类存储元件-1k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME多类存储元件-1k",
+          "id": "多类存储元件-1k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME多类存储外壳",
+          "id": "多类存储外壳",
           "count": 1
         },
         null,
@@ -87695,19 +89168,19 @@
     },
     {
       "id": "ae_wide_cell_4k",
-      "name": "ME多类存储元件-4k合成",
+      "name": "多类存储元件-4k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME多类存储元件-4k",
+          "id": "多类存储元件-4k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME多类存储外壳",
+          "id": "多类存储外壳",
           "count": 1
         },
         null,
@@ -87728,19 +89201,19 @@
     },
     {
       "id": "ae_wide_cell_16k",
-      "name": "ME多类存储元件-16k合成",
+      "name": "多类存储元件-16k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME多类存储元件-16k",
+          "id": "多类存储元件-16k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME多类存储外壳",
+          "id": "多类存储外壳",
           "count": 1
         },
         null,
@@ -87761,19 +89234,19 @@
     },
     {
       "id": "ae_wide_cell_64k",
-      "name": "ME多类存储元件-64k合成",
+      "name": "多类存储元件-64k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME多类存储元件-64k",
+          "id": "多类存储元件-64k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME多类存储外壳",
+          "id": "多类存储外壳",
           "count": 1
         },
         null,
@@ -87794,19 +89267,19 @@
     },
     {
       "id": "ae_wide_cell_256k",
-      "name": "ME多类存储元件-256k合成",
+      "name": "多类存储元件-256k合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME多类存储元件-256k",
+          "id": "多类存储元件-256k",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME多类存储外壳",
+          "id": "多类存储外壳",
           "count": 1
         },
         null,
@@ -87854,7 +89327,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -87977,7 +89450,7 @@
         null,
         null,
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         null,
@@ -88010,7 +89483,7 @@
         null,
         null,
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         null,
@@ -88091,12 +89564,12 @@
     },
     {
       "id": "ae_wrench",
-      "name": "ME扳手合成",
+      "name": "扳手合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME扳手",
+          "id": "扳手",
           "count": 1
         }
       ],
@@ -88112,7 +89585,7 @@
         },
         null,
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         null,
@@ -88202,25 +89675,25 @@
     },
     {
       "id": "ae_wireless_terminal",
-      "name": "ME无线终端合成",
+      "name": "无线终端合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME无线终端",
+          "id": "无线终端",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         null,
         null,
         {
-          "id": "ME终端",
+          "id": "终端",
           "count": 1
         },
         null,
@@ -88238,12 +89711,12 @@
     },
     {
       "id": "ae_controller",
-      "name": "ME控制器合成",
+      "name": "控制器合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME控制器",
+          "id": "控制器",
           "count": 1
         }
       ],
@@ -88253,7 +89726,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -88261,7 +89734,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -88269,7 +89742,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -88277,7 +89750,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -88292,12 +89765,12 @@
     },
     {
       "id": "ae_energy_acceptor",
-      "name": "ME能源接收器合成",
+      "name": "能源接收器合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME能源接收器",
+          "id": "能源接收器",
           "count": 1
         }
       ],
@@ -88319,7 +89792,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -88346,12 +89819,12 @@
     },
     {
       "id": "ae_wind_turbine",
-      "name": "ME风车合成",
+      "name": "风车合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME风车",
+          "id": "风车",
           "count": 1
         }
       ],
@@ -88400,12 +89873,12 @@
     },
     {
       "id": "ae_cutter_generator",
-      "name": "ME切削发电机合成",
+      "name": "切削发电机合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME切削发电机",
+          "id": "切削发电机",
           "count": 1
         }
       ],
@@ -88427,7 +89900,7 @@
           "count": 1
         },
         {
-          "id": "ME能源接收器",
+          "id": "能源接收器",
           "count": 1
         },
         {
@@ -88562,12 +90035,12 @@
     },
     {
       "id": "ae_steam_engine",
-      "name": "ME蒸汽机合成",
+      "name": "蒸汽机合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME蒸汽机",
+          "id": "蒸汽机",
           "count": 1
         }
       ],
@@ -88658,12 +90131,12 @@
     },
     {
       "id": "ae_water_wheel",
-      "name": "ME水车合成",
+      "name": "水车合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME水车",
+          "id": "水车",
           "count": 1
         }
       ],
@@ -88712,12 +90185,12 @@
     },
     {
       "id": "ae_hand_crank",
-      "name": "ME手摇曲柄合成",
+      "name": "手摇曲柄合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME手摇曲柄",
+          "id": "手摇曲柄",
           "count": 1
         }
       ],
@@ -88757,12 +90230,12 @@
     },
     {
       "id": "ae_mana_reactor",
-      "name": "ME魔素反应堆合成",
+      "name": "魔素反应堆合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME魔素反应堆",
+          "id": "魔素反应堆",
           "count": 1
         }
       ],
@@ -88772,7 +90245,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -88784,7 +90257,7 @@
           "count": 1
         },
         {
-          "id": "ME能源接收器",
+          "id": "能源接收器",
           "count": 1
         },
         {
@@ -88796,7 +90269,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         {
@@ -88810,67 +90283,13 @@
       "guiOnly": false
     },
     {
-      "id": "ae_reactor_chamber",
-      "name": "反应堆仓室合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "反应堆仓室",
-          "count": 1
-        }
-      ],
-      "slots": [
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:iron_block",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:iron_block",
-          "count": 1
-        },
-        {
-          "id": "minecraft:obsidian",
-          "count": 1
-        },
-        {
-          "id": "minecraft:iron_block",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:iron_block",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        }
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_reactor_chamber",
-      "note": "",
-      "guiOnly": false
-    },
-    {
       "id": "ae_nuclear_reactor",
-      "name": "ME核反应堆合成",
+      "name": "核反应堆合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME核反应堆",
+          "id": "核反应堆",
           "count": 1
         }
       ],
@@ -88888,15 +90307,15 @@
           "count": 1
         },
         {
-          "id": "反应堆仓室",
+          "id": "浓缩铀",
           "count": 1
         },
         {
-          "id": "ME能源接收器",
+          "id": "能源接收器",
           "count": 1
         },
         {
-          "id": "反应堆仓室",
+          "id": "浓缩铀",
           "count": 1
         },
         {
@@ -88914,363 +90333,6 @@
       ],
       "group": "ae",
       "href": "/linsmagic/atlas/recipes/ae/ae_nuclear_reactor",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_rod_single",
-      "name": "铀燃料棒合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "铀燃料棒",
-          "count": 1
-        }
-      ],
-      "slots": [
-        null,
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        null,
-        null,
-        {
-          "id": "浓缩铀",
-          "count": 1
-        },
-        null,
-        null,
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        null
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_rod_single",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_rod_dual",
-      "name": "双联铀燃料棒合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "双联铀燃料棒",
-          "count": 1
-        }
-      ],
-      "slots": [
-        null,
-        null,
-        null,
-        {
-          "id": "铀燃料棒",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "铀燃料棒",
-          "count": 1
-        },
-        null,
-        null,
-        null
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_rod_dual",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_rod_quad",
-      "name": "四联铀燃料棒合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "四联铀燃料棒",
-          "count": 1
-        }
-      ],
-      "slots": [
-        null,
-        {
-          "id": "双联铀燃料棒",
-          "count": 1
-        },
-        null,
-        null,
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        null,
-        null,
-        {
-          "id": "双联铀燃料棒",
-          "count": 1
-        },
-        null
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_rod_quad",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_heat_vent",
-      "name": "散热片合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "散热片",
-          "count": 1
-        }
-      ],
-      "slots": [
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:iron_bars",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:iron_bars",
-          "count": 1
-        },
-        null,
-        {
-          "id": "minecraft:iron_bars",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:iron_bars",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        }
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_heat_vent",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_reactor_vent",
-      "name": "反应堆散热片合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "反应堆散热片",
-          "count": 1
-        }
-      ],
-      "slots": [
-        null,
-        null,
-        null,
-        {
-          "id": "minecraft:copper_block",
-          "count": 1
-        },
-        {
-          "id": "散热片",
-          "count": 1
-        },
-        {
-          "id": "minecraft:copper_block",
-          "count": 1
-        },
-        null,
-        null,
-        null
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_reactor_vent",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_heat_exchanger",
-      "name": "热交换器合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "热交换器",
-          "count": 1
-        }
-      ],
-      "slots": [
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:gold_ingot",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:copper_ingot",
-          "count": 1
-        },
-        {
-          "id": "运算处理器",
-          "count": 1
-        },
-        {
-          "id": "minecraft:copper_ingot",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:gold_ingot",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        }
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_heat_exchanger",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_coolant_cell",
-      "name": "冷却单元合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "冷却单元",
-          "count": 1
-        }
-      ],
-      "slots": [
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:packed_ice",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:packed_ice",
-          "count": 1
-        },
-        {
-          "id": "minecraft:blue_ice",
-          "count": 1
-        },
-        {
-          "id": "minecraft:packed_ice",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        },
-        {
-          "id": "minecraft:packed_ice",
-          "count": 1
-        },
-        {
-          "id": "铁皮",
-          "count": 1
-        }
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_coolant_cell",
-      "note": "",
-      "guiOnly": false
-    },
-    {
-      "id": "ae_reflector",
-      "name": "中子反射板合成",
-      "station": "工作台",
-      "type": "crafting",
-      "result": [
-        {
-          "id": "中子反射板",
-          "count": 1
-        }
-      ],
-      "slots": [
-        {
-          "id": "minecraft:copper_ingot",
-          "count": 1
-        },
-        {
-          "id": "福鲁伊克斯粉",
-          "count": 1
-        },
-        {
-          "id": "minecraft:copper_ingot",
-          "count": 1
-        },
-        {
-          "id": "福鲁伊克斯粉",
-          "count": 1
-        },
-        {
-          "id": "minecraft:diamond",
-          "count": 1
-        },
-        {
-          "id": "福鲁伊克斯粉",
-          "count": 1
-        },
-        {
-          "id": "minecraft:copper_ingot",
-          "count": 1
-        },
-        {
-          "id": "福鲁伊克斯粉",
-          "count": 1
-        },
-        {
-          "id": "minecraft:copper_ingot",
-          "count": 1
-        }
-      ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_reflector",
       "note": "",
       "guiOnly": false
     },
@@ -89563,19 +90625,19 @@
       ],
       "slots": [
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         },
         {
@@ -89583,19 +90645,19 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         }
       ],
@@ -89621,7 +90683,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -89629,7 +90691,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -89637,7 +90699,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -89645,7 +90707,7 @@
           "count": 1
         },
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         },
         {
@@ -89660,12 +90722,12 @@
     },
     {
       "id": "ae_drive",
-      "name": "ME驱动器合成",
+      "name": "驱动器合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME驱动器",
+          "id": "驱动器",
           "count": 1
         }
       ],
@@ -89683,12 +90745,12 @@
           "count": 1
         },
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         null,
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         {
@@ -89711,12 +90773,12 @@
     },
     {
       "id": "ae_chest",
-      "name": "ME箱子合成",
+      "name": "箱子合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME箱子",
+          "id": "minecraft:chest",
           "count": 1
         }
       ],
@@ -89726,7 +90788,7 @@
           "count": 1
         },
         {
-          "id": "ME终端",
+          "id": "终端",
           "count": 1
         },
         {
@@ -89734,12 +90796,12 @@
           "count": 1
         },
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         null,
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         {
@@ -89747,7 +90809,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -89755,19 +90817,19 @@
           "count": 1
         }
       ],
-      "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_chest",
+      "group": "other",
+      "href": "/linsmagic/atlas/recipes/other/ae_chest",
       "note": "",
       "guiOnly": false
     },
     {
       "id": "ae_terminal",
-      "name": "ME终端合成",
+      "name": "终端合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME终端",
+          "id": "终端",
           "count": 1
         }
       ],
@@ -89785,15 +90847,15 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -89816,19 +90878,19 @@
     },
     {
       "id": "ae_crafting_terminal",
-      "name": "ME合成终端合成",
+      "name": "合成终端合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME合成终端",
+          "id": "合成终端",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME终端",
+          "id": "终端",
           "count": 1
         },
         null,
@@ -89852,19 +90914,19 @@
     },
     {
       "id": "ae_pattern_terminal",
-      "name": "ME样板编码终端合成",
+      "name": "样板编码终端合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME样板编码终端",
+          "id": "样板编码终端",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "ME终端",
+          "id": "终端",
           "count": 1
         },
         null,
@@ -89888,12 +90950,12 @@
     },
     {
       "id": "ae_import_bus",
-      "name": "ME输入总线合成",
+      "name": "输入总线合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME输入总线",
+          "id": "输入总线",
           "count": 1
         }
       ],
@@ -89927,12 +90989,12 @@
     },
     {
       "id": "ae_export_bus",
-      "name": "ME输出总线合成",
+      "name": "输出总线合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME输出总线",
+          "id": "输出总线",
           "count": 1
         }
       ],
@@ -89966,12 +91028,12 @@
     },
     {
       "id": "ae_interface",
-      "name": "ME接口合成",
+      "name": "接口合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME接口",
+          "id": "接口",
           "count": 1
         }
       ],
@@ -90017,12 +91079,12 @@
     },
     {
       "id": "ae_storage_bus",
-      "name": "ME存储总线合成",
+      "name": "存储总线合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储总线",
+          "id": "存储总线",
           "count": 1
         }
       ],
@@ -90035,7 +91097,7 @@
           "count": 1
         },
         {
-          "id": "ME接口",
+          "id": "接口",
           "count": 1
         },
         {
@@ -90053,12 +91115,12 @@
     },
     {
       "id": "ae_pattern_provider",
-      "name": "ME样板供应器合成",
+      "name": "样板供应器合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME样板供应器",
+          "id": "样板供应器",
           "count": 1
         }
       ],
@@ -90158,12 +91220,12 @@
     },
     {
       "id": "ae_quantum_terminal",
-      "name": "ME量子终端合成",
+      "name": "量子终端合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME量子终端",
+          "id": "量子终端",
           "count": 1
         }
       ],
@@ -90185,7 +91247,7 @@
           "count": 1
         },
         {
-          "id": "ME无线终端",
+          "id": "无线终端",
           "count": 1
         },
         {
@@ -90266,12 +91328,12 @@
     },
     {
       "id": "ae_stocker",
-      "name": "ME自动合成器合成",
+      "name": "自动合成器合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME自动合成器",
+          "id": "自动合成器",
           "count": 1
         }
       ],
@@ -90293,7 +91355,7 @@
           "count": 1
         },
         {
-          "id": "ME接口",
+          "id": "接口",
           "count": 1
         },
         {
@@ -90320,12 +91382,12 @@
     },
     {
       "id": "ae_level_emitter",
-      "name": "ME电平发射器合成",
+      "name": "电平发射器合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME电平发射器",
+          "id": "电平发射器",
           "count": 1
         }
       ],
@@ -90368,7 +91430,7 @@
           "count": 1
         },
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         {
@@ -90392,7 +91454,7 @@
           "count": 1
         },
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         {
@@ -90575,19 +91637,19 @@
     },
     {
       "id": "ae_wireless_ap",
-      "name": "ME无线访问点合成",
+      "name": "无线访问点合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME无线访问点",
+          "id": "无线访问点",
           "count": 1
         }
       ],
       "slots": [
         null,
         {
-          "id": "福鲁伊克斯珍珠",
+          "id": "三相导体珍珠",
           "count": 1
         },
         null,
@@ -90599,7 +91661,7 @@
         null,
         null,
         {
-          "id": "ME线缆",
+          "id": "线缆",
           "count": 1
         },
         null
@@ -90634,12 +91696,12 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         null,
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -90677,7 +91739,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -90698,7 +91760,7 @@
           "count": 1
         },
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         },
         {
@@ -90712,67 +91774,98 @@
       "guiOnly": false
     },
     {
-      "id": "ae_growth_accelerator",
-      "name": "晶体催化器合成",
+      "id": "ae_meteor_cradle",
+      "name": "陨晶母体槽合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "晶体催化器",
+          "id": "陨晶母体槽",
           "count": 1
         }
       ],
       "slots": [
         {
-          "id": "石英玻璃",
+          "id": "铁皮",
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "minecraft:glass",
           "count": 1
         },
         {
-          "id": "石英玻璃",
+          "id": "铁皮",
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "minecraft:budding_amethyst",
           "count": 1
         },
         {
-          "id": "积聚的魔素：生",
+          "id": "minecraft:cauldron",
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "minecraft:budding_amethyst",
           "count": 1
         },
         {
-          "id": "石英玻璃",
+          "id": "minecraft:iron_block",
           "count": 1
         },
         {
-          "id": "赛特斯石英粉",
+          "id": "结晶紫珀沙",
           "count": 1
         },
         {
-          "id": "石英玻璃",
+          "id": "minecraft:iron_block",
           "count": 1
         }
       ],
       "group": "ae",
-      "href": "/linsmagic/atlas/recipes/ae/ae_growth_accelerator",
+      "href": "/linsmagic/atlas/recipes/ae/ae_meteor_cradle",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "ae_meteor_core",
+      "name": "陨晶晶核合成",
+      "station": "工作台",
+      "type": "shapeless",
+      "result": [
+        {
+          "id": "陨晶晶核",
+          "count": 1
+        }
+      ],
+      "slots": [],
+      "inputs": [
+        {
+          "id": "陨石碎粉",
+          "count": 1
+        },
+        {
+          "id": "硅",
+          "count": 1
+        },
+        {
+          "id": "minecraft:amethyst_shard",
+          "count": 1
+        }
+      ],
+      "group": "ae",
+      "href": "/linsmagic/atlas/recipes/ae/ae_meteor_core",
       "note": "",
       "guiOnly": false
     },
     {
       "id": "ae_storage_monitor",
-      "name": "ME存储监控器合成",
+      "name": "存储监控器合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME存储监控器",
+          "id": "存储监控器",
           "count": 1
         }
       ],
@@ -90857,12 +91950,12 @@
     },
     {
       "id": "ae_impact_generator",
-      "name": "ME撞击发电机合成",
+      "name": "撞击发电机合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME撞击发电机",
+          "id": "撞击发电机",
           "count": 1
         }
       ],
@@ -90911,12 +92004,12 @@
     },
     {
       "id": "ae_mill",
-      "name": "ME石磨合成",
+      "name": "石磨合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME石磨",
+          "id": "石磨",
           "count": 1
         }
       ],
@@ -90965,12 +92058,12 @@
     },
     {
       "id": "ae_giant_wind_turbine",
-      "name": "ME巨型风车合成",
+      "name": "巨型风车合成",
       "station": "工作台",
       "type": "crafting",
       "result": [
         {
-          "id": "ME巨型风车",
+          "id": "巨型风车",
           "count": 1
         }
       ],
@@ -90992,7 +92085,7 @@
           "count": 1
         },
         {
-          "id": "ME风车",
+          "id": "风车",
           "count": 1
         },
         {
@@ -94570,7 +95663,7 @@
       ],
       "slots": [
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94578,7 +95671,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94594,7 +95687,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94602,7 +95695,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         }
       ],
@@ -94624,7 +95717,7 @@
       ],
       "slots": [
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94632,7 +95725,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94648,7 +95741,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94656,7 +95749,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         }
       ],
@@ -94678,7 +95771,7 @@
       ],
       "slots": [
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94686,7 +95779,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94702,7 +95795,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94710,7 +95803,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         }
       ],
@@ -94732,7 +95825,7 @@
       ],
       "slots": [
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94740,7 +95833,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94756,7 +95849,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         },
         {
@@ -94764,7 +95857,7 @@
           "count": 1
         },
         {
-          "id": "梦魇",
+          "id": "噩梦因素",
           "count": 1
         }
       ],
@@ -94966,15 +96059,15 @@
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
-          "id": "梦魇结核",
+          "id": "飘渺执念",
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
@@ -95020,15 +96113,15 @@
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
-          "id": "梦魇结核",
+          "id": "飘渺执念",
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
@@ -95074,15 +96167,15 @@
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
-          "id": "梦魇结核",
+          "id": "飘渺执念",
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
@@ -95128,15 +96221,15 @@
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
-          "id": "梦魇结核",
+          "id": "飘渺执念",
           "count": 1
         },
         {
-          "id": "渊息凝核",
+          "id": "Vila-基岩凝核",
           "count": 1
         },
         {
@@ -102322,6 +103415,996 @@
       "guiOnly": false
     },
     {
+      "id": "water_pressure_aggregator",
+      "name": "水压聚合仪合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "水压聚合仪",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:iron_bars",
+          "count": 1
+        },
+        {
+          "id": "minecraft:water_bucket",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_bars",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cracked_stone_bricks",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ancient_debris",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cracked_stone_bricks",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_bars",
+          "count": 1
+        },
+        {
+          "id": "minecraft:water_bucket",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_bars",
+          "count": 1
+        }
+      ],
+      "group": "machines",
+      "href": "/linsmagic/atlas/recipes/machines/water_pressure_aggregator",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "vila_pheromone",
+      "name": "Vila信息素合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "Vila信息素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "虚空凝素",
+          "count": 1
+        },
+        {
+          "id": "深渊凝素",
+          "count": 1
+        },
+        {
+          "id": "虚空凝素",
+          "count": 1
+        },
+        {
+          "id": "深渊凝素",
+          "count": 1
+        },
+        {
+          "id": "远古虚空神蜕",
+          "count": 1
+        },
+        {
+          "id": "深渊凝素",
+          "count": 1
+        },
+        {
+          "id": "虚空凝素",
+          "count": 1
+        },
+        {
+          "id": "深渊凝素",
+          "count": 1
+        },
+        {
+          "id": "虚空凝素",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/vila_pheromone",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "vila_bedrock_core",
+      "name": "Vila-基岩凝核合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "Vila-基岩凝核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "奇点矿核",
+          "count": 1
+        },
+        {
+          "id": "Vila信息素",
+          "count": 1
+        },
+        {
+          "id": "奇点矿核",
+          "count": 1
+        },
+        {
+          "id": "Vila信息素",
+          "count": 1
+        },
+        {
+          "id": "基岩真髓",
+          "count": 1
+        },
+        {
+          "id": "Vila信息素",
+          "count": 1
+        },
+        {
+          "id": "奇点矿核",
+          "count": 1
+        },
+        {
+          "id": "Vila信息素",
+          "count": 1
+        },
+        {
+          "id": "奇点矿核",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/vila_bedrock_core",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "star_core_iron",
+      "name": "星核铁质合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "星核铁质",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "星核矿",
+          "count": 1
+        },
+        {
+          "id": "天命结晶",
+          "count": 1
+        },
+        {
+          "id": "星核矿",
+          "count": 1
+        },
+        {
+          "id": "天命结晶",
+          "count": 1
+        },
+        {
+          "id": "乌德铁",
+          "count": 1
+        },
+        {
+          "id": "天命结晶",
+          "count": 1
+        },
+        {
+          "id": "星核矿",
+          "count": 1
+        },
+        {
+          "id": "天命结晶",
+          "count": 1
+        },
+        {
+          "id": "星核矿",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/star_core_iron",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "void_polymer_u1",
+      "name": "虚质聚合物-U1合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "虚质",
+          "count": 1
+        },
+        {
+          "id": "虚质",
+          "count": 1
+        },
+        {
+          "id": "虚质",
+          "count": 1
+        },
+        {
+          "id": "虚质",
+          "count": 1
+        },
+        {
+          "id": "星核铁质",
+          "count": 1
+        },
+        {
+          "id": "虚质",
+          "count": 1
+        },
+        {
+          "id": "虚质",
+          "count": 1
+        },
+        {
+          "id": "虚质",
+          "count": 1
+        },
+        {
+          "id": "虚质",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/void_polymer_u1",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "void_polymer_u2",
+      "name": "虚质聚合物-U2合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "虚质聚合物-U2",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "深渊星核",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U1",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/void_polymer_u2",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "nightmare_polymer_u1",
+      "name": "梦魇聚合物-U1合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "梦魇",
+          "count": 1
+        },
+        {
+          "id": "梦魇",
+          "count": 1
+        },
+        {
+          "id": "梦魇",
+          "count": 1
+        },
+        {
+          "id": "梦魇",
+          "count": 1
+        },
+        {
+          "id": "致密下界合金块-A2",
+          "count": 1
+        },
+        {
+          "id": "梦魇",
+          "count": 1
+        },
+        {
+          "id": "梦魇",
+          "count": 1
+        },
+        {
+          "id": "梦魇",
+          "count": 1
+        },
+        {
+          "id": "梦魇",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/nightmare_polymer_u1",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "nightmare_polymer_u2",
+      "name": "梦魇聚合物-U2合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "minecraft:stone",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U1",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/nightmare_polymer_u2",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "nightmare_polymer_u3",
+      "name": "梦魇聚合物-U3合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "minecraft:stone",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U2",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/nightmare_polymer_u3",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "nightmare_polymer_u4",
+      "name": "梦魇聚合物-U4合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        },
+        {
+          "id": "minecraft:grass_block",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U3",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/nightmare_polymer_u4",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "nightmare_polymer_u5",
+      "name": "梦魇聚合物-U5合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        },
+        {
+          "id": "虚质聚合物-U2",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U4",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/nightmare_polymer_u5",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "nightmare_factor",
+      "name": "噩梦因素合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "噩梦因素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        },
+        {
+          "id": "粘稠呕吐物",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        },
+        {
+          "id": "梦魇聚合物-U5",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/nightmare_factor",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "bedrock_redshift_shovel",
+      "name": "基岩红移铲合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "基岩红移铲",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "基岩造物法杖",
+          "count": 1
+        },
+        {
+          "id": "基石",
+          "count": 1
+        },
+        {
+          "id": "基岩造物法杖",
+          "count": 1
+        },
+        {
+          "id": "深渊战铲",
+          "count": 1
+        },
+        {
+          "id": "树叶清理铲",
+          "count": 1
+        },
+        {
+          "id": "深渊战铲",
+          "count": 1
+        },
+        {
+          "id": "基岩造物法杖",
+          "count": 1
+        },
+        {
+          "id": "基石",
+          "count": 1
+        },
+        {
+          "id": "基岩造物法杖",
+          "count": 1
+        }
+      ],
+      "group": "items",
+      "href": "/linsmagic/atlas/recipes/items/bedrock_redshift_shovel",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "piaomiao_zhinian",
+      "name": "飘渺执念合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "飘渺执念",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "梦魇结核",
+          "count": 1
+        },
+        {
+          "id": "梦魇结核",
+          "count": 1
+        },
+        {
+          "id": "梦魇结核",
+          "count": 1
+        },
+        {
+          "id": "梦魇结核",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "梦魇结核",
+          "count": 1
+        },
+        {
+          "id": "梦魇结核",
+          "count": 1
+        },
+        {
+          "id": "梦魇结核",
+          "count": 1
+        },
+        {
+          "id": "梦魇结核",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/piaomiao_zhinian",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "bedrock_fragment_compress",
+      "name": "minecraft:bedrock合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "minecraft:bedrock",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        },
+        {
+          "id": "基岩碎块",
+          "count": 1
+        }
+      ],
+      "group": "other",
+      "href": "/linsmagic/atlas/recipes/other/bedrock_fragment_compress",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "frame_editor",
+      "name": "透明物品展示框编辑器合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "透明物品展示框编辑器",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:oak_planks",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:oak_planks",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:glass_pane",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:oak_planks",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:oak_planks",
+          "count": 1
+        }
+      ],
+      "group": "items",
+      "href": "/linsmagic/atlas/recipes/items/frame_editor",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "light_tuner",
+      "name": "魔法光源调制器合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "魔法光源调制器",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "发光菌丝纤维",
+          "count": 1
+        },
+        {
+          "id": "发光浆果精油",
+          "count": 1
+        },
+        {
+          "id": "minecraft:stick",
+          "count": 1
+        },
+        {
+          "id": "发光地衣孢子",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "发光浆果精油",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_block",
+          "count": 1
+        },
+        {
+          "id": "发光地衣孢子",
+          "count": 1
+        },
+        {
+          "id": "发光菌丝纤维",
+          "count": 1
+        }
+      ],
+      "group": "items",
+      "href": "/linsmagic/atlas/recipes/items/light_tuner",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "armor_stand_editor",
+      "name": "盔甲架编辑器合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "盔甲架编辑器",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        {
+          "id": "minecraft:iron_chain",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:iron_chain",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shears",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_chain",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:iron_chain",
+          "count": 1
+        },
+        null
+      ],
+      "group": "items",
+      "href": "/linsmagic/atlas/recipes/items/armor_stand_editor",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "display_projector",
+      "name": "展示实体投影器合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "展示实体投影器",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:glass",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:glass",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:amethyst_shard",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:glass",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:glass",
+          "count": 1
+        }
+      ],
+      "group": "items",
+      "href": "/linsmagic/atlas/recipes/items/display_projector",
+      "note": "",
+      "guiOnly": false
+    },
+    {
       "id": "magic_infuser_sea",
       "name": "附魔注魔器-海合成",
       "station": "工作台",
@@ -104080,6 +106163,5676 @@
       "guiOnly": true
     },
     {
+      "id": "mirror_i-49930315e646",
+      "name": "矿藏晶簇之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-49930315e646",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-37d35fdd57b6",
+      "name": "钢骨之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "钢骨之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:iron_ingot",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-37d35fdd57b6",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f9fab8a45461",
+      "name": "黄金之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "黄金之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_ingot",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f9fab8a45461",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-a6f9d9c68afa",
+      "name": "地狱之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "地狱之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_scrap",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-a6f9d9c68afa",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f81d8403382c",
+      "name": "脉冲之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "脉冲之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:redstone",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f81d8403382c",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-5627efc60ffd",
+      "name": "智慧之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "智慧之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        },
+        {
+          "id": "minecraft:lapis_lazuli",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-5627efc60ffd",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-7d90a398c526",
+      "name": "贸易之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "贸易之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        },
+        {
+          "id": "minecraft:emerald",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-7d90a398c526",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-da319b5b084c",
+      "name": "传导之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "传导之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:copper_ingot",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-da319b5b084c",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-a459450bd1fe",
+      "name": "燃烧之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "燃烧之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:coal",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-a459450bd1fe",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-e445a82f6c70",
+      "name": "不朽之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "不朽之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherite_ingot",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-e445a82f6c70",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-90593720321f",
+      "name": "纯净之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "纯净之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        },
+        {
+          "id": "minecraft:quartz",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-90593720321f",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-fb1cc55f4b2e",
+      "name": "生命之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "生命之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        },
+        {
+          "id": "minecraft:oak_log",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-fb1cc55f4b2e",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-cbfe4a3a7af4",
+      "name": "大地之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "大地之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-cbfe4a3a7af4",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-ffd2df331914",
+      "name": "幽冥之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "幽冥之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-ffd2df331914",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-071afc684a6e",
+      "name": "丰收之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "丰收之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wheat",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-071afc684a6e",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f499289ea6ee",
+      "name": "亡灵之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "亡灵之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f499289ea6ee",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-c3cecfb7a69b",
+      "name": "爆裂之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "爆裂之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gunpowder",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-c3cecfb7a69b",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-4f1cff102805",
+      "name": "延展之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "延展之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-4f1cff102805",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-08434fa5d5ae",
+      "name": "海晶之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "海晶之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-08434fa5d5ae",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-461653f17d31",
+      "name": "纠缠之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "纠缠之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        },
+        {
+          "id": "minecraft:string",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-461653f17d31",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-4c3506e0af2d",
+      "name": "鞣制之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "鞣制之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:leather",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-4c3506e0af2d",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-6b8d4b1cd696",
+      "name": "轻羽飘絮合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "轻羽飘絮",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        },
+        {
+          "id": "minecraft:feather",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-6b8d4b1cd696",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-938113faec33",
+      "name": "白纸之灵合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "白纸之灵",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        },
+        {
+          "id": "minecraft:paper",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-938113faec33",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-c2c6fdfc2df3",
+      "name": "凛冬之核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "凛冬之核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:snowball",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-c2c6fdfc2df3",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-b77a6a5a1ce7",
+      "name": "陶土原胚合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "陶土原胚",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        },
+        {
+          "id": "minecraft:clay_ball",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-b77a6a5a1ce7",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f4c6ae1723ac",
+      "name": "烧砖之魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "烧砖之魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:brick",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f4c6ae1723ac",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-3babf3d94586",
+      "name": "地狱砖魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "地狱砖魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_brick",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-3babf3d94586",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-4054398769d8",
+      "name": "甘甜精粹合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "甘甜精粹",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-4054398769d8",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-43b0c9269dcc",
+      "name": "黑曜之壁合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "黑曜之壁",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:obsidian",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-43b0c9269dcc",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-cf4c7ccd84df",
+      "name": "光耀核心合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "光耀核心",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-cf4c7ccd84df",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-1e6d2f1f1d0e",
+      "name": "海光晶核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "海光晶核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-1e6d2f1f1d0e",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-539c01abf395",
+      "name": "蜂巢精蜜合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "蜂巢精蜜",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honeycomb",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-539c01abf395",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-525e4e6e05dc",
+      "name": "紫颂精华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "紫颂精华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:chorus_fruit",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-525e4e6e05dc",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-18d6a4786b98",
+      "name": "空间跃动核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "空间跃动核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        },
+        {
+          "id": "minecraft:popped_chorus_fruit",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-18d6a4786b98",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8eeadf147955",
+      "name": "终末之基合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "终末之基",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8eeadf147955",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-918bf7f89188",
+      "name": "悲泣结晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "悲泣结晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-918bf7f89188",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-b170bfc2e086",
+      "name": "甜蜜慰藉合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "甜蜜慰藉",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-b170bfc2e086",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-090f7dae5d63",
+      "name": "漆黑墨色合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "漆黑墨色",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ink_sac",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-090f7dae5d63",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-e5fc5fac318a",
+      "name": "荧光色质合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "荧光色质",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        },
+        {
+          "id": "minecraft:glow_ink_sac",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-e5fc5fac318a",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-7963e1db59bb",
+      "name": "白骨精粉合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "白骨精粉",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-7963e1db59bb",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-047f208b4cfe",
+      "name": "新生之源合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "新生之源",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:egg",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-047f208b4cfe",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-3d92b328b653",
+      "name": "锋锐之志合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "锋锐之志",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:arrow",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-3d92b328b653",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-ad1ea3c9bee6",
+      "name": "远射之魂合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "远射之魂",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bow",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-ad1ea3c9bee6",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f80994d22fb7",
+      "name": "守护之志合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "守护之志",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        },
+        {
+          "id": "minecraft:shield",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f80994d22fb7",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-bbca2e0c2a2a",
+      "name": "不死执念合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "不死执念",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-bbca2e0c2a2a",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-9ebc08e11961",
+      "name": "金辉祝福合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "金辉祝福",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:golden_apple",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-9ebc08e11961",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-9e459428920a",
+      "name": "凋零诅咒合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "凋零诅咒",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_rose",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-9e459428920a",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-602d34741182",
+      "name": "幸运遗骸合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "幸运遗骸",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        },
+        {
+          "id": "minecraft:rabbit_foot",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-602d34741182",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f20cd20a75fa",
+      "name": "腐化毒念合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "腐化毒念",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fermented_spider_eye",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f20cd20a75fa",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-a7914d0272a2",
+      "name": "空间锚点合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "空间锚点",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-a7914d0272a2",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-1c097175ba5b",
+      "name": "海神之怒合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "海神之怒",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        },
+        {
+          "id": "minecraft:trident",
+          "count": 1
+        }
+      ],
+      "group": "weapons",
+      "href": "/linsmagic/atlas/recipes/weapons/mirror_i-1c097175ba5b",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-71bbe0b33efa",
+      "name": "地狱焦土合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "地狱焦土",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        },
+        {
+          "id": "minecraft:netherrack",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-71bbe0b33efa",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-7ec00847b1da",
+      "name": "翠竹节魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "翠竹节魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bamboo",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-7ec00847b1da",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8cdc609d0c9d",
+      "name": "甜蔗精粹合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "甜蔗精粹",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sugar_cane",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8cdc609d0c9d",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-6c210dbdb544",
+      "name": "知识典籍合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "知识典籍",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        },
+        {
+          "id": "minecraft:book",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-6c210dbdb544",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-e32c7963980e",
+      "name": "智慧书卷合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "智慧书卷",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        },
+        {
+          "id": "minecraft:bookshelf",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-e32c7963980e",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8baf3dec5004",
+      "name": "永冻冰核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "永冻冰核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8baf3dec5004",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8df054d6a688",
+      "name": "亡灵腐质合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "亡灵腐质",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:rotten_flesh",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8df054d6a688",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-7a6e0e731ecb",
+      "name": "毒液精粹合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "毒液精粹",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:spider_eye",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-7a6e0e731ecb",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-5ef6bf73af94",
+      "name": "悲恸结晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "悲恸结晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:ghast_tear",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-5ef6bf73af94",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-cb37af90f7bf",
+      "name": "空间扭曲碎片合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "空间扭曲碎片",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-cb37af90f7bf",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-d2dd42976818",
+      "name": "炽焰精核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "炽焰精核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:blaze_rod",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-d2dd42976818",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-c0a6b16d4833",
+      "name": "熔岩之髓合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "熔岩之髓",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:magma_cream",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-c0a6b16d4833",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-93c3257b5c7e",
+      "name": "夜翼膜素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "夜翼膜素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:phantom_membrane",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-93c3257b5c7e",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8a99396d3c8a",
+      "name": "深洋回响合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "深洋回响",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:nautilus_shell",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8a99396d3c8a",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-07700dea04c5",
+      "name": "幽匿共鸣核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "幽匿共鸣核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:sculk",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-07700dea04c5",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-e2858c515551",
+      "name": "经验凝萃合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "经验凝萃",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:experience_bottle",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-e2858c515551",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-343eb3728847",
+      "name": "风灵精粹合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "风灵精粹",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:bone_meal",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-343eb3728847",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-c60a049d4fb9",
+      "name": "深海凝华晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "深海凝华晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:prismarine_crystals",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-c60a049d4fb9",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-a9c4647b7404",
+      "name": "虚空滤质合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "虚空滤质",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:purple_dye",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-a9c4647b7404",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-ed2abb28b677",
+      "name": "霜华结晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "霜华结晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:ice",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-ed2abb28b677",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-852fa9d5dc44",
+      "name": "深海遗鳞合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "深海遗鳞",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:prismarine_shard",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-852fa9d5dc44",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-5ed52c5a13bc",
+      "name": "炎烬余灰合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "炎烬余灰",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:blaze_powder",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-5ed52c5a13bc",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-07aadffa8b57",
+      "name": "末影凝晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "末影凝晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:amethyst_shard",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-07aadffa8b57",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-52e2a72c1e19",
+      "name": "地脉结晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "地脉结晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:deepslate",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-52e2a72c1e19",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-067d58c29f49",
+      "name": "浮空微尘合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "浮空微尘",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:sugar",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-067d58c29f49",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-1d436b0a230b",
+      "name": "风蚀晶砂合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "风蚀晶砂",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:sand",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-1d436b0a230b",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-7c77ee34fa25",
+      "name": "熔岩晶髓合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "熔岩晶髓",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:magma_block",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-7c77ee34fa25",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8c1fd359f0d0",
+      "name": "极地冰核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "极地冰核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:blue_ice",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8c1fd359f0d0",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-cd8c61333c30",
+      "name": "虚空沉淀质合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "虚空沉淀质",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:end_stone",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-cd8c61333c30",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-e8f0c50b60dd",
+      "name": "硫磺晶华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "硫磺晶华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:glowstone_dust",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-e8f0c50b60dd",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-5d6d66a01d15",
+      "name": "珊瑚化石髓合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "珊瑚化石髓",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:bone_block",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-5d6d66a01d15",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-30fb94e717be",
+      "name": "晨露精华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "晨露精华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:potion",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-30fb94e717be",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-2e41ae3747ee",
+      "name": "松针凝晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "松针凝晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:green_dye",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-2e41ae3747ee",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f248104fe6e3",
+      "name": "桦汁精华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "桦汁精华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:honey_bottle",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f248104fe6e3",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f722424daf60",
+      "name": "藤蔓原液合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "藤蔓原液",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:slime_ball",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f722424daf60",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-18322b25c2e0",
+      "name": "便携末影箱合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "便携末影箱",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:ender_chest",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "machines",
+      "href": "/linsmagic/atlas/recipes/machines/mirror_i-18322b25c2e0",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-86defa1a9321",
+      "name": "合欢针萃合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "合欢针萃",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:stick",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-86defa1a9321",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-0de28d2be03d",
+      "name": "深苔萃取合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "深苔萃取",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:moss_block",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-0de28d2be03d",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-d942010b8798",
+      "name": "红树胚素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "红树胚素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:mangrove_propagule",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-d942010b8798",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-f204fb6763c4",
+      "name": "落樱香精合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "落樱香精",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:pink_dye",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-f204fb6763c4",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-ad3d6b756d29",
+      "name": "杜鹃花灵合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "杜鹃花灵",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:spore_blossom",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-ad3d6b756d29",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-5ae0d760a2d5",
+      "name": "高山草精合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "高山草精",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:wheat_seeds",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-5ae0d760a2d5",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-a093a59e9914",
+      "name": "灯草纤维合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "灯草纤维",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:dried_kelp",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-a093a59e9914",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-12b8c0a314de",
+      "name": "诡异菌素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "诡异菌素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:cyan_dye",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-12b8c0a314de",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-ec486a68c3fb",
+      "name": "紫颂残魄合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "紫颂残魄",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:chorus_flower",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-ec486a68c3fb",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-7ffa1c2bef66",
+      "name": "炽热晶华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "炽热晶华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:quartz_block",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-7ffa1c2bef66",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-a44d80b1edcb",
+      "name": "紫珀晶屑合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "紫珀晶屑",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:purpur_block",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-a44d80b1edcb",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-b648d7eedb43",
+      "name": "滴石髓精合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "滴石髓精",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:dripstone_block",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-b648d7eedb43",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-3f6a5488ca9a",
+      "name": "菌光孢子粉合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "菌光孢子粉",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:shroomlight",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-3f6a5488ca9a",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-781db438cf98",
+      "name": "黑曜晶髓合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "黑曜晶髓",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:crying_obsidian",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-781db438cf98",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-be4dcd8979d5",
+      "name": "海晶灯髓合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "海晶灯髓",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-be4dcd8979d5",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8a323df75d23",
+      "name": "菌柄髓素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "菌柄髓素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:mushroom_stem",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8a323df75d23",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-6fb02dd22cd5",
+      "name": "末影晶尘核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "末影晶尘核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:ender_eye",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-6fb02dd22cd5",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-0c66f0fec07b",
+      "name": "血腥味素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "血腥味素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "minecraft:red_dye",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-0c66f0fec07b",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-7a6b61675eb0",
+      "name": "地核熔渣合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "地核熔渣",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "熔核碎片",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-7a6b61675eb0",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-e9a94eaae278",
+      "name": "荧光孢素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "荧光孢素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "地底荧光苔",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-e9a94eaae278",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-afa5ad382eed",
+      "name": "浮空晶核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "浮空晶核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "末地浮游晶",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-afa5ad382eed",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-ad324b81d2e5",
+      "name": "幽匿孢囊合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "幽匿孢囊",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "幽匿孢子",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-ad324b81d2e5",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8f9cec87faa2",
+      "name": "渊海晶粒合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "渊海晶粒",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "渊海砾晶",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8f9cec87faa2",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-4ef91c8df384",
+      "name": "百花精露合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "百花精露",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "野花精华",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-4ef91c8df384",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8f0eeb56a76f",
+      "name": "苍苔菌素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "苍苔菌素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "苍翠苔衣",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8f0eeb56a76f",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-6b290044168c",
+      "name": "绯红菌素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "绯红菌素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "绯红菌丝",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-6b290044168c",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-0c7d6b908172",
+      "name": "恶念与悲剧信息素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "恶念与悲剧信息素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        null,
+        null,
+        null,
+        null,
+        {
+          "id": "粘稠呕吐物",
+          "count": 1
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-0c7d6b908172",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-c3b17770aaa9",
+      "name": "魂石聚合体合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "魂石聚合体",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-c3b17770aaa9",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-b7983c8957b6",
+      "name": "纯粹之水元素合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "纯粹之水元素",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:water_bucket",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:water_bucket",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:ice",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:water_bucket",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:water_bucket",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-b7983c8957b6",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-bf8a9d82f961",
+      "name": "永恒熔火之种合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "永恒熔火之种",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:lava_bucket",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:lava_bucket",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:blaze_rod",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:lava_bucket",
+          "count": 1
+        },
+        null,
+        {
+          "id": "minecraft:lava_bucket",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-bf8a9d82f961",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-fa391dd8fc7d",
+      "name": "断钢之刃魂合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "断钢之刃魂",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond_sword",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-fa391dd8fc7d",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-72020852b725",
+      "name": "挖掘之魂合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "挖掘之魂",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond_pickaxe",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        },
+        {
+          "id": "minecraft:cobblestone",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-72020852b725",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-368c97d84704",
+      "name": "跨维传送核心合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "跨维传送核心",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fire_charge",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fire_charge",
+          "count": 1
+        },
+        {
+          "id": "minecraft:respawn_anchor",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fire_charge",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        {
+          "id": "minecraft:fire_charge",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-368c97d84704",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-e8094b2e8fbf",
+      "name": "凋零源核镜像合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "凋零源核镜像",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:soul_sand",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_skeleton_skull",
+          "count": 1
+        },
+        {
+          "id": "minecraft:soul_sand",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_skeleton_skull",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_star",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_skeleton_skull",
+          "count": 1
+        },
+        {
+          "id": "minecraft:soul_sand",
+          "count": 1
+        },
+        {
+          "id": "minecraft:wither_skeleton_skull",
+          "count": 1
+        },
+        {
+          "id": "minecraft:soul_sand",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-e8094b2e8fbf",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-874dcc55d19e",
+      "name": "远古潮汐核心合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "远古潮汐核心",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine",
+          "count": 1
+        },
+        {
+          "id": "minecraft:heart_of_the_sea",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        },
+        {
+          "id": "minecraft:prismarine",
+          "count": 1
+        },
+        {
+          "id": "minecraft:sea_lantern",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-874dcc55d19e",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-8f010bae708d",
+      "name": "风霜精华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "风霜精华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "风魂遗簇",
+          "count": 1
+        },
+        {
+          "id": "霜华花瓣",
+          "count": 1
+        },
+        {
+          "id": "风魂遗簇",
+          "count": 1
+        },
+        {
+          "id": "霜华花瓣",
+          "count": 1
+        },
+        null,
+        {
+          "id": "霜华花瓣",
+          "count": 1
+        },
+        {
+          "id": "风魂遗簇",
+          "count": 1
+        },
+        {
+          "id": "霜华花瓣",
+          "count": 1
+        },
+        {
+          "id": "风魂遗簇",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-8f010bae708d",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-ed8608fb5d55",
+      "name": "熔火精粹合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "熔火精粹",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "熔核碎片",
+          "count": 1
+        },
+        {
+          "id": "炎烬残渣",
+          "count": 1
+        },
+        {
+          "id": "熔核碎片",
+          "count": 1
+        },
+        {
+          "id": "炎烬残渣",
+          "count": 1
+        },
+        null,
+        {
+          "id": "炎烬残渣",
+          "count": 1
+        },
+        {
+          "id": "熔核碎片",
+          "count": 1
+        },
+        {
+          "id": "炎烬残渣",
+          "count": 1
+        },
+        {
+          "id": "熔核碎片",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-ed8608fb5d55",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-6b4bf4254e1b",
+      "name": "虚空精华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "虚空精华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "虚空尘埃",
+          "count": 1
+        },
+        {
+          "id": "末影结晶",
+          "count": 1
+        },
+        {
+          "id": "虚空尘埃",
+          "count": 1
+        },
+        {
+          "id": "末影结晶",
+          "count": 1
+        },
+        null,
+        {
+          "id": "末影结晶",
+          "count": 1
+        },
+        {
+          "id": "虚空尘埃",
+          "count": 1
+        },
+        {
+          "id": "末影结晶",
+          "count": 1
+        },
+        {
+          "id": "虚空尘埃",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-6b4bf4254e1b",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-a87cb5447923",
+      "name": "渊海精华合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "渊海精华",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "寒渊晶簇",
+          "count": 1
+        },
+        {
+          "id": "幽邃鳞片",
+          "count": 1
+        },
+        {
+          "id": "寒渊晶簇",
+          "count": 1
+        },
+        {
+          "id": "幽邃鳞片",
+          "count": 1
+        },
+        null,
+        {
+          "id": "幽邃鳞片",
+          "count": 1
+        },
+        {
+          "id": "寒渊晶簇",
+          "count": 1
+        },
+        {
+          "id": "幽邃鳞片",
+          "count": 1
+        },
+        {
+          "id": "寒渊晶簇",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-a87cb5447923",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-bb2d5ddd6966",
+      "name": "创世晶核合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "创世晶核",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:diamond_block",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_block",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond_block",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_block",
+          "count": 1
+        },
+        {
+          "id": "minecraft:nether_star",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_block",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond_block",
+          "count": 1
+        },
+        {
+          "id": "minecraft:gold_block",
+          "count": 1
+        },
+        {
+          "id": "minecraft:diamond_block",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-bb2d5ddd6966",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-2d6600db395f",
+      "name": "不朽圣盾合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "不朽圣盾",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:totem_of_undying",
+          "count": 1
+        },
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        },
+        {
+          "id": "minecraft:enchanted_golden_apple",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-2d6600db395f",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_i-98911621b00b",
+      "name": "终焉龙魂合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "终焉龙魂",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "minecraft:dragon_breath",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        {
+          "id": "minecraft:dragon_breath",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        {
+          "id": "minecraft:dragon_egg",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        {
+          "id": "minecraft:dragon_breath",
+          "count": 1
+        },
+        {
+          "id": "minecraft:ender_pearl",
+          "count": 1
+        },
+        {
+          "id": "minecraft:dragon_breath",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_i-98911621b00b",
+      "note": "在魔镜的合成界面里摆放（右键魔镜打开），工作台无法合成。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_ground_soul_paste",
+      "name": "归魄泥合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "归魄泥",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "魂石",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_ground_soul_paste",
+      "note": "在魔镜的合成界面里摆放：外圈八格可以放任意物魄（魔镜单料浓缩得到的那批材料），种类可以重复、随意组合，图中只是示意。",
+      "guiOnly": true
+    },
+    {
+      "id": "mirror_condensed_soul_crystal",
+      "name": "凝魄晶合成",
+      "station": "魔镜",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "凝魄晶",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "强化魂石",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        },
+        {
+          "id": "矿藏晶簇之魄",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/mirror_condensed_soul_crystal",
+      "note": "在魔镜的合成界面里摆放：外圈八格可以放任意物魄（魔镜单料浓缩得到的那批材料），种类可以重复、随意组合，图中只是示意。",
+      "guiOnly": true
+    },
+    {
       "id": "legacy-590f3349fdb0",
       "name": "召唤祭坛合成",
       "station": "工作台",
@@ -104115,6 +111868,264 @@
       ],
       "group": "machines",
       "href": "/linsmagic/atlas/recipes/machines/legacy-590f3349fdb0",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "legacy-dbb54a684fd2",
+      "name": "九合金坯合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "九合金坯",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "炎金锭",
+          "count": 1
+        },
+        {
+          "id": "霜钢锭",
+          "count": 1
+        },
+        {
+          "id": "风灵铁锭",
+          "count": 1
+        },
+        {
+          "id": "苍炎钢锭",
+          "count": 1
+        },
+        {
+          "id": "极寒钢锭",
+          "count": 1
+        },
+        {
+          "id": "翠灵金锭",
+          "count": 1
+        },
+        {
+          "id": "渊溟合金",
+          "count": 1
+        },
+        {
+          "id": "紫菌合金",
+          "count": 1
+        },
+        {
+          "id": "霜炎合金",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/legacy-dbb54a684fd2",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "legacy-235fd08995bc",
+      "name": "石屑坯合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "石屑坯",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "安山岩裂片",
+          "count": 1
+        },
+        {
+          "id": "玄武岩碎晶",
+          "count": 1
+        },
+        {
+          "id": "花岗岩结核",
+          "count": 1
+        },
+        {
+          "id": "磨砂石英碎屑",
+          "count": 1
+        },
+        null,
+        {
+          "id": "砂金颗粒",
+          "count": 1
+        },
+        {
+          "id": "碎母岩石屑",
+          "count": 1
+        },
+        {
+          "id": "金砂黑石屑",
+          "count": 1
+        },
+        {
+          "id": "冷炭碎屑",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/legacy-235fd08995bc",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "legacy-2585355772c1",
+      "name": "骨骸坯合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "骨骸坯",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "古旧碎骨屑",
+          "count": 1
+        },
+        {
+          "id": "骷髅肋骨",
+          "count": 1
+        },
+        {
+          "id": "minecraft:goat_horn",
+          "count": 1
+        },
+        {
+          "id": "风化龙骨碎屑",
+          "count": 1
+        },
+        null,
+        {
+          "id": "钙化珊瑚碎骨",
+          "count": 1
+        },
+        {
+          "id": "落败者的头骨碎片",
+          "count": 1
+        },
+        {
+          "id": "山羊软骨",
+          "count": 1
+        },
+        {
+          "id": "碎骨片",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/legacy-2585355772c1",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "legacy-de6ba8d6ec50",
+      "name": "重核坯合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "重核坯",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "铅粒",
+          "count": 1
+        },
+        {
+          "id": "逆磁石",
+          "count": 1
+        },
+        {
+          "id": "引力之砂",
+          "count": 1
+        },
+        {
+          "id": "重力凝核",
+          "count": 1
+        },
+        null,
+        {
+          "id": "微量重力水银",
+          "count": 1
+        },
+        {
+          "id": "游离磁偏矿粒",
+          "count": 1
+        },
+        {
+          "id": "超密态重元素矿锭",
+          "count": 1
+        },
+        {
+          "id": "高密度基底碎矿",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/legacy-de6ba8d6ec50",
+      "note": "",
+      "guiOnly": false
+    },
+    {
+      "id": "legacy-e479117a445d",
+      "name": "杂物坯合成",
+      "station": "工作台",
+      "type": "crafting",
+      "result": [
+        {
+          "id": "杂物坯",
+          "count": 1
+        }
+      ],
+      "slots": [
+        {
+          "id": "空无一物的生锈铁桶",
+          "count": 1
+        },
+        {
+          "id": "古老陶罐碎片",
+          "count": 1
+        },
+        {
+          "id": "暗淡的末地烛芯",
+          "count": 1
+        },
+        {
+          "id": "磨损的遗失收纳袋",
+          "count": 1
+        },
+        null,
+        {
+          "id": "酒壶",
+          "count": 1
+        },
+        {
+          "id": "破败剑刃",
+          "count": 1
+        },
+        {
+          "id": "霉变书角",
+          "count": 1
+        },
+        {
+          "id": "风化马蹄铁",
+          "count": 1
+        }
+      ],
+      "group": "materials",
+      "href": "/linsmagic/atlas/recipes/materials/legacy-e479117a445d",
       "note": "",
       "guiOnly": false
     },
@@ -104299,7 +112310,7 @@
       "type": "machine",
       "result": [
         {
-          "id": "肥力腐殖",
+          "id": "肥力腐殖结块",
           "count": 2
         }
       ],
@@ -104499,8 +112510,8 @@
       "type": "machine",
       "result": [
         {
-          "id": "minecraft:ancient_debris",
-          "count": 2
+          "id": "远古碎块",
+          "count": 10
         },
         {
           "id": "minecraft:gold_ingot",
@@ -104508,7 +112519,7 @@
         },
         {
           "id": "minecraft:gold_nugget",
-          "count": 12
+          "count": 8
         },
         {
           "id": "minecraft:coal",
@@ -104522,7 +112533,7 @@
       "inputs": [
         {
           "id": "minecraft:cobblestone",
-          "count": 64
+          "count": 63
         },
         {
           "id": "minecraft:gold_ingot",
@@ -104540,7 +112551,29 @@
       "group": "processing",
       "href": "/linsmagic/atlas/recipes/processing/residue_generator_process",
       "guiOnly": false,
-      "note": "必须一次备齐全部材料且输出木桶容纳全部产物；材料不足时机器仍可能消耗输入但不产出。"
+      "note": "必须一次备齐全部材料且输出木桶容纳全部产物；材料不足时机器仍会每次各消耗 1 份输入但不产出。"
+    },
+    {
+      "id": "water_pressure_aggregate",
+      "name": "远古碎块压合",
+      "station": "水压聚合仪",
+      "type": "machine",
+      "result": [
+        {
+          "id": "minecraft:ancient_debris",
+          "count": 1
+        }
+      ],
+      "inputs": [
+        {
+          "id": "远古碎块",
+          "count": 9
+        }
+      ],
+      "group": "processing",
+      "href": "/linsmagic/atlas/recipes/processing/water_pressure_aggregate",
+      "guiOnly": false,
+      "note": "机器上方要有水柱：每格水每秒加 2 点积压值，机器本身每秒减 16 点；积压值到 202 后每 2 秒压合一次。一侧放箱子装碎块，另一侧放木桶收残骸。积压值到 256 或跌破 -10 会爆炸。"
     },
     {
       "id": "concrete_hardener_white",
@@ -105593,28 +113626,6 @@
       "note": "本配方显示保底 6 块木板；实际有 50% 概率产 6 块、40% 产 7 块、10% 产 8 块。橡木另有 5% 概率附赠苹果；同类木头及去皮变体也可加工。"
     },
     {
-      "id": "cobble_crusher_meteorite",
-      "name": "陨石碎块粉碎",
-      "station": "原石粉碎机",
-      "type": "machine",
-      "result": [
-        {
-          "id": "赛特斯石英粉",
-          "count": 2
-        }
-      ],
-      "inputs": [
-        {
-          "id": "陨石碎块",
-          "count": 1
-        }
-      ],
-      "group": "processing",
-      "href": "/linsmagic/atlas/recipes/processing/cobble_crusher_meteorite",
-      "guiOnly": false,
-      "note": "陨石碎块放进原石粉碎机的输入箱子，每 3 秒加工一次。"
-    },
-    {
       "id": "ae_inscribe_calculation",
       "name": "压制运算电路板",
       "station": "压印器",
@@ -105631,14 +113642,14 @@
           "count": 1
         },
         {
-          "id": "充能赛特斯石英",
+          "id": "具能陨晶体",
           "count": 1
         }
       ],
       "group": "processing",
       "href": "/linsmagic/atlas/recipes/processing/ae_inscribe_calculation",
       "guiOnly": false,
-      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 ME 网络。"
+      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 AE 网络。"
     },
     {
       "id": "ae_press_copy_calculation",
@@ -105690,7 +113701,7 @@
       "group": "processing",
       "href": "/linsmagic/atlas/recipes/processing/ae_inscribe_engineering",
       "guiOnly": false,
-      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 ME 网络。"
+      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 AE 网络。"
     },
     {
       "id": "ae_press_copy_engineering",
@@ -105742,7 +113753,7 @@
       "group": "processing",
       "href": "/linsmagic/atlas/recipes/processing/ae_inscribe_logic",
       "guiOnly": false,
-      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 ME 网络。"
+      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 AE 网络。"
     },
     {
       "id": "ae_press_copy_logic",
@@ -105794,7 +113805,7 @@
       "group": "processing",
       "href": "/linsmagic/atlas/recipes/processing/ae_inscribe_silicon",
       "guiOnly": false,
-      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 ME 网络。"
+      "note": "模板放在上格，不会被消耗。每件 2 秒、400 AE；需要接入有电的 AE 网络。"
     },
     {
       "id": "ae_press_copy_silicon",
@@ -105915,11 +113926,11 @@
     {
       "id": "ae_grind_meteorite",
       "name": "研磨陨石碎块",
-      "station": "压印器",
+      "station": "石磨",
       "type": "machine",
       "result": [
         {
-          "id": "赛特斯石英粉",
+          "id": "陨石碎粉",
           "count": 1
         }
       ],
@@ -105932,125 +113943,121 @@
       "group": "processing",
       "href": "/linsmagic/atlas/recipes/processing/ae_grind_meteorite",
       "guiOnly": false,
-      "note": "上格、下格留空，原料放中格。"
+      "note": "石磨吃机械动力，不用电；满动力时每份 2 秒，动力越小越慢，加速卡最多 4 张。"
     },
     {
-      "id": "ae_grind_certus",
-      "name": "研磨赛特斯石英水晶",
-      "station": "压印器",
+      "id": "ae_grind_meteor_crystal",
+      "name": "研磨陨晶体",
+      "station": "石磨",
       "type": "machine",
       "result": [
         {
-          "id": "赛特斯石英粉",
+          "id": "陨石碎粉",
           "count": 1
         }
       ],
       "inputs": [
         {
-          "id": "赛特斯石英水晶",
+          "id": "陨晶体",
           "count": 1
         }
       ],
       "group": "processing",
-      "href": "/linsmagic/atlas/recipes/processing/ae_grind_certus",
+      "href": "/linsmagic/atlas/recipes/processing/ae_grind_meteor_crystal",
       "guiOnly": false,
-      "note": "上格、下格留空，原料放中格。"
+      "note": "石磨吃机械动力，不用电；满动力时每份 2 秒，动力越小越慢，加速卡最多 4 张。"
     },
     {
-      "id": "ae_grind_fluix",
-      "name": "研磨福鲁伊克斯水晶",
-      "station": "压印器",
+      "id": "ae_grind_phase",
+      "name": "研磨三相水晶导体",
+      "station": "石磨",
       "type": "machine",
       "result": [
         {
-          "id": "福鲁伊克斯粉",
+          "id": "三相导体砂粉",
           "count": 1
         }
       ],
       "inputs": [
         {
-          "id": "福鲁伊克斯水晶",
+          "id": "三相水晶导体",
           "count": 1
         }
       ],
       "group": "processing",
-      "href": "/linsmagic/atlas/recipes/processing/ae_grind_fluix",
+      "href": "/linsmagic/atlas/recipes/processing/ae_grind_phase",
       "guiOnly": false,
-      "note": "上格、下格留空，原料放中格。"
+      "note": "石磨吃机械动力，不用电；满动力时每份 2 秒，动力越小越慢，加速卡最多 4 张。"
     },
     {
-      "id": "ae_charge_certus",
-      "name": "赛特斯石英充能",
-      "station": "充能器",
+      "id": "ae_grind_uranium",
+      "name": "研磨铀矿碎块",
+      "station": "石磨",
       "type": "machine",
       "result": [
         {
-          "id": "充能赛特斯石英",
+          "id": "浓缩铀",
           "count": 1
         }
       ],
       "inputs": [
         {
-          "id": "赛特斯石英水晶",
+          "id": "铀矿碎块",
           "count": 1
         }
       ],
       "group": "processing",
-      "href": "/linsmagic/atlas/recipes/processing/ae_charge_certus",
+      "href": "/linsmagic/atlas/recipes/processing/ae_grind_uranium",
       "guiOnly": false,
-      "note": "每个 0.5 秒、200 AE。红石充能桩也能给赛特斯石英水晶充能（每 2 点能量充好 1 个）。"
+      "note": "石磨吃机械动力，不用电；满动力时每份 2 秒，动力越小越慢，加速卡最多 4 张。"
     },
     {
-      "id": "ae_grow_certus",
-      "name": "培育赛特斯石英",
-      "station": "晶体催化器",
+      "id": "ae_grow_meteor",
+      "name": "培育陨晶体",
+      "station": "陨晶母体槽",
       "type": "machine",
       "result": [
         {
-          "id": "赛特斯石英水晶",
-          "count": 1
-        }
-      ],
-      "inputs": [
-        {
-          "id": "赛特斯石英种子",
-          "count": 1
-        }
-      ],
-      "group": "processing",
-      "href": "/linsmagic/atlas/recipes/processing/ae_grow_certus",
-      "guiOnly": false,
-      "note": "种子放中格，每批最多 8 个。接入有电的网络时 20 秒一批，不通电时 60 秒一批。"
-    },
-    {
-      "id": "ae_grow_fluix",
-      "name": "福鲁伊克斯反应",
-      "station": "晶体催化器",
-      "type": "machine",
-      "result": [
-        {
-          "id": "福鲁伊克斯水晶",
-          "count": 2
-        }
-      ],
-      "inputs": [
-        {
-          "id": "minecraft:redstone",
+          "id": "陨晶体",
           "count": 1
         },
         {
-          "id": "充能赛特斯石英",
-          "count": 1
-        },
+          "id": "陨晶碎丝",
+          "count": 3
+        }
+      ],
+      "inputs": [
         {
-          "id": "minecraft:quartz",
+          "id": "陨晶晶核",
           "count": 1
         }
       ],
       "group": "processing",
-      "href": "/linsmagic/atlas/recipes/processing/ae_grow_fluix",
+      "href": "/linsmagic/atlas/recipes/processing/ae_grow_meteor",
       "guiOnly": false,
-      "note": "上格红石粉、中格充能赛特斯石英、下格下界石英，每批最多 8 份。通电时 5 秒一批，不通电时 15 秒一批。"
+      "note": "把陨晶晶核放在陨晶母体槽正上方那一格，8～16 分钟后长成陨晶体，并在四周随机结出 3 缕陨晶碎丝。"
+    },
+    {
+      "id": "ae_charge_meteor",
+      "name": "陨晶体吸能",
+      "station": "陨晶母体槽",
+      "type": "machine",
+      "result": [
+        {
+          "id": "具能陨晶体",
+          "count": 1
+        }
+      ],
+      "inputs": [
+        {
+          "id": "陨晶体",
+          "count": 1
+        }
+      ],
+      "group": "processing",
+      "href": "/linsmagic/atlas/recipes/processing/ae_charge_meteor",
+      "guiOnly": false,
+      "note": "把陨晶体放在高度 300 以上的地方，5～12 分钟后吸满宇宙能量，变成具能陨晶体。"
     }
   ],
   "structures": [
@@ -108228,720 +116235,6 @@
       "note": "水平 3×3：四角红石块，三个边心平滑石，剩余边心为箱子或陷阱箱。箱子所在方向可旋转。"
     },
     {
-      "id": "diagram_1f6ce57add42",
-      "name": "煤矿机核心",
-      "variants": [
-        [
-          {
-            "x": -1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:coal_block",
-            "name": "煤炭块",
-            "texture": "item/coal_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:coal_block",
-            "name": "煤炭块",
-            "texture": "item/coal_block",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "id": "煤矿机核心",
-            "name": "煤矿机核心",
-            "texture": "item/knowledge_book",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:coal_block",
-            "name": "煤炭块",
-            "texture": "item/coal_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:chest",
-            "name": "箱子",
-            "texture": "item/chest",
-            "description": "结构方块",
-            "options": [
-              {
-                "id": "minecraft:chest",
-                "name": "箱子",
-                "texture": "item/chest"
-              },
-              {
-                "id": "minecraft:trapped_chest",
-                "name": "陷阱箱",
-                "texture": "item/trapped_chest"
-              }
-            ]
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:coal_block",
-            "name": "煤炭块",
-            "texture": "item/coal_block",
-            "description": "结构方块"
-          }
-        ]
-      ],
-      "note": "水平 3×3：四角为对应矿物块，三个边心为平滑石，剩余边心为箱子或陷阱箱；整体可旋转。"
-    },
-    {
-      "id": "diagram_4d509a3051fe",
-      "name": "铜矿机核心",
-      "variants": [
-        [
-          {
-            "x": -1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:raw_copper_block",
-            "name": "粗铜块",
-            "texture": "item/raw_copper_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:raw_copper_block",
-            "name": "粗铜块",
-            "texture": "item/raw_copper_block",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "id": "铜矿机核心",
-            "name": "铜矿机核心",
-            "texture": "item/knowledge_book",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:raw_copper_block",
-            "name": "粗铜块",
-            "texture": "item/raw_copper_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:chest",
-            "name": "箱子",
-            "texture": "item/chest",
-            "description": "结构方块",
-            "options": [
-              {
-                "id": "minecraft:chest",
-                "name": "箱子",
-                "texture": "item/chest"
-              },
-              {
-                "id": "minecraft:trapped_chest",
-                "name": "陷阱箱",
-                "texture": "item/trapped_chest"
-              }
-            ]
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:raw_copper_block",
-            "name": "粗铜块",
-            "texture": "item/raw_copper_block",
-            "description": "结构方块"
-          }
-        ]
-      ],
-      "note": "水平 3×3：四角为对应矿物块，三个边心为平滑石，剩余边心为箱子或陷阱箱；整体可旋转。"
-    },
-    {
-      "id": "diagram_a4cf474682d6",
-      "name": "铁矿机核心",
-      "variants": [
-        [
-          {
-            "x": -1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:raw_iron_block",
-            "name": "粗铁块",
-            "texture": "item/raw_iron_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:raw_iron_block",
-            "name": "粗铁块",
-            "texture": "item/raw_iron_block",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "id": "铁矿机核心",
-            "name": "铁矿机核心",
-            "texture": "item/knowledge_book",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:raw_iron_block",
-            "name": "粗铁块",
-            "texture": "item/raw_iron_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:chest",
-            "name": "箱子",
-            "texture": "item/chest",
-            "description": "结构方块",
-            "options": [
-              {
-                "id": "minecraft:chest",
-                "name": "箱子",
-                "texture": "item/chest"
-              },
-              {
-                "id": "minecraft:trapped_chest",
-                "name": "陷阱箱",
-                "texture": "item/trapped_chest"
-              }
-            ]
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:raw_iron_block",
-            "name": "粗铁块",
-            "texture": "item/raw_iron_block",
-            "description": "结构方块"
-          }
-        ]
-      ],
-      "note": "水平 3×3：四角为对应矿物块，三个边心为平滑石，剩余边心为箱子或陷阱箱；整体可旋转。"
-    },
-    {
-      "id": "diagram_52115a4515ca",
-      "name": "金矿机核心",
-      "variants": [
-        [
-          {
-            "x": -1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:raw_gold_block",
-            "name": "粗金块",
-            "texture": "item/raw_gold_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:raw_gold_block",
-            "name": "粗金块",
-            "texture": "item/raw_gold_block",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "id": "金矿机核心",
-            "name": "金矿机核心",
-            "texture": "item/knowledge_book",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:raw_gold_block",
-            "name": "粗金块",
-            "texture": "item/raw_gold_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:chest",
-            "name": "箱子",
-            "texture": "item/chest",
-            "description": "结构方块",
-            "options": [
-              {
-                "id": "minecraft:chest",
-                "name": "箱子",
-                "texture": "item/chest"
-              },
-              {
-                "id": "minecraft:trapped_chest",
-                "name": "陷阱箱",
-                "texture": "item/trapped_chest"
-              }
-            ]
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:raw_gold_block",
-            "name": "粗金块",
-            "texture": "item/raw_gold_block",
-            "description": "结构方块"
-          }
-        ]
-      ],
-      "note": "水平 3×3：四角为对应矿物块，三个边心为平滑石，剩余边心为箱子或陷阱箱；整体可旋转。"
-    },
-    {
-      "id": "diagram_6a0ada09cc28",
-      "name": "青金石矿机核心",
-      "variants": [
-        [
-          {
-            "x": -1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:lapis_block",
-            "name": "青金石块",
-            "texture": "item/lapis_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:lapis_block",
-            "name": "青金石块",
-            "texture": "item/lapis_block",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "id": "青金石矿机核心",
-            "name": "青金石矿机核心",
-            "texture": "item/knowledge_book",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:lapis_block",
-            "name": "青金石块",
-            "texture": "item/lapis_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:chest",
-            "name": "箱子",
-            "texture": "item/chest",
-            "description": "结构方块",
-            "options": [
-              {
-                "id": "minecraft:chest",
-                "name": "箱子",
-                "texture": "item/chest"
-              },
-              {
-                "id": "minecraft:trapped_chest",
-                "name": "陷阱箱",
-                "texture": "item/trapped_chest"
-              }
-            ]
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:lapis_block",
-            "name": "青金石块",
-            "texture": "item/lapis_block",
-            "description": "结构方块"
-          }
-        ]
-      ],
-      "note": "水平 3×3：四角为对应矿物块，三个边心为平滑石，剩余边心为箱子或陷阱箱；整体可旋转。"
-    },
-    {
-      "id": "diagram_547b371e4e20",
-      "name": "绿宝石矿机核心",
-      "variants": [
-        [
-          {
-            "x": -1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:emerald_block",
-            "name": "绿宝石块",
-            "texture": "item/emerald_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:emerald_block",
-            "name": "绿宝石块",
-            "texture": "item/emerald_block",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "id": "绿宝石矿机核心",
-            "name": "绿宝石矿机核心",
-            "texture": "item/knowledge_book",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:emerald_block",
-            "name": "绿宝石块",
-            "texture": "item/emerald_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:chest",
-            "name": "箱子",
-            "texture": "item/chest",
-            "description": "结构方块",
-            "options": [
-              {
-                "id": "minecraft:chest",
-                "name": "箱子",
-                "texture": "item/chest"
-              },
-              {
-                "id": "minecraft:trapped_chest",
-                "name": "陷阱箱",
-                "texture": "item/trapped_chest"
-              }
-            ]
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:emerald_block",
-            "name": "绿宝石块",
-            "texture": "item/emerald_block",
-            "description": "结构方块"
-          }
-        ]
-      ],
-      "note": "水平 3×3：四角为对应矿物块，三个边心为平滑石，剩余边心为箱子或陷阱箱；整体可旋转。"
-    },
-    {
-      "id": "diagram_8a188d4ce01f",
-      "name": "钻石矿机核心",
-      "variants": [
-        [
-          {
-            "x": -1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:diamond_block",
-            "name": "钻石块",
-            "texture": "item/diamond_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": -1,
-            "id": "minecraft:diamond_block",
-            "name": "钻石块",
-            "texture": "item/diamond_block",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 0,
-            "id": "钻石矿机核心",
-            "name": "钻石矿机核心",
-            "texture": "item/knowledge_book",
-            "description": "结构方块"
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 0,
-            "id": "minecraft:smooth_stone",
-            "name": "平滑石头",
-            "texture": "item/smooth_stone",
-            "description": "结构方块"
-          },
-          {
-            "x": -1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:diamond_block",
-            "name": "钻石块",
-            "texture": "item/diamond_block",
-            "description": "结构方块"
-          },
-          {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:chest",
-            "name": "箱子",
-            "texture": "item/chest",
-            "description": "结构方块",
-            "options": [
-              {
-                "id": "minecraft:chest",
-                "name": "箱子",
-                "texture": "item/chest"
-              },
-              {
-                "id": "minecraft:trapped_chest",
-                "name": "陷阱箱",
-                "texture": "item/trapped_chest"
-              }
-            ]
-          },
-          {
-            "x": 1,
-            "y": 0,
-            "z": 1,
-            "id": "minecraft:diamond_block",
-            "name": "钻石块",
-            "texture": "item/diamond_block",
-            "description": "结构方块"
-          }
-        ]
-      ],
-      "note": "水平 3×3：四角为对应矿物块，三个边心为平滑石，剩余边心为箱子或陷阱箱；整体可旋转。"
-    },
-    {
       "id": "diagram_fe36dce6a77e",
       "name": "自动农场核心",
       "variants": [
@@ -110408,7 +117701,7 @@
       "id": "ae",
       "title": "应用能源",
       "icon": "item/waxed_copper_bars",
-      "description": "ME 网络的材料、部件与方块。"
+      "description": "AE 网络的材料、部件与方块。"
     },
     {
       "id": "enchants",
@@ -110600,10 +117893,10 @@
     ]
   },
   "stats": {
-    "items": 2144,
-    "vanilla": 328,
-    "recipes": 1289,
-    "structures": 44,
+    "items": 2152,
+    "vanilla": 344,
+    "recipes": 1435,
+    "structures": 37,
     "enchants": 267,
     "events": 11,
     "bosses": 18

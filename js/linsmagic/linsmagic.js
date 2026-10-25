@@ -1,8 +1,8 @@
 // linsmagic.js — 纯 JS 版魔法百科（无 Vue 依赖）
 // 数据: catalog.generated.js / pages.generated.js / textures.generated.js
-import catalog from './catalog.generated.js'
-import localTextureList from './textures.generated.js'
-import pages from './pages.generated.js'
+import catalog from './catalog.generated.js?v=13'
+import localTextureList from './textures.generated.js?v=13'
+import pages from './pages.generated.js?v=13'
 
 const ROOT = '#content'
 const entries = catalog.entries || []
@@ -495,12 +495,26 @@ function structureHtml(id) {
     }).join('')
     return `<div class="lm-struct-variant">${s.variants.length > 1 ? `<h3>变体 ${vi + 1}</h3>` : ''}${grids}</div>`
   }).join('')
+  const tabs = s.variants.length > 1
+    ? `<div class="lm-3d-tabs" data-3dtabs>${s.variants.map((_, vi) =>
+        `<button type="button" class="lm-3d-tab${vi === 0 ? ' is-active' : ''}" data-3dvariant="${vi}">变体 ${vi + 1}</button>`
+      ).join('')}</div>`
+    : ''
   return `<div class="lm-structure" data-struct="${s.id}"><p class="lm-struct-name">${s.name}${s.note ? ` · ${s.note}` : ''}</p>
     <div class="lm-struct-actions">
       <button class="lm-btn3d" type="button" data-3d="${s.id}">打开 3D 视图</button>
       <span class="lm-muted">网格模式下悬停方块可查看名称与说明</span>
     </div>
-    <div class="lm-3d-holder" data-3dholder="${s.id}" hidden></div>${layers}</div>`
+    <div class="lm-3d-holder" data-3dholder="${s.id}" hidden>
+      <div class="lm-3d-bar">${tabs}
+        <div class="lm-3d-tools">
+          <button type="button" class="lm-3d-tool" data-3dreset>重置视角</button>
+          <span class="lm-3d-hint">拖动旋转 · 滚轮缩放</span>
+        </div>
+      </div>
+      <div class="lm-3d-mount" data-3dmount></div>
+      <div class="lm-3d-status" data-3dstatus hidden></div>
+    </div>${layers}</div>`
 }
 
 function recipeHtml(id) {
@@ -568,7 +582,7 @@ let searchSel = -1
 let searchList = []
 let searchIndexCache = null
 const CAT_PAGE_SIZE = 30
-const getMc3d = () => (mc3dMod || (mc3dMod = import('./mc3d.js')))
+const getMc3d = () => (mc3dMod || (mc3dMod = import('./mc3d.js?v=14').catch(e => { mc3dMod = null; throw e })))
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 
 // 结构网格里的原版方块：3D 场景打开后把 2D 贴图逐个换成真 3D 缩略图
@@ -1062,33 +1076,87 @@ function bindMoreButtons() {
 
 function bindStructure3D() {
   container.querySelectorAll('[data-3d]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const id = btn.dataset['3d']
-      const holder = container.querySelector(`[data-3dholder="${id}"]`)
-      const struct = structureById[id]
-      if (!holder || !struct) return
-      if (holder.dataset.loaded) {
-        holder.hidden = !holder.hidden
-        btn.textContent = holder.hidden ? '打开 3D 视图' : '收起 3D 视图'
-        return
-      }
-      btn.disabled = true
-      btn.textContent = '3D 加载中…'
+    const id = btn.dataset['3d']
+    const holder = container.querySelector(`[data-3dholder="${CSS.escape(id)}"]`)
+    const struct = structureById[id]
+    if (!holder || !struct) return
+    const mount = holder.querySelector('[data-3dmount]')
+    const status = holder.querySelector('[data-3dstatus]')
+    const tabs = holder.querySelector('[data-3dtabs]')
+    const resetBtn = holder.querySelector('[data-3dreset]')
+    let viewer = null
+    let variant = 0
+    let busy = false
+    let thumbsDone = false
+
+    const say = (text) => {
+      if (!status) return
+      status.hidden = !text
+      status.textContent = text || ''
+    }
+
+    const render = async (next) => {
+      if (busy) return
+      busy = true
+      if (viewer) { viewer.dispose(); viewer = null }
+      holder.dataset.loaded = ''
+      say('正在准备 3D 场景…')
       try {
         const mc3d = await getMc3d()
-        holder.hidden = false
-        await mc3d.mountStructureViewer(holder, struct)
+        viewer = await mc3d.mountStructureViewer(mount, struct, {
+          variant: next,
+          localTextures: localSet,
+          onProgress: say
+        })
+        say('')
         holder.dataset.loaded = '1'
-        btn.disabled = false
-        btn.textContent = '收起 3D 视图'
-        upgradeGridThumbs(mc3d, container, id)
+        holder.dataset.error = ''
+        holder.dataset.variant = String(next)
+        if (holder.hidden) viewer.pause()
+        else btn.textContent = '收起 3D 视图'
+        if (tabs) tabs.querySelectorAll('[data-3dvariant]').forEach(t =>
+          t.classList.toggle('is-active', Number(t.dataset['3dvariant']) === next))
+        if (!thumbsDone) { thumbsDone = true; upgradeGridThumbs(mc3d, container, id) }
       } catch (e) {
         console.warn('[wiki] 3D 视图加载失败:', e)
-        holder.hidden = true
+        say(`3D 视图加载失败：${(e && e.message) || '未知错误'}`)
+        holder.dataset.error = '1'
+        viewer = null
+      } finally {
+        busy = false
         btn.disabled = false
-        btn.textContent = '3D 视图不可用'
       }
+    }
+
+    btn.addEventListener('click', () => {
+      if (!holder.hidden && holder.dataset.error !== '1') {
+        holder.hidden = true
+        btn.textContent = '打开 3D 视图'
+        if (viewer) viewer.pause()
+        return
+      }
+      holder.hidden = false
+      holder.dataset.error = ''
+      btn.textContent = '收起 3D 视图'
+      if (viewer) { viewer.resume(); return }
+      if (busy) return
+      btn.disabled = true
+      btn.textContent = '3D 加载中…'
+      render(variant).then(() => {
+        btn.textContent = holder.hidden ? '打开 3D 视图' : (holder.dataset.error ? '重试 3D 视图' : '收起 3D 视图')
+      })
     })
+
+    if (tabs) tabs.querySelectorAll('[data-3dvariant]').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const next = Number(tab.dataset['3dvariant']) || 0
+        if (next === variant || busy) return
+        variant = next
+        render(next)
+      })
+    })
+
+    if (resetBtn) resetBtn.addEventListener('click', () => { if (viewer) viewer.reset() })
   })
 }
 

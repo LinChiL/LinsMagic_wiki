@@ -2358,7 +2358,7 @@ function mountContentWiki(delayMs) {
   const run = function () {
     if (_contentWikiMounted) return
     _contentWikiMounted = true
-    import('../linsmagic/linsmagic.js?v=11').then(function (mod) {
+    import('../linsmagic/linsmagic.js?v=14').then(function (mod) {
       if (!document.querySelector('.lm-root')) mod.mountLinsmagic()
     }).catch(function (e) {
       _contentWikiMounted = false
